@@ -131,6 +131,15 @@
   .kpi b{display:block;font-size:20px;font-variant-numeric:tabular-nums;margin-bottom:2px}
   .kpi span{font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:.4px}
 
+  summary::-webkit-details-marker{display:none}
+  #aBox > summary h2::after{content:" ▸";color:var(--tx2)}
+  #aBox[open] > summary h2::after{content:" ▾"}
+  .sug{display:flex;flex-wrap:wrap;gap:6px}
+  .sug button{
+    background:var(--panel2);border:1px solid var(--acc);color:var(--tx);
+    border-radius:999px;padding:8px 13px;font-size:14px;font-weight:600;cursor:pointer;
+  }
+  .sug button:active{transform:scale(.97)}
   .btn.mini{padding:6px 9px;font-size:11px;font-weight:700;border-radius:8px;background:var(--panel2);border:1px solid var(--line);color:var(--tx2)}
   .btn.mini.gr{color:var(--ok)} .btn.mini.rd{color:var(--bad)}
   .chip{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
@@ -246,9 +255,10 @@
         <input type="checkbox" id="onlyOpen" style="width:auto">Rādīt tikai neatzīmētos
       </label>
       <div class="row" style="margin-top:10px">
-        <input type="text" id="dNew" placeholder="+ Atnāca vēl kāds (vārds)">
+        <input type="text" id="dNew" placeholder="+ Atnāca vēl kāds (vārds)" autocomplete="off">
         <button class="btn" id="dAdd">Pievienot</button>
       </div>
+      <div id="dSug" class="hide" style="margin-top:8px"></div>
     </div>
     <div class="card" id="dPeople"></div>
   </section>
@@ -321,9 +331,16 @@
       </div>
     </div>
     <div class="card">
-      <h2>Arhīvs (<span id="aCount">0</span>)</h2>
-      <p class="muted" style="margin:0 0 10px">Nenāk uz treniņiem. Izvēlnēs neparādās, bet vēsture un parādi saglabājas.</p>
-      <div id="aList"></div>
+      <details id="aBox">
+        <summary style="cursor:pointer;list-style:none">
+          <div class="row" style="justify-content:space-between;gap:10px">
+            <h2 style="margin:0">Arhīvs (<span id="aCount">0</span>)</h2>
+            <span class="muted" style="font-size:12px" id="aBreak"></span>
+          </div>
+        </summary>
+        <p class="muted" style="margin:10px 0">Nenāk uz treniņiem. Izvēlnēs neparādās, bet vēsture un parādi saglabājas.</p>
+        <div id="aList"></div>
+      </details>
     </div>
     <div class="card">
       <h2>Viesi (<span id="gCount">0</span>)</h2>
@@ -892,11 +909,23 @@
     }).join("") : '<div class="empty">Komandā neviena nav.</div>';
     bindPersonBtns(w);
 
+    var archTeam = arch.filter(function(p){ return !p.guest; });
+    var archGuest = arch.filter(function(p){ return p.guest; });
+    $("aBreak").textContent = arch.length
+      ? "komanda " + archTeam.length + " · viesi " + archGuest.length
+      : "tukšs";
     var a = $("aList");
-    a.innerHTML = arch.length ? arch.map(function(p){
+    function archRow(p){
       return personRow(p,
         '<button class="btn mini gr" data-arch="'+p.id+'" title="Atgriezt sarakstā">↩ '+(p.guest?"viesos":"komandā")+'</button>');
-    }).join("") : '<div class="empty">Arhīvs tukšs.</div>';
+    }
+    a.innerHTML = arch.length
+      ? archTeam.map(archRow).join("") +
+        (archGuest.length
+          ? '<div class="muted" style="margin:14px 0 4px;padding-top:10px;border-top:1px solid var(--line);font-size:11px;text-transform:uppercase;letter-spacing:.5px">Viesi</div>'
+            + archGuest.map(archRow).join("")
+          : "")
+      : '<div class="empty">Arhīvs tukšs.</div>';
     bindPersonBtns(a);
 
     var g = $("gList");
@@ -1207,17 +1236,50 @@
     };
   };
 
-  $("dAdd").onclick = function(){
+  /* pievieno treniņam esošu cilvēku pēc id */
+  function addToSession(id, name){
     var s = S.sessions.filter(function(x){return x.id===cur;})[0];
-    if(!s) return;
-    var id = quickAdd($("dNew").value, true);
-    if(!id) return;
+    if(!s || !id) return;
     if(!s.roster) s.roster = S.people.map(function(x){return x.id;});
     if(s.roster.indexOf(id)<0) s.roster.push(id);
-    save(); $("dNew").value=""; $("pFilter").value="";
-    render(); toast("Pievienots treniņam");
+    save(); $("dNew").value=""; $("pFilter").value=""; hideSug();
+    render(); toast((name||"Pievienots")+" — treniņā");
+  }
+  $("dAdd").onclick = function(){
+    var id = quickAdd($("dNew").value, true);
+    if(!id) return;
+    addToSession(id);
   };
   $("dNew").onkeydown = function(e){ if(e.key==="Enter") $("dAdd").click(); };
+
+  /* ---- ieteikumi no aktīvo viesu saraksta ---- */
+  function hideSug(){ var w=$("dSug"); w.innerHTML=""; w.classList.add("hide"); }
+  $("dNew").oninput = function(){
+    var q = norm($("dNew").value);
+    var w = $("dSug");
+    if(q.length < 1){ hideSug(); return; }
+    var s = S.sessions.filter(function(x){return x.id===cur;})[0];
+    var inSess = s && s.roster ? s.roster : [];
+    var list = S.people.filter(function(p){
+      if(!p.guest || p.arch) return false;              /* tikai aktīvie viesi */
+      if(inSess.indexOf(p.id)>=0) return false;          /* jau treniņā */
+      /* vispirms vārda/uzvārda sākums; garākiem ievadiem arī jebkur vidū */
+      if(tokens(p.name).some(function(t){ return t.indexOf(q)===0; })) return true;
+      return q.length>=3 && norm(p.name).indexOf(q)>=0;
+    }).slice(0, 8);
+    if(!list.length){ hideSug(); return; }
+    w.innerHTML = '<div class="muted" style="font-size:12px;margin-bottom:6px">Viesi no saraksta:</div>'+
+      '<div class="sug">'+list.map(function(p){
+        return '<button data-sug="'+p.id+'">'+esc(p.name)+'</button>';
+      }).join("")+'</div>';
+    w.classList.remove("hide");
+    [].forEach.call(w.querySelectorAll("[data-sug]"), function(btn){
+      btn.onclick = function(){
+        var p = S.people.filter(function(x){return x.id===btn.dataset.sug;})[0];
+        addToSession(btn.dataset.sug, p && p.name);
+      };
+    });
+  };
 
   $("editRoster").onclick = openRoster;
   $("rFilter").oninput = renderRoster;
