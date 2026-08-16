@@ -160,8 +160,8 @@
   .dlglist .row:last-child{border-bottom:none}
 
   summary::-webkit-details-marker{display:none}
-  #aBox > summary h2::after{content:" ▸";color:var(--tx2)}
-  #aBox[open] > summary h2::after{content:" ▾"}
+  #aBox > summary h2::after,#aboutBox > summary h2::after{content:" ▸";color:var(--tx2)}
+  #aBox[open] > summary h2::after,#aboutBox[open] > summary h2::after{content:" ▾"}
   .sug{display:flex;flex-wrap:wrap;gap:6px}
   .sug button{
     background:var(--panel2);border:1px solid var(--acc);color:var(--tx);
@@ -447,6 +447,15 @@
       <button class="btn sec hide" id="pasteImport"></button>
       <button class="btn danger" id="wipe" style="width:100%;margin-top:14px" data-i18n="bWipe">Dzēst visus datus</button>
     </div>
+    <div class="card">
+      <details id="aboutBox">
+        <summary style="cursor:pointer;list-style:none">
+          <h2 style="margin:0" data-i18n="hAbout">Par programmu</h2>
+        </summary>
+        <div id="aboutText" style="font-size:14px;line-height:1.6;margin-top:10px"></div>
+      </details>
+      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v1.0</div>
+    </div>
   </section>
 </main>
 
@@ -536,6 +545,7 @@
   }
 
   /* ---------- valodas ---------- */
+  var APP_VER = "1.0";
   var I18N = {
     lv:{
       navTr:"Treniņi", navSum:"Kopsavilkums", navSub:"Abonementi", navPpl:"Dalībnieki", navSet:"Iestatījumi",
@@ -560,6 +570,8 @@
       hSessPrice:"Treniņa cena", pSessPrice:"Cenu izmanto, lai rēķinātu parādu, kad kāds iedod tikai daļu naudas.",
       hLogo:"Logo", bPickImg:"Izvēlēties attēlu", bRmLogo:"Noņemt logo",
       pLogo:"Attēls parādās virsrakstā. Tas tiek samazināts un saglabāts kopā ar datiem. Mājas ekrāna ikona nomainīsies tikai tad, ja īsceļu pievienosi no jauna.",
+      hAbout:"Par programmu",
+      about:"<b>Finanšu kontroles aplikācija amatieru ledus hokeja komandai.</b><br><br>Aizstāj piezīmes telefonā un Excel tabulas: kurš par treniņu samaksājis, kurš palicis parādā, kam ir abonements un cik mēnesī aizgājis trenerim, vārtsargiem un hallei.<br><br><b>Treniņi</b> — dalībnieku izvēle, maksājumu atzīmēšana, katram treniņam sava cena.<br><b>Abonementi</b> — mēneša maksa ar statusiem samaksāts, daļēji samaksāts vai pieteicies.<br><b>Dalībnieki</b> — komanda, viesi un arhīvs tiem, kas pašlaik nenāk.<br><b>Mani izdevumi</b> — treneris, vārtsargi, halle un citas rindas pie katra treniņa.<br><b>Kopsavilkums</b> — saņemts, parādi, izdevumi un atlikums pa mēnešiem.<br><br>Dati glabājas tikai šajā ierīcē un nekur netiek sūtīti. Tāpēc regulāri taisi dublējumu: sadaļā Dati spied “Lejupielādēt failu”.<br><br>Pēc pirmās atvēršanas aplikācija strādā arī bez interneta.",
       hLang:"Valoda", hLook:"Izskats", bDark:"🌙 Tumšs", bLight:"☀️ Gaišs",
       hData:"Dati", pData:"Dati glabājas šajā ierīcē. Taisi dublējumu regulāri — tas ir viens fails, ko var ielādēt atpakaļ jebkurā brīdī.",
       bDlFile:"💾 Lejupielādēt failu", bLoadJson:"📂 Ielādēt JSON", bWipe:"Dzēst visus datus",
@@ -641,6 +653,8 @@
       hSessPrice:"Session price", pSessPrice:"Used to calculate the debt when someone pays only part of it.",
       hLogo:"Logo", bPickImg:"Choose image", bRmLogo:"Remove logo",
       pLogo:"The image appears in the header. It is resized and stored with your data. The home screen icon changes only if you add the shortcut again.",
+      hAbout:"About",
+      about:"<b>A finance tracking app for an amateur ice hockey team.</b><br><br>It replaces phone notes and spreadsheets: who paid for a session, who still owes, who has a membership, and how much went to the coach, the goalies and the rink each month.<br><br><b>Sessions</b> — pick participants, mark payments, set a price per session.<br><b>Memberships</b> — monthly fee with paid, partly paid or signed up status.<br><b>People</b> — team, guests and an archive for those not attending.<br><b>My expenses</b> — coach, goalies, rink and any other rows per session.<br><b>Summary</b> — received, debts, expenses and balance by month.<br><br>Data is stored on this device only and never sent anywhere. So back it up regularly: in the Data section tap “Download file”.<br><br>After the first visit the app also works offline.",
       hLang:"Language", hLook:"Appearance", bDark:"🌙 Dark", bLight:"☀️ Light",
       hData:"Data", pData:"Data is stored on this device. Back it up regularly — it is a single file you can load back any time.",
       bDlFile:"💾 Download file", bLoadJson:"📂 Load JSON", bWipe:"Delete all data",
@@ -713,6 +727,8 @@
       if(v != null) el.placeholder = v;
     });
     $("mdNo").textContent = T.bCancel;
+    $("aboutText").innerHTML = T.about;
+    $("appVer").textContent = "v"+APP_VER;
     $("wvWarn").innerHTML = T.wvWarn;
     $("lgLv").style.borderColor = (S.lang==="en") ? "" : "var(--acc)";
     $("lgEn").style.borderColor = (S.lang==="en") ? "var(--acc)" : "";
