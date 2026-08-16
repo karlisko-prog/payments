@@ -1305,6 +1305,10 @@
         return '<div class="row" style="justify-content:space-between;gap:10px;padding:3px 0">'+
           '<span class="muted">'+esc(n)+'</span><span class="num">'+eur(b2.by[n])+' €</span></div>';
       }).join("");
+      /* ja periods jau izvēlēts augšā, mēneša nosaukumu neatkārto */
+      if(m) return '<div>'+rows+
+        '<div class="row" style="justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:6px;margin-top:6px">'+
+          '<b>Kopā</b><b class="num">'+eur(b2.total)+' €</b></div></div>';
       return '<div style="margin-bottom:14px">'+
         '<div class="row" style="justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:6px">'+
           '<b>'+monthName(k)+'</b><b class="num">'+eur(b2.total)+' €</b></div>'+
