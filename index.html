@@ -91,7 +91,7 @@
     border-radius:10px;padding:9px 4px;font-size:12px;font-weight:700;cursor:pointer;text-align:center;line-height:1.25;
   }
   .opt.on[data-s=paid],.opt.on[data-ss=paid]{background:var(--ok);border-color:var(--ok);color:#06240f}
-  .opt.on[data-s=debt]{background:var(--bad);border-color:var(--bad);color:#2b0505}
+  .opt.on[data-s=debt],.opt.on[data-ss=signed]{background:var(--bad);border-color:var(--bad);color:#2b0505}
   .opt.on[data-s=part],.opt.on[data-ss=part]{background:var(--warn);border-color:var(--warn);color:#2b1c00}
   .opt.on[data-s=none]{background:var(--off);border-color:var(--off);color:#0b0f14}
   /* nospiešanas atgriezeniskā saite */
@@ -468,7 +468,7 @@
   var fresh = [];      /* pids, kuriem summa tiek ievadīta pirmo reizi */
   var amtOrig = null;  /* summa pirms rediģēšanas */
   var LBLTXT = { paid:"Iedeva naudu", debt:"Palika parādā", part:"Iedeva daļu", none:"Nebija treniņā",
-                 spaid:"Samaksāts", spart:"Daļēji samaksāts" };
+                 spaid:"Samaksāts", spart:"Daļēji samaksāts", ssigned:"Pieteicies — nav samaksāts" };
   function pname(pid){
     var p = S.people.filter(function(x){return x.id===pid;})[0];
     return p ? p.name : "";
@@ -540,16 +540,18 @@
   /* vai cilvēkam ir attiecīgā mēneša abonements */
   function hasSub(pid, dateISO){
     var e = subEntry(pid, String(dateISO).slice(0,7));
-    return !!(e && (e.s==="paid" || e.s==="part"));
+    return !!(e && (e.s==="paid" || e.s==="part" || e.s==="signed"));
   }
   function subPaid(e, price){
     if(!e) return 0;
     if(e.s==="paid") return price;
     if(e.s==="part") return Number(e.a)||0;
-    return 0;
+    return 0;                      /* "signed" = pieteicies, vēl nav maksājis */
   }
   function subDebt(e, price){
-    if(!e || e.s!=="part") return 0;
+    if(!e) return 0;
+    if(e.s==="signed") return price;
+    if(e.s!=="part") return 0;
     return Math.max(0, price - (Number(e.a)||0));
   }
   function subOwe(e, price){
@@ -691,9 +693,11 @@
       /* abonements — rinda neatveras, maksāšanas pogas uz viņu neattiecas */
       if(!e.s && hasSub(p.id, s.date)){
         var se = subEntry(p.id, s.date.slice(0,7));
-        return '<div class="crow s-paid" style="cursor:default">'+
+        var un = (se.s==="signed");
+        return '<div class="crow s-'+(un?"debt":"paid")+'" style="cursor:default">'+
           '<span class="cname">'+esc(p.name)+'</span>'+
-          '<span class="pill p-ok">Abonements'+(se.s==="part"?" · daļēji":"")+'</span></div>';
+          '<span class="pill '+(un?"p-bad":"p-ok")+'">Abonements'+
+            (un?" · nav apmaksāts":(se.s==="part"?" · daļēji":""))+'</span></div>';
       }
       /* saritināta rinda, ja izvēle jau izdarīta un rinda nav atvērta */
       if(e.s && open.indexOf(p.id)<0){
@@ -713,7 +717,9 @@
         return '<button class="opt'+(e.s===k?" on":"")+'" data-s="'+k+'" data-p="'+p.id+'">'+LBL[k]+'</button>';
       }).join("");
       return '<div class="prow">'+
-        '<div class="pname"><span>'+esc(p.name)+(hasSub(p.id, s.date)?' <span class="pill p-ok">Abonements</span>':'')+'</span>'+
+        '<div class="pname"><span>'+esc(p.name)+(hasSub(p.id, s.date)? (subEntry(p.id, s.date.slice(0,7)).s==="signed"
+              ? ' <span class="pill p-bad">Abonements · nav apmaksāts</span>'
+              : ' <span class="pill p-ok">Abonements</span>') : '')+'</span>'+
           (entryDebt(e,sessPrice(s))>0 ? '<span class="pill p-bad">-'+eur(entryDebt(e,sessPrice(s)))+' €</span>'
             : (entryOwe(e,sessPrice(s))>0 ? '<span class="pill p-warn">jāatdod '+eur(entryOwe(e,sessPrice(s)))+' €</span>'
             : (entryPaid(e,sessPrice(s))>0? '<span class="pill p-ok">'+eur(entryPaid(e,sessPrice(s)))+' €</span>':'')))+
@@ -994,18 +1000,19 @@
     w.innerHTML = list.map(function(p){
       var e = b.entries[p.id] || {};
       if(e.s && subOpen.indexOf(p.id)<0){
-        var txt, cls;
-        if(e.s==="paid"){ txt="Samaksāts · "+eur(b.price)+" €"; cls="p-ok"; }
-        else { txt = "Iedeva "+eur(Number(e.a)||0)+" € · "+(subOwe(e,b.price)>0 ? "jāatdod "+eur(subOwe(e,b.price))+" €" : "parāds "+eur(subDebt(e,b.price))+" €"); cls="p-warn"; }
-        return '<div class="crow s-'+(e.s==="paid"?"paid":"part")+'" data-sopen="'+p.id+'">'+
+        var txt, cls, bar;
+        if(e.s==="paid"){ txt="Samaksāts · "+eur(b.price)+" €"; cls="p-ok"; bar="paid"; }
+        else if(e.s==="signed"){ txt="Pieteicies · parādā "+eur(b.price)+" €"; cls="p-bad"; bar="debt"; }
+        else { txt = "Iedeva "+eur(Number(e.a)||0)+" € · "+(subOwe(e,b.price)>0 ? "jāatdod "+eur(subOwe(e,b.price))+" €" : "parāds "+eur(subDebt(e,b.price))+" €"); cls="p-warn"; bar="part"; }
+        return '<div class="crow s-'+bar+'" data-sopen="'+p.id+'">'+
           '<span class="cname">'+esc(p.name)+'</span><span class="pill '+cls+'">'+txt+'</span></div>';
       }
-      var opts = ["paid","part"].map(function(k){
-        return '<button class="opt'+(e.s===k?" on":"")+'" data-ss="'+k+'" data-sp="'+p.id+'">'+
-          (k==="paid"?"Samaksāts":"Daļēji<br>samaksāts")+'</button>';
+      var SUBL = { paid:"Samaksāts", part:"Daļēji<br>samaksāts", signed:"Pieteicies<br>(nav samaksāts)" };
+      var opts = ["paid","part","signed"].map(function(k){
+        return '<button class="opt'+(e.s===k?" on":"")+'" data-ss="'+k+'" data-sp="'+p.id+'">'+SUBL[k]+'</button>';
       }).join("");
       return '<div class="prow"><div class="pname"><span>'+esc(p.name)+'</span></div>'+
-        '<div class="opts" style="grid-template-columns:repeat(2,1fr)">'+opts+'</div>'+
+        '<div class="opts" style="grid-template-columns:repeat(3,1fr)">'+opts+'</div>'+
         '<div class="partbox'+(e.s==="part"?" show":"")+'">'+
           '<span class="muted">Iedeva:</span>'+
           '<input type="number" min="0" step="5" value="'+(e.a!=null?e.a:"")+'" data-samt="'+p.id+'" placeholder="0">'+
@@ -1018,7 +1025,9 @@
     });
     function subStatusText(e){
       if(!e || !e.s) return "";
-      return e.s==="paid" ? "Samaksāts ("+eur(b.price)+" €)" : "Daļēji samaksāts ("+eur(Number(e.a)||0)+" €)";
+      if(e.s==="paid") return "Samaksāts ("+eur(b.price)+" €)";
+      if(e.s==="signed") return "Pieteicies — nav samaksāts";
+      return "Daļēji samaksāts ("+eur(Number(e.a)||0)+" €)";
     }
     [].forEach.call(w.querySelectorAll("[data-ss]"), function(btn){
       btn.onclick = function(){
