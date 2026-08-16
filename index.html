@@ -270,7 +270,7 @@
         <div style="flex:0 0 auto;border-left:1px solid var(--line);padding-left:12px">
           <div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;text-align:center" data-i18n="lPrice">Cena</div>
           <div class="row" style="gap:5px">
-            <input type="number" id="dPrice" min="0" step="0.5" style="width:72px;text-align:center;padding:10px 4px">
+            <input type="number" id="dPrice" min="0" step="0.5" inputmode="decimal" enterkeyhint="done" style="width:72px;text-align:center;padding:10px 4px">
             <span class="muted" style="font-size:16px">€</span>
           </div>
         </div>
@@ -345,7 +345,7 @@
       <h2 data-i18n="hMonthPrice">Mēnesis un cena</h2>
       <div class="row">
         <select id="subMonth"></select>
-        <input type="number" id="subPrice" min="0" step="5" style="max-width:110px" placeholder="Cena" data-ph="phPrice">
+        <input type="number" id="subPrice" min="0" step="5" inputmode="decimal" enterkeyhint="done" style="max-width:110px" placeholder="Cena" data-ph="phPrice">
         <span class="muted" style="font-size:20px">€</span>
       </div>
       <div class="sess-sum" id="subSum" style="margin-top:10px"></div>
@@ -398,7 +398,7 @@
     <div class="card">
       <h2 data-i18n="hSessPrice">Treniņa cena</h2>
       <div class="row">
-        <input type="number" id="price" min="0" step="0.5">
+        <input type="number" id="price" min="0" step="0.5" inputmode="decimal" enterkeyhint="done">
         <span class="muted" style="font-size:20px">€</span>
       </div>
       <p class="muted" style="margin:10px 0 0" data-i18n="pSessPrice">Cenu izmanto, lai rēķinātu parādu, kad kāds iedod tikai daļu naudas.</p>
@@ -545,7 +545,7 @@
   }
 
   /* ---------- valodas ---------- */
-  var APP_VER = "1.0";
+  var APP_VER = "1.1";
   var I18N = {
     lv:{
       navTr:"Treniņi", navSum:"Kopsavilkums", navSub:"Abonementi", navPpl:"Dalībnieki", navSet:"Iestatījumi",
@@ -1000,7 +1000,7 @@
         '<div class="opts">'+opts+'</div>'+
         '<div class="partbox'+(e.s==="part"?" show":"")+'" data-box="'+p.id+'">'+
           '<span class="muted">'+T.gave+':</span>'+
-          '<input type="number" min="0" step="0.5" value="'+(e.a!=null?e.a:"")+'" data-amt="'+p.id+'" placeholder="0">'+
+          '<input type="number" min="0" step="0.5" inputmode="decimal" enterkeyhint="done" value="'+(e.a!=null?e.a:"")+'" data-amt="'+p.id+'" placeholder="0">'+
           '<span class="muted">€'+T.of+eur(sessPrice(s))+' €</span>'+
         '</div>'+
       '</div>';
@@ -1101,8 +1101,8 @@
     var list = expOf(s);
     w.innerHTML = list.map(function(x,i){
       return '<div class="row" style="gap:6px;margin-bottom:7px">'+
-        '<input type="text" data-en="'+i+'" value="'+esc(x.n)+'" style="flex:1;min-width:0;padding:9px 10px">'+
-        '<input type="number" data-ea="'+i+'" min="0" step="0.5" value="'+(x.a?x.a:"")+'" placeholder="0" style="width:82px;text-align:center;padding:9px 4px">'+
+        '<input type="text" data-en="'+i+'" enterkeyhint="done" value="'+esc(x.n)+'" style="flex:1;min-width:0;padding:9px 10px">'+
+        '<input type="number" data-ea="'+i+'" min="0" step="0.5" inputmode="decimal" enterkeyhint="done" value="'+(x.a?x.a:"")+'" placeholder="0" style="width:82px;text-align:center;padding:9px 4px">'+
         '<span class="muted" style="font-size:15px">€</span>'+
         '<button class="btn mini rd" data-ed="'+i+'" title="'+T.tiDel+'">✕</button></div>';
     }).join("") || '<div class="muted">Nav nevienas rindas.</div>';
@@ -1354,7 +1354,7 @@
         '<div class="opts" style="grid-template-columns:repeat(3,1fr)">'+opts+'</div>'+
         '<div class="partbox'+(e.s==="part"?" show":"")+'">'+
           '<span class="muted">'+T.gave+':</span>'+
-          '<input type="number" min="0" step="5" value="'+(e.a!=null?e.a:"")+'" data-samt="'+p.id+'" placeholder="0">'+
+          '<input type="number" min="0" step="5" inputmode="decimal" enterkeyhint="done" value="'+(e.a!=null?e.a:"")+'" data-samt="'+p.id+'" placeholder="0">'+
           '<span class="muted">€'+T.of+eur(b.price)+' €</span>'+
         '</div></div>';
     }).join("");
@@ -2062,6 +2062,17 @@
   $("thDark").onclick = function(){ S.theme="dark"; save(); applyTheme(); };
   $("thLight").onclick = function(){ S.theme="light"; save(); applyTheme(); };
   applyTheme();
+
+  /* ---------- tastatūras "Go"/Enter = gatavs ---------- */
+  document.addEventListener("keydown", function(e){
+    if(e.key !== "Enter" && e.keyCode !== 13) return;
+    var el = e.target;
+    if(!el || el.tagName !== "INPUT") return;
+    if(el.id === "dNew" || el.id === "rNew") return;      /* tiem ir sava darbība */
+    if(el.id === "mdInput"){ e.preventDefault(); $("mdYes").click(); return; }
+    e.preventDefault();
+    el.blur();                                            /* apstiprina un aizver tastatūru */
+  });
 
   /* ---------- bezsaistes režīms ---------- */
   function offlineBadge(){
