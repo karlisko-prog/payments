@@ -167,7 +167,7 @@
     <button data-t="sessions" class="on">Treniņi</button>
     <button data-t="summary">Kopsavilkums</button>
     <button data-t="subs">Abonementi</button>
-    <button data-t="people">Komanda</button>
+    <button data-t="people">Dalībnieki</button>
     <button data-t="settings">Iestatījumi</button>
   </nav>
 </header>
@@ -213,7 +213,7 @@
         <input type="text" id="rNew" placeholder="+ Viesis (vārds)">
         <button class="btn" id="rAdd">Pievienot</button>
       </div>
-      <p class="muted" style="margin:8px 0 0">Viesis nonāk tikai šajā treniņā un sadaļā “Komanda → Viesi”, nevis pastāvīgajā izvēlnē.</p>
+      <p class="muted" style="margin:8px 0 0">Viesis nonāk tikai šajā treniņā un sadaļā “Dalībnieki → Viesi”, nevis pastāvīgajā izvēlnē.</p>
       <details style="margin-top:12px">
         <summary class="muted" style="cursor:pointer">📋 Ielīmēt sarakstu no SportEasy</summary>
         <textarea id="rPaste" placeholder="Ielīmē vārdus (viens rindā vai ar komatiem).&#10;Der arī “Uzvārds Vārds” secība."></textarea>
@@ -665,7 +665,7 @@
     if(document.activeElement !== $("dPrice")) $("dPrice").value = sessPrice(s);
 
     var w = $("dPeople");
-    if(!S.people.length){ w.innerHTML='<div class="empty">Vispirms pievieno cilvēkus sadaļā “Cilvēki”.</div>'; return; }
+    if(!S.people.length){ w.innerHTML='<div class="empty">Vispirms pievieno cilvēkus sadaļā “Dalībnieki”.</div>'; return; }
     var base = roster(s);
     if(!base.length){ w.innerHTML='<div class="empty">Neviens nav atzīmēts kā dalībnieks.<br>Spied “Mainīt dalībniekus”.</div>'; return; }
     var q = ($("pFilter").value||"").trim().toLowerCase();
