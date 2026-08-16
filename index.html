@@ -283,6 +283,16 @@
       <div id="dSug" class="hide" style="margin-top:8px"></div>
     </div>
     <div class="card" id="dPeople"></div>
+    <div class="card">
+      <h2>Mani izdevumi</h2>
+      <div id="expList"></div>
+      <div class="row wrap" style="margin-top:10px">
+        <button class="btn sec" id="expAddCoach" style="flex:1">+ Treneris</button>
+        <button class="btn sec" id="expAddGk" style="flex:1">+ Vārtsargs</button>
+        <button class="btn sec" id="expAddOther" style="flex:1">+ Cits</button>
+      </div>
+      <div class="sess-sum" id="expSum" style="margin-top:12px"></div>
+    </div>
   </section>
 
   <!-- KOPSAVILKUMS -->
@@ -296,6 +306,8 @@
       <div class="kpi"><b class="red num" id="kPar">0</b><span>Man parādā €</span></div>
       <div class="kpi"><b class="num" id="kAtd" style="color:var(--warn)">0</b><span>Man jāatdod €</span></div>
       <div class="kpi"><b class="num" id="kTre">0</b><span>Treniņi</span></div>
+      <div class="kpi"><b class="num" id="kIzd" style="color:var(--tx2)">0</b><span>Izdevumi €</span></div>
+      <div class="kpi"><b class="num" id="kAtl">0</b><span>Atlikums €</span></div>
     </div>
     <div class="card">
       <h2>Pa cilvēkiem</h2>
@@ -691,7 +703,8 @@
         '<div class="row wrap" style="gap:5px;justify-content:flex-end">'+pills.join("")+'</div>'+
         '</div>'+
         '<div class="sess-sum">'+total+' pieteikušies · '+t.count+' bija · saņemts <b>'+eur(t.paid)+' €</b>'+
-          (t.sub? ' · '+t.sub+' ar abonementu':'')+'</div>'+
+          (t.sub? ' · '+t.sub+' ar abonementu':'')+
+          (expTotal(s)>0 ? ' · izdevumi <b>'+eur(expTotal(s))+' €</b> · atlikums <b>'+eur(t.paid-expTotal(s))+' €</b>' : '')+'</div>'+
       '</div>';
     }).join("");
     [].forEach.call(w.querySelectorAll(".sess"), function(el){
@@ -706,6 +719,7 @@
     $("dTitle").textContent = fmtDate(s.date);
     $("dSum").innerHTML = roster(s).length+" dalībnieki · saņemts <b>"+eur(t.paid)+" €</b> · parādā <b>"+eur(t.debt)+" €</b>"+(t.owe>0?" · jāatdod <b>"+eur(t.owe)+" €</b>":"");
     if(document.activeElement !== $("dPrice")) $("dPrice").value = sessPrice(s);
+    renderExp();
 
     var w = $("dPeople");
     if(!S.people.length){ w.innerHTML='<div class="empty">Vispirms pievieno cilvēkus sadaļā “Dalībnieki”.</div>'; return; }
@@ -847,6 +861,72 @@
       };
     });
   }
+
+  /* ---------- treniņa izdevumi ---------- */
+  var EXP_DEF = ["Treneris","Vārtsargs","Vārtsargs 2","Halle","Citi izdevumi"];
+  function expOf(s){
+    if(!s.exp){ s.exp = EXP_DEF.map(function(n){ return {n:n, a:0}; }); save(); }
+    return s.exp;
+  }
+  function expTotal(s){
+    if(!s || !s.exp) return 0;
+    return s.exp.reduce(function(t,x){ return t + (Number(x.a)||0); }, 0);
+  }
+  function renderExp(){
+    var s = S.sessions.filter(function(x){return x.id===cur;})[0];
+    if(!s) return;
+    var w = $("expList");
+    /* neapgāž ievadi, kamēr raksta */
+    if(document.activeElement && document.activeElement.closest && document.activeElement.closest("#expList")){
+      updateExpSum(s); return;
+    }
+    var list = expOf(s);
+    w.innerHTML = list.map(function(x,i){
+      return '<div class="row" style="gap:6px;margin-bottom:7px">'+
+        '<input type="text" data-en="'+i+'" value="'+esc(x.n)+'" style="flex:1;min-width:0;padding:9px 10px">'+
+        '<input type="number" data-ea="'+i+'" min="0" step="0.5" value="'+(x.a?x.a:"")+'" placeholder="0" style="width:82px;text-align:center;padding:9px 4px">'+
+        '<span class="muted" style="font-size:15px">€</span>'+
+        '<button class="btn mini rd" data-ed="'+i+'" title="Dzēst">✕</button></div>';
+    }).join("") || '<div class="muted">Nav nevienas rindas.</div>';
+
+    [].forEach.call(w.querySelectorAll("[data-en]"), function(f){
+      f.oninput = function(){ list[f.dataset.en].n = f.value; save(); };
+    });
+    [].forEach.call(w.querySelectorAll("[data-ea]"), function(f){
+      f.oninput = function(){
+        var v = parseFloat(f.value); list[f.dataset.ea].a = isNaN(v)?0:v;
+        save(); updateExpSum(s); renderSessions();
+      };
+    });
+    [].forEach.call(w.querySelectorAll("[data-ed]"), function(b){
+      b.onclick = function(){
+        var i = Number(b.dataset.ed), row = list[i];
+        ask("<b>"+esc(row.n||"Rinda")+"</b><br><br>Dzēst šo izdevumu rindu?", function(ok){
+          if(!ok) return;
+          list.splice(i,1); save(); renderExp(); renderSessions(); renderSummary();
+        }, "Dzēst");
+      };
+    });
+    updateExpSum(s);
+  }
+  function updateExpSum(s){
+    var t = sessTotals(s), e = expTotal(s), bal = t.paid - e;
+    $("expSum").innerHTML = "Izdevumi kopā: <b>"+eur(e)+" €</b> · saņemts <b>"+eur(t.paid)+" €</b><br>"+
+      "Atlikums: <b style=\"color:"+(bal<0?"var(--bad)":"var(--ok)")+"\">"+eur(bal)+" €</b>";
+  }
+  function expAdd(base){
+    var s = S.sessions.filter(function(x){return x.id===cur;})[0];
+    if(!s) return;
+    var list = expOf(s), n = 1;
+    list.forEach(function(x){ if(x.n && x.n.indexOf(base)===0) n++; });
+    list.push({n: base==="Cits" ? "Citi izdevumi" : (n>1 ? base+" "+n : base), a:0});
+    save(); renderExp();
+    var f = $("expList").querySelector('[data-ea="'+(list.length-1)+'"]');
+    if(f) f.focus();
+  }
+  $("expAddCoach").onclick = function(){ expAdd("Treneris"); };
+  $("expAddGk").onclick    = function(){ expAdd("Vārtsargs"); };
+  $("expAddOther").onclick = function(){ expAdd("Cits"); };
 
   /* ---------- dalībnieku izvēle ---------- */
   var draft = null; // pagaidu id saraksts
@@ -1170,7 +1250,13 @@
     $("kSaņ").textContent = eur(tp);
     $("kPar").textContent = eur(td);
     $("kAtd").textContent = eur(to);
-    $("kTre").textContent = S.sessions.filter(function(s){ return !m || s.date.slice(0,7)===m; }).length;
+    var mSess = S.sessions.filter(function(s){ return !m || s.date.slice(0,7)===m; });
+    $("kTre").textContent = mSess.length;
+    var exp = mSess.reduce(function(a2,s){ return a2 + expTotal(s); }, 0);
+    var bal = tp - exp;
+    $("kIzd").textContent = eur(exp);
+    $("kAtl").textContent = eur(bal);
+    $("kAtl").style.color = bal<0 ? "var(--bad)" : "var(--ok)";
 
     var shown = teamFirst(S.people).filter(function(p){
       var t = personTotals(p.id, m);
