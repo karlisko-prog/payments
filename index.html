@@ -780,6 +780,15 @@
           if(i>=0) open.splice(i,1);   /* saritina, kad summa ievadīta */
           renderDetail();
         }
+        /* 0 vai tukšs = nav atzīmes */
+        if(!(v>0)){
+          if(fi>=0 || !was){ fresh.splice(fi,1); delete s.entries[pid]; save(); done(); }
+          else askClear(pid, statusText({s:"part",a:was}, sessPrice(s)), function(ok){
+            if(ok) delete s.entries[pid]; else s.entries[pid] = {s:"part", a: was};
+            save(); done();
+          });
+          return;
+        }
         if(fi>=0){ fresh.splice(fi,1); done(); }            /* pirmreizēja ievade — bez jautājuma */
         else if(was!==null && v!==was){
           askAmount(pid, was, v, function(ok){
@@ -1049,6 +1058,15 @@
         function done(){
           var i=subOpen.indexOf(pid); if(i>=0) subOpen.splice(i,1);
           renderSubs(); renderSummary();
+        }
+        /* 0 vai tukšs = nav atzīmes */
+        if(!(v>0)){
+          if(fi>=0 || !was){ fresh.splice(fi,1); delete b.entries[pid]; save(); done(); }
+          else askClear(pid, subStatusText({s:"part",a:was}), function(ok){
+            if(ok) delete b.entries[pid]; else b.entries[pid] = {s:"part", a: was};
+            save(); done();
+          });
+          return;
         }
         if(fi>=0){ fresh.splice(fi,1); done(); }
         else if(was!==null && v!==was){
