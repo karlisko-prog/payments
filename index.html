@@ -313,9 +313,12 @@
       <div id="pList"></div>
     </div>
     <div class="card">
-      <h2>Pievienot komandai</h2>
+      <h2>Pievienot cilvēkus</h2>
       <textarea id="bulk" placeholder="Viens vārds katrā rindā, piemēram:&#10;Jānis Bērziņš&#10;Kārlis Ozols&#10;Anna Liepa"></textarea>
-      <button class="btn" id="addPeople" style="width:100%;margin-top:10px">Pievienot komandai</button>
+      <div class="row wrap" style="margin-top:10px">
+        <button class="btn" id="addPeople" style="flex:1">Komandai</button>
+        <button class="btn sec" id="addGuests" style="flex:1">Viesiem</button>
+      </div>
     </div>
     <div class="card">
       <h2>Arhīvs (<span id="aCount">0</span>)</h2>
@@ -1270,17 +1273,29 @@
       cur=null; save(); render(); show("sessions"); toast("Dzēsts");
     }, "Dzēst");
   };
-  $("addPeople").onclick = function(){
-    var names = $("bulk").value.split("\n").map(function(x){return x.trim();}).filter(Boolean);
+  function addBulk(asGuest){
+    var names = $("bulk").value.split(/[\n,;]+/).map(function(x){return x.trim().replace(/\s+/g," ");}).filter(Boolean);
     if(!names.length){ info("Ieraksti vismaz vienu vārdu"); return; }
-    var added=0;
+    var added=0, moved=0, skipped=0;
     names.forEach(function(n){
       var ex = S.people.filter(function(p){return p.name.toLowerCase()===n.toLowerCase();})[0];
-      if(ex){ if(ex.guest){ ex.guest=false; added++; } return; }
-      S.people.push({id:uid(), name:n, guest:false}); added++;
+      if(ex){
+        var ch = false;
+        if(ex.arch){ ex.arch = false; ch = true; }
+        if(!asGuest && ex.guest){ ex.guest = false; ch = true; }   /* viesis → komanda */
+        if(ch) moved++; else skipped++;
+        return;
+      }
+      S.people.push({id:uid(), name:n, guest:!!asGuest, arch:false}); added++;
     });
-    $("bulk").value=""; save(); render(); toast("Pievienoti: "+added);
-  };
+    $("bulk").value=""; save(); render();
+    var msg = "Pievienoti: "+added;
+    if(moved) msg += " · pārcelti: "+moved;
+    if(skipped) msg += " · jau bija: "+skipped;
+    toast(msg);
+  }
+  $("addPeople").onclick = function(){ addBulk(false); };
+  $("addGuests").onclick = function(){ addBulk(true); };
 
   $("price").oninput = function(){
     var v = parseFloat($("price").value);
