@@ -694,9 +694,9 @@
       if(!e.s && hasSub(p.id, s.date)){
         var se = subEntry(p.id, s.date.slice(0,7));
         var un = (se.s==="signed");
-        return '<div class="crow s-'+(un?"debt":"paid")+'" style="cursor:default">'+
+        return '<div class="crow s-'+(un?"part":"paid")+'" style="cursor:default">'+
           '<span class="cname">'+esc(p.name)+'</span>'+
-          '<span class="pill '+(un?"p-bad":"p-ok")+'">Abonements'+
+          '<span class="pill '+(un?"p-warn":"p-ok")+'">Abonements'+
             (un?" · nav apmaksāts":(se.s==="part"?" · daļēji":""))+'</span></div>';
       }
       /* saritināta rinda, ja izvēle jau izdarīta un rinda nav atvērta */
@@ -718,7 +718,7 @@
       }).join("");
       return '<div class="prow">'+
         '<div class="pname"><span>'+esc(p.name)+(hasSub(p.id, s.date)? (subEntry(p.id, s.date.slice(0,7)).s==="signed"
-              ? ' <span class="pill p-bad">Abonements · nav apmaksāts</span>'
+              ? ' <span class="pill p-warn">Abonements · nav apmaksāts</span>'
               : ' <span class="pill p-ok">Abonements</span>') : '')+'</span>'+
           (entryDebt(e,sessPrice(s))>0 ? '<span class="pill p-bad">-'+eur(entryDebt(e,sessPrice(s)))+' €</span>'
             : (entryOwe(e,sessPrice(s))>0 ? '<span class="pill p-warn">jāatdod '+eur(entryOwe(e,sessPrice(s)))+' €</span>'
