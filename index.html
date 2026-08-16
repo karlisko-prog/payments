@@ -317,6 +317,10 @@
       <div id="sumNote" class="muted" style="margin-top:10px;font-size:12px"></div>
     </div>
     <div class="card">
+      <h2>Mani izdevumi pa mēnešiem</h2>
+      <div id="sumExp" style="font-size:14px"></div>
+    </div>
+    <div class="card">
       <h2>Abonementi pa mēnešiem</h2>
       <div id="sumSubs" class="muted" style="font-size:14px;line-height:1.8"></div>
     </div>
@@ -1279,6 +1283,34 @@
       '<tfoot><tr><td>Kopā</td><td></td><td class="num green">'+eur(tp)+'</td>'+
         '<td class="num '+(td>0?"red":"")+'">'+eur(td)+'</td></tr></tfoot>'
       : '<tbody><tr><td class="muted" style="text-align:center;padding:24px">Nav datu</td></tr></tbody>';
+    /* izdevumi pa mēnešiem (ar sadalījumu pa nosaukumiem) */
+    var expM = {};
+    S.sessions.forEach(function(s){
+      if(m && s.date.slice(0,7)!==m) return;
+      var tot = expTotal(s);
+      if(!tot) return;
+      var k = s.date.slice(0,7);
+      if(!expM[k]) expM[k] = {total:0, by:{}};
+      expM[k].total += tot;
+      (s.exp||[]).forEach(function(x){
+        var v = Number(x.a)||0; if(!v) return;
+        var n = (x.n||"Bez nosaukuma").trim();
+        expM[k].by[n] = (expM[k].by[n]||0) + v;
+      });
+    });
+    var expKeys = Object.keys(expM).sort().reverse();
+    $("sumExp").innerHTML = expKeys.length ? expKeys.map(function(k){
+      var b2 = expM[k];
+      var rows = Object.keys(b2.by).sort(function(x,y){ return b2.by[y]-b2.by[x]; }).map(function(n){
+        return '<div class="row" style="justify-content:space-between;gap:10px;padding:3px 0">'+
+          '<span class="muted">'+esc(n)+'</span><span class="num">'+eur(b2.by[n])+' €</span></div>';
+      }).join("");
+      return '<div style="margin-bottom:14px">'+
+        '<div class="row" style="justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:6px">'+
+          '<b>'+monthName(k)+'</b><b class="num">'+eur(b2.total)+' €</b></div>'+
+        rows+'</div>';
+    }).join("") : '<span class="muted">Izdevumu vēl nav.</span>';
+
     var subMonths = Object.keys(S.subs).sort().reverse().filter(function(x){ return !m || x===m; });
     var subInfo = subMonths.map(function(x){
       var b=S.subs[x], sum=0, n=0;
