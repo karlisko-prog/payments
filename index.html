@@ -152,6 +152,7 @@
 <body>
 
 <header>
+  <span id="offBadge" class="pill p-off hide" style="position:absolute;right:16px;top:16px">bezsaistē</span>
   <h1 style="display:flex;align-items:center;gap:9px"><img src="data:image/png;base64,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" alt="" style="height:26px;width:auto"><span>Treniņu <span style="color:var(--acc)">maksājumi</span></span></h1>
   <nav>
     <button data-t="sessions" class="on">Treniņi</button>
@@ -335,28 +336,21 @@
     </div>
     <div class="card">
       <h2>Dati</h2>
-      <p class="muted" style="margin:0 0 10px">Dati glabājas šajā pārlūkā uz šīs ierīces. Ja notīri pārlūka datus vai lejupielādē failu no jauna, dati pazūd — tāpēc regulāri taisi dublējumu.<br><br>
-        <b>Ja atver failu aplikācijas priekšskatījumā</b>, lejupielāde var nestrādāt. Tad izmanto “Nosūtīt” (uz Drive, e-pastu, WhatsApp) vai “Rādīt tekstu kopēšanai”.</p>
+      <p class="muted" style="margin:0 0 10px">Dati glabājas šajā ierīcē. Taisi dublējumu regulāri — tas ir viens fails, ko var ielādēt atpakaļ jebkurā brīdī.</p>
       <div id="wvWarn" class="hide" style="background:#241c08;border:1px solid #7a5a12;border-radius:10px;padding:10px;margin-bottom:12px;font-size:13px;line-height:1.5">
-        ⚠️ Šis fails ir atvērts <b>aplikācijas priekšskatījumā</b>. Šeit lejupielāde parasti nestrādā un dati var nesaglabāties.<br>
-        Izmanto <b>“Nosūtīt”</b> vai <b>“Rādīt tekstu”</b>, un pēc tam atver failu ar Chrome.
+        ⚠️ Atvērts <b>aplikācijas priekšskatījumā</b> — šeit lejupielāde var nestrādāt un dati var nesaglabāties. Atver ar Chrome.
       </div>
       <div id="bkStatus" class="muted" style="margin-bottom:10px"></div>
-      <button class="btn" id="shareJson" style="width:100%">📤 Nosūtīt / saglabāt dublējumu</button>
-      <button class="btn sec" id="showJson" style="width:100%;margin-top:8px">📋 Rādīt tekstu kopēšanai</button>
-      <div class="row wrap" style="margin-top:8px">
-        <button class="btn sec" id="expJson2" style="flex:1">Lejupielādēt failu</button>
-        <button class="btn sec" id="impBtn" style="flex:1">Ielādēt JSON</button>
-        <input type="file" id="impFile" accept="application/json,.json" class="hide">
-      </div>
+      <button class="btn" id="expJson2" style="width:100%">💾 Lejupielādēt failu</button>
+      <button class="btn sec" id="impBtn" style="width:100%;margin-top:8px">📂 Ielādēt JSON</button>
+      <input type="file" id="impFile" accept="application/json,.json" class="hide">
+      <button class="btn sec hide" id="showJson"></button>
+      <button class="btn sec hide" id="shareJson"></button>
       <button class="btn sec hide" id="copyJson"></button>
-      <button class="btn sec" id="loadBuilt" style="width:100%;margin-top:8px">Ielādēt failā iebūvētos datus</button>
-      <details style="margin-top:12px">
-        <summary class="muted" style="cursor:pointer">Ielīmēt datus no teksta</summary>
-        <textarea id="pasteBox" placeholder='Ielīmē šeit nokopēto {"price":...} tekstu' style="margin-top:8px"></textarea>
-        <button class="btn sec" id="pasteImport" style="width:100%;margin-top:8px">Ielādēt no ielīmētā</button>
-      </details>
-      <button class="btn danger" id="wipe" style="width:100%;margin-top:12px">Dzēst visus datus</button>
+      <button class="btn sec hide" id="loadBuilt"></button>
+      <textarea id="pasteBox" class="hide"></textarea>
+      <button class="btn sec hide" id="pasteImport"></button>
+      <button class="btn danger" id="wipe" style="width:100%;margin-top:14px">Dzēst visus datus</button>
     </div>
   </section>
 </main>
@@ -1284,17 +1278,10 @@
   }
   $("expCsv").onclick = function(){ dl("treninu-maksajumi.csv", csv(), "text/csv;charset=utf-8", true); };
   function expJson(){
-    var stamp = new Date().toISOString().slice(0,10);
-    var name = "treninu-maksajumi-"+stamp+".json";
+    var d = new Date();
+    var name = "payments-"+d.getFullYear()+pad2(d.getMonth()+1)+pad2(d.getDate())+"-"+pad2(d.getHours())+pad2(d.getMinutes())+".json";
     dl(name, JSON.stringify(S,null,2), "application/json");
-    setTimeout(function(){
-      ask("Fails <b>"+name+"</b> nosūtīts uz lejupielādēm.<br><br>Vai telefonā parādījās paziņojums par lejupielādi?",
-        function(ok){
-          if(ok) markBackup("Dublējums saglabāts");
-          else showJsonText();
-        }, "Jā, parādījās");
-      $("mdNo").textContent = "Nē — rādi tekstu";
-    }, 500);
+    markBackup("Fails saglabāts lejupielādēs");
   }
   $("expJson").onclick = expJson; $("expJson2").onclick = expJson;
 
@@ -1349,7 +1336,7 @@
     expJson();
     setTimeout(showJsonText, 400);
   };
-  $("bkNow").onclick = function(){ $("shareJson").click(); };
+  $("bkNow").onclick = expJson;
 
   /* iebūvēts skatītājs (Android WebView) — tur lejupielāde parasti nestrādā */
   var isWV = (function(){
@@ -1375,7 +1362,7 @@
     var warn = marked && (days===null || days>=7);
     $("bkWarn").classList.toggle("hide", !warn);
     $("bkText").innerHTML = days===null
-      ? "⚠️ Dati ir tikai šajā pārlūkā. Saglabā dublējumu, lai tos nepazaudētu."
+      ? "⚠️ Dublējums nav taisīts. Saglabā datus failā."
       : "⚠️ Pēdējais dublējums "+fmtDT(S.backup)+" — pirms "+days+" dienām.";
   }
 
@@ -1443,6 +1430,21 @@
       cur=null; save(); render(); show("sessions"); toast("Viss dzēsts, saraksts atjaunots");
     }, "Dzēst visu");
   };
+
+  /* ---------- bezsaistes režīms ---------- */
+  function offlineBadge(){
+    var el = $("offBadge");
+    if(el) el.classList.toggle("hide", navigator.onLine !== false);
+  }
+  window.addEventListener("online", offlineBadge);
+  window.addEventListener("offline", offlineBadge);
+  offlineBadge();
+
+  if("serviceWorker" in navigator && window.isSecureContext && location.protocol !== "file:"){
+    window.addEventListener("load", function(){
+      navigator.serviceWorker.register("sw.js").catch(function(){});
+    });
+  }
 
   render();
 })();
