@@ -688,9 +688,10 @@
     function rowHtml(p){
       var e = s.entries[p.id] || {};
       /* abonements sedz šo treniņu — rinda saritināta, ja nav atsevišķas atzīmes */
-      if(!e.s && hasSub(p.id, s.date) && open.indexOf(p.id)<0){
+      /* abonements — rinda neatveras, maksāšanas pogas uz viņu neattiecas */
+      if(!e.s && hasSub(p.id, s.date)){
         var se = subEntry(p.id, s.date.slice(0,7));
-        return '<div class="crow s-paid" data-open="'+p.id+'">'+
+        return '<div class="crow s-paid" style="cursor:default">'+
           '<span class="cname">'+esc(p.name)+'</span>'+
           '<span class="pill p-ok">Abonements'+(se.s==="part"?" · daļēji":"")+'</span></div>';
       }
