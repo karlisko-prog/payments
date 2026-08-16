@@ -318,6 +318,11 @@
       <button class="btn" id="addPeople" style="width:100%;margin-top:10px">Pievienot komandai</button>
     </div>
     <div class="card">
+      <h2>Arhīvs (<span id="aCount">0</span>)</h2>
+      <p class="muted" style="margin:0 0 10px">Nenāk uz treniņiem. Izvēlnēs neparādās, bet vēsture un parādi saglabājas.</p>
+      <div id="aList"></div>
+    </div>
+    <div class="card">
       <h2>Viesi (<span id="gCount">0</span>)</h2>
       <p class="muted" style="margin:0 0 10px">Cilvēki, kas pievienoti konkrētā treniņā. Izvēlnē tie neparādās.</p>
       <div id="gList"></div>
@@ -777,7 +782,7 @@
     renderRoster(); show("roster");
   }
   function renderRoster(){
-    var team = byLast(S.people.filter(function(p){ return !p.guest; }));
+    var team = byLast(S.people.filter(function(p){ return !p.guest && !p.arch; }));
     /* viesi rādās tikai tad, ja jau ir šajā treniņā */
     var gIn = byLast(S.people.filter(function(p){ return p.guest && draft.indexOf(p.id)>=0; }));
     $("rCount").textContent = draft.length + " / " + team.length + (gIn.length? " +"+gIn.length+" viesi" : "");
@@ -797,7 +802,7 @@
       c.onchange = function(){
         var id=c.dataset.r, i=draft.indexOf(id);
         if(c.checked){ if(i<0) draft.push(id); } else if(i>=0){ draft.splice(i,1); }
-        var team = S.people.filter(function(x){ return !x.guest; });
+        var team = S.people.filter(function(x){ return !x.guest && !x.arch; });
         var gIn = S.people.filter(function(x){ return x.guest && draft.indexOf(x.id)>=0; });
         $("rCount").textContent = draft.length + " / " + team.length + (gIn.length? " +"+gIn.length+" viesi" : "");
         c.parentNode.firstChild.className = c.checked ? "" : "muted";
@@ -860,22 +865,42 @@
         save(); render(); toast(p.guest ? "Pārcelts pie viesiem" : "Uzņemts komandā");
       };
     });
+    [].forEach.call(w.querySelectorAll("[data-arch]"), function(b){
+      b.onclick = function(){
+        var p = S.people.filter(function(x){return x.id===b.dataset.arch;})[0];
+        p.arch = !p.arch;
+        save(); render(); toast(p.arch ? "Pārcelts uz arhīvu" : "Atgriezts sarakstā");
+      };
+    });
   }
   function renderPeople(){
-    var team = byLast(S.people.filter(function(p){ return !p.guest; }));
-    var guests = byLast(S.people.filter(function(p){ return p.guest; }));
+    var team   = byLast(S.people.filter(function(p){ return !p.guest && !p.arch; }));
+    var guests = byLast(S.people.filter(function(p){ return  p.guest && !p.arch; }));
+    var arch   = teamFirst(S.people.filter(function(p){ return p.arch; }));
     $("pCount").textContent = team.length;
     $("gCount").textContent = guests.length;
+    $("aCount").textContent = arch.length;
 
     var w = $("pList");
     w.innerHTML = team.length ? team.map(function(p){
-      return personRow(p, '<button class="btn mini" data-move="'+p.id+'" title="Pārcelt uz viesiem">→ viesos</button>');
+      return personRow(p,
+        '<button class="btn mini" data-move="'+p.id+'" title="Pārcelt uz viesiem">→ viesos</button>'+
+        '<button class="btn mini" data-arch="'+p.id+'" title="Uz arhīvu">📦</button>');
     }).join("") : '<div class="empty">Komandā neviena nav.</div>';
     bindPersonBtns(w);
 
+    var a = $("aList");
+    a.innerHTML = arch.length ? arch.map(function(p){
+      return personRow(p,
+        '<button class="btn mini gr" data-arch="'+p.id+'" title="Atgriezt sarakstā">↩ '+(p.guest?"viesos":"komandā")+'</button>');
+    }).join("") : '<div class="empty">Arhīvs tukšs.</div>';
+    bindPersonBtns(a);
+
     var g = $("gList");
     g.innerHTML = guests.length ? guests.map(function(p){
-      return personRow(p, '<button class="btn mini gr" data-move="'+p.id+'" title="Uzņemt komandā">→ komandā</button>');
+      return personRow(p,
+        '<button class="btn mini gr" data-move="'+p.id+'" title="Uzņemt komandā">→ komandā</button>'+
+        '<button class="btn mini" data-arch="'+p.id+'" title="Uz arhīvu">📦</button>');
     }).join("") : '<div class="empty">Viesu vēl nav.</div>';
     bindPersonBtns(g);
   }
@@ -905,7 +930,7 @@
     var b = subMonth(m);
     if(document.activeElement !== $("subPrice")) $("subPrice").value = b.price;
 
-    var team = byLast(S.people.filter(function(p){ return !p.guest; }));
+    var team = byLast(S.people.filter(function(p){ return !p.guest && !p.arch; }));
     var paid=0, debt=0, owe=0, cnt=0;
     team.forEach(function(p){
       var e = b.entries[p.id];
@@ -1115,7 +1140,11 @@
     name = (name||"").trim();
     if(!name){ info("Ieraksti vārdu"); return null; }
     var ex = S.people.filter(function(p){ return p.name.toLowerCase()===name.toLowerCase(); })[0];
-    if(ex){ toast("“"+ex.name+"” jau ir sarakstā"); return ex.id; }
+    if(ex){
+      if(ex.arch){ ex.arch = false; save(); toast("“"+ex.name+"” atgriezts no arhīva"); }
+      else toast("“"+ex.name+"” jau ir sarakstā");
+      return ex.id;
+    }
     var p = {id:uid(), name:name, guest: !!isGuest};
     S.people.push(p); save();
     return p.id;
@@ -1151,15 +1180,19 @@
   $("rPasteGo").onclick = function(){
     var lines = $("rPaste").value.split(/[\n,;]+/).map(function(x){return x.trim();}).filter(Boolean);
     if(!lines.length){ info("Ielīmē vārdus"); return; }
-    var ok=0, amb=[]; unmatched=[];
+    var ok=0, unarch=0, amb=[]; unmatched=[];
     lines.forEach(function(l){
       var m = findPerson(l);
-      if(m.length===1){ if(draft.indexOf(m[0].id)<0) draft.push(m[0].id); ok++; }
+      if(m.length===1){
+        if(m[0].arch){ m[0].arch = false; unarch++; }
+        if(draft.indexOf(m[0].id)<0) draft.push(m[0].id); ok++;
+      }
       else if(m.length>1){ amb.push(l); }
       else { unmatched.push(l); }
     });
     renderRoster();
-    var msg = "✅ Atzīmēti: "+ok;
+    if(unarch) save();
+    var msg = "✅ Atzīmēti: "+ok + (unarch? " (no arhīva atgriezti: "+unarch+")" : "");
     if(amb.length) msg += "<br>❓ Neskaidri (vairāki sakrīt): "+amb.map(esc).join(", ");
     if(unmatched.length) msg += '<br>➕ Nav sarakstā: '+unmatched.map(esc).join(", ")+
       '<br><button class="btn" id="rAddUnm" style="margin-top:8px">Pievienot šos '+unmatched.length+' kā jaunus</button>';
@@ -1185,7 +1218,7 @@
 
   $("editRoster").onclick = openRoster;
   $("rFilter").oninput = renderRoster;
-  $("rAll").onclick = function(){ draft = S.people.filter(function(p){return !p.guest;}).map(function(p){return p.id;}); renderRoster(); };
+  $("rAll").onclick = function(){ draft = S.people.filter(function(p){return !p.guest && !p.arch;}).map(function(p){return p.id;}); renderRoster(); };
   $("rNone").onclick = function(){ draft = []; renderRoster(); };
   $("rPrev").onclick = function(){
     var prev = prevRoster();
