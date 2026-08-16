@@ -756,7 +756,7 @@
           finish();
         }
         /* apstiprinājums tikai tad, ja maina jau atzīmētu */
-        if(e.s===st && st!=="part"){ askClear(pid, statusText(e, sessPrice(s)), function(ok){ if(ok) clear(); }); }
+        if(e.s===st){ askClear(pid, statusText(e, sessPrice(s)), function(ok){ if(ok) clear(); }); }
         else if(e.s && e.s!==st){ askChange(pid, statusText(e, sessPrice(s)), LBLTXT[st], function(ok){ if(ok) apply(); }); }
         else apply();
       };
@@ -971,7 +971,8 @@
       paid += subPaid(e,b.price); debt += subDebt(e,b.price); owe += subOwe(e,b.price);
     });
     $("subSum").innerHTML = cnt+" no "+team.length+" · saņemts <b>"+eur(paid)+" €</b>"+
-      (debt>0? " · parādā <b>"+eur(debt)+" €</b>":"")+(owe>0? " · jāatdod <b>"+eur(owe)+" €</b>":"");
+      (debt>0? " · parādā <b>"+eur(debt)+" €</b>":"")+(owe>0? " · jāatdod <b>"+eur(owe)+" €</b>":"")+
+      (b.price>0 ? "" : '<br><span style="color:var(--warn)">⚠️ Šim mēnesim nav ievadīta abonementa cena</span>');
 
     var q = ($("subFilter").value||"").trim().toLowerCase();
     var list = team.filter(function(p){
@@ -1030,7 +1031,7 @@
           finish();
         }
         function clear(){ delete b.entries[pid]; if(i>=0) subOpen.splice(i,1); finish(); }
-        if(e.s===st && st!=="part"){ askClear(pid, subStatusText(e), function(ok){ if(ok) clear(); }); }
+        if(e.s===st){ askClear(pid, subStatusText(e), function(ok){ if(ok) clear(); }); }
         else if(e.s && e.s!==st){ askChange(pid, subStatusText(e), LBLTXT["s"+st], function(ok){ if(ok) apply(); }); }
         else apply();
       };
