@@ -152,6 +152,12 @@
   .kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 10px;text-align:center}
   .kpi b{display:block;font-size:20px;font-variant-numeric:tabular-nums;margin-bottom:2px}
   .kpi span{font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:.4px}
+  .kpi.tap{cursor:pointer;position:relative}
+  .kpi.tap:active{transform:scale(.98)}
+  .kpi.tap::after{content:"›";position:absolute;top:6px;right:9px;color:var(--tx2);font-size:14px;opacity:.7}
+  .dlglist{max-height:52vh;overflow:auto;margin-top:12px}
+  .dlglist .row{justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+  .dlglist .row:last-child{border-bottom:none}
 
   summary::-webkit-details-marker{display:none}
   #aBox > summary h2::after{content:" ▸";color:var(--tx2)}
@@ -303,10 +309,10 @@
     </div>
     <div class="kpis">
       <div class="kpi"><b class="green num" id="kSaņ">0</b><span>Saņemts €</span></div>
-      <div class="kpi"><b class="red num" id="kPar">0</b><span>Man parādā €</span></div>
-      <div class="kpi"><b class="num" id="kAtd" style="color:var(--warn)">0</b><span>Man jāatdod €</span></div>
+      <div class="kpi tap" id="kpiPar"><b class="red num" id="kPar">0</b><span>Man parādā €</span></div>
+      <div class="kpi tap" id="kpiAtd"><b class="num" id="kAtd" style="color:var(--warn)">0</b><span>Man jāatdod €</span></div>
       <div class="kpi"><b class="num" id="kTre">0</b><span>Treniņi</span></div>
-      <div class="kpi"><b class="num" id="kIzd" style="color:var(--tx2)">0</b><span>Izdevumi €</span></div>
+      <div class="kpi tap" id="kpiIzd"><b class="num" id="kIzd" style="color:var(--tx2)">0</b><span>Izdevumi €</span></div>
       <div class="kpi"><b class="num" id="kAtl">0</b><span>Atlikums €</span></div>
     </div>
     <div class="card">
@@ -1326,6 +1332,39 @@
       '<span style="color:var(--warn)">oranžs ar mīnusu</span> = man jāatdod'+
       (to>0 ? '<br>Kopā jāatdod: <b style="color:var(--warn)">'+eur(to)+' €</b>' : '');
   }
+
+  /* ---- kopsavilkuma lauciņu klikšķi ---- */
+  function curSumMonth(){ return $("sumMonth").value || ""; }
+  function debtList(kind){
+    var m = curSumMonth();
+    var rows = teamFirst(S.people).map(function(p){
+      var t = personTotals(p.id, m);
+      return {name:p.name, v: kind==="debt" ? t.debt : t.owe};
+    }).filter(function(x){ return x.v > 0; })
+      .sort(function(a,b){ return b.v - a.v; });
+    var total = rows.reduce(function(t,x){ return t + x.v; }, 0);
+    var per = m ? monthName(m) : "Viss laiks";
+    var col = kind==="debt" ? "var(--bad)" : "var(--warn)";
+    var head = "<b>"+(kind==="debt" ? "Man parādā" : "Man jāatdod")+"</b><br><span class='muted'>"+per+"</span>";
+    if(!rows.length) return ask(head+"<br><br>Nevienam nav.", null, "Labi", true);
+    ask(head+
+      '<div class="dlglist">'+rows.map(function(x){
+        return '<div class="row"><span>'+esc(x.name)+'</span><b class="num" style="color:'+col+'">'+eur(x.v)+' €</b></div>';
+      }).join("")+'</div>'+
+      '<div class="row" style="justify-content:space-between;border-top:1px solid var(--line);padding-top:8px;margin-top:6px">'+
+        '<b>Kopā</b><b class="num" style="color:'+col+'">'+eur(total)+' €</b></div>',
+      null, "Labi", true);
+  }
+  $("kpiPar").onclick = function(){ debtList("debt"); };
+  $("kpiAtd").onclick = function(){ debtList("owe"); };
+  $("kpiIzd").onclick = function(){
+    var el = $("sumExp").closest(".card");
+    var y = el.getBoundingClientRect().top + window.pageYOffset - 96;
+    window.scrollTo({top:y, behavior:"smooth"});
+    el.style.transition = "box-shadow .4s";
+    el.style.boxShadow = "0 0 0 2px var(--acc)";
+    setTimeout(function(){ el.style.boxShadow = ""; }, 1200);
+  };
 
   var sumPicked = false;   /* vai lietotājs pats izvēlējies periodu */
   $("sumMonth").onchange = function(){ sumPicked = true; renderSummary(); };
