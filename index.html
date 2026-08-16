@@ -189,14 +189,14 @@
 <body>
 
 <header>
-  <span id="offBadge" class="pill p-off hide" style="position:absolute;right:16px;top:16px">bezsaistē</span>
+  <span id="offBadge" class="pill p-off hide" style="position:absolute;right:16px;top:16px" data-i18n="offline">bezsaistē</span>
   <h1 style="display:flex;align-items:center;gap:9px"><img id="hdrLogo" alt="" class="hide" style="height:26px;width:auto"><span style="color:var(--tx)">Ledus <span style="color:var(--acc)">kase</span></span></h1>
   <nav>
-    <button data-t="sessions" class="on">Treniņi</button>
-    <button data-t="summary">Kopsavilkums</button>
-    <button data-t="subs">Abonementi</button>
-    <button data-t="people">Dalībnieki</button>
-    <button data-t="settings">Iestatījumi</button>
+    <button data-t="sessions" class="on" data-i18n="navTr">Treniņi</button>
+    <button data-t="summary" data-i18n="navSum">Kopsavilkums</button>
+    <button data-t="subs" data-i18n="navSub">Abonementi</button>
+    <button data-t="people" data-i18n="navPpl">Dalībnieki</button>
+    <button data-t="settings" data-i18n="navSet">Iestatījumi</button>
   </nav>
 </header>
 
@@ -206,14 +206,14 @@
     <div class="card hide" id="bkWarn" style="border-color:var(--warnln);background:var(--warnbg)">
       <div class="row" style="justify-content:space-between;gap:10px">
         <div style="font-size:14px" id="bkText"></div>
-        <button class="btn" id="bkNow" style="background:var(--warn);color:#fff">Saglabāt</button>
+        <button class="btn" id="bkNow" style="background:var(--warn);color:#fff" data-i18n="bSave">Saglabāt</button>
       </div>
     </div>
     <div class="card">
-      <h2>Jauns treniņš</h2>
+      <h2 data-i18n="hNewSess">Jauns treniņš</h2>
       <div class="row">
         <input type="date" id="newDate">
-        <button class="btn" id="addSess">Pievienot</button>
+        <button class="btn" id="addSess" data-i18n="bAdd">Pievienot</button>
       </div>
     </div>
     <div id="sessList"></div>
@@ -225,32 +225,32 @@
       <div class="row" style="justify-content:space-between">
         <div>
           <div class="sess-date" id="rTitle"></div>
-          <div class="sess-sum">Atzīmē, kuri būs treniņā</div>
+          <div class="sess-sum" data-i18n="rHint">Atzīmē, kuri būs treniņā</div>
         </div>
         <span class="pill p-ok" id="rCount">0</span>
       </div>
       <div class="row wrap" style="margin-top:12px">
-        <button class="btn sec" id="rPrev" style="flex:1">Kā iepriekš</button>
-        <button class="btn sec" id="rAll" style="flex:1">Visus</button>
-        <button class="btn sec" id="rNone" style="flex:1">Notīrīt</button>
+        <button class="btn sec" id="rPrev" style="flex:1" data-i18n="bPrev">Kā iepriekš</button>
+        <button class="btn sec" id="rAll" style="flex:1" data-i18n="bAll">Visus</button>
+        <button class="btn sec" id="rNone" style="flex:1" data-i18n="bNone">Notīrīt</button>
       </div>
       <div class="row" style="margin-top:10px">
-        <input type="text" id="rFilter" placeholder="🔍 Meklēt…">
+        <input type="text" id="rFilter" placeholder="🔍 Meklēt…" data-ph="phSearch">
       </div>
       <div class="row" style="margin-top:10px">
-        <input type="text" id="rNew" placeholder="+ Viesis (vārds)">
-        <button class="btn" id="rAdd">Pievienot</button>
+        <input type="text" id="rNew" placeholder="+ Viesis (vārds)" data-ph="phGuest">
+        <button class="btn" id="rAdd" data-i18n="bAdd">Pievienot</button>
       </div>
-      <p class="muted" style="margin:8px 0 0">Viesis nonāk tikai šajā treniņā un sadaļā “Dalībnieki → Viesi”, nevis pastāvīgajā izvēlnē.</p>
+      <p class="muted" style="margin:8px 0 0" data-i18n="rGuestHint">Viesis nonāk tikai šajā treniņā un sadaļā “Dalībnieki → Viesi”, nevis pastāvīgajā izvēlnē.</p>
       <details style="margin-top:12px">
-        <summary class="muted" style="cursor:pointer">📋 Ielīmēt sarakstu no SportEasy</summary>
-        <textarea id="rPaste" placeholder="Ielīmē vārdus (viens rindā vai ar komatiem).&#10;Der arī “Uzvārds Vārds” secība."></textarea>
-        <button class="btn" id="rPasteGo" style="width:100%;margin-top:8px">Atzīmēt sarakstā</button>
+        <summary class="muted" style="cursor:pointer" data-i18n="rPasteTitle">📋 Ielīmēt sarakstu no SportEasy</summary>
+        <textarea id="rPaste" placeholder="Ielīmē vārdus (viens rindā vai ar komatiem).&#10;Der arī “Uzvārds Vārds” secība." data-ph="phPaste"></textarea>
+        <button class="btn" id="rPasteGo" style="width:100%;margin-top:8px" data-i18n="bPasteGo">Atzīmēt sarakstā</button>
         <div id="rPasteRes" class="muted" style="margin-top:8px"></div>
       </details>
     </div>
     <div class="card" id="rList"></div>
-    <button class="btn" id="rSave" style="width:100%;padding:15px;font-size:17px">Gatavs → uz treniņu</button>
+    <button class="btn" id="rSave" style="width:100%;padding:15px;font-size:17px" data-i18n="bRosterDone">Gatavs → uz treniņu</button>
     <div style="height:14px"></div>
   </section>
 
@@ -258,8 +258,8 @@
   <section id="v-detail" class="hide">
     <div class="card">
       <div class="row" style="justify-content:space-between">
-        <button class="btn sec" id="backBtn">‹ Atpakaļ</button>
-        <button class="btn danger" id="delSess">Dzēst treniņu</button>
+        <button class="btn sec" id="backBtn" data-i18n="bBack">‹ Atpakaļ</button>
+        <button class="btn danger" id="delSess" data-i18n="bDelSess">Dzēst treniņu</button>
       </div>
       <div class="row" style="margin-top:12px;align-items:flex-start;gap:12px">
         <div style="flex:1;min-width:0">
@@ -268,34 +268,34 @@
           <div class="sess-sum" id="dDone" style="margin-top:4px"></div>
         </div>
         <div style="flex:0 0 auto;border-left:1px solid var(--line);padding-left:12px">
-          <div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;text-align:center">Cena</div>
+          <div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;text-align:center" data-i18n="lPrice">Cena</div>
           <div class="row" style="gap:5px">
             <input type="number" id="dPrice" min="0" step="0.5" style="width:72px;text-align:center;padding:10px 4px">
             <span class="muted" style="font-size:16px">€</span>
           </div>
         </div>
       </div>
-      <button class="btn sec" id="editRoster" style="width:100%;margin-top:12px">Mainīt dalībniekus</button>
+      <button class="btn sec" id="editRoster" style="width:100%;margin-top:12px" data-i18n="bEditRoster">Mainīt dalībniekus</button>
       <div class="row" style="margin-top:10px">
-        <input type="text" id="pFilter" placeholder="🔍 Meklēt cilvēku…">
+        <input type="text" id="pFilter" placeholder="🔍 Meklēt cilvēku…" data-ph="phSearchPerson">
       </div>
       <label class="row muted" style="margin-top:10px;gap:8px;cursor:pointer">
-        <input type="checkbox" id="onlyOpen" style="width:auto">Rādīt tikai neatzīmētos
+        <input type="checkbox" id="onlyOpen" style="width:auto"><span data-i18n="lOnlyOpen">Rādīt tikai neatzīmētos</span>
       </label>
       <div class="row" style="margin-top:10px">
-        <input type="text" id="dNew" placeholder="+ Atnāca vēl kāds (vārds)" autocomplete="off">
-        <button class="btn" id="dAdd">Pievienot</button>
+        <input type="text" id="dNew" placeholder="+ Atnāca vēl kāds (vārds)" autocomplete="off" data-ph="phLate">
+        <button class="btn" id="dAdd" data-i18n="bAdd">Pievienot</button>
       </div>
       <div id="dSug" class="hide" style="margin-top:8px"></div>
     </div>
     <div class="card" id="dPeople"></div>
     <div class="card">
-      <h2>Mani izdevumi</h2>
+      <h2 data-i18n="hExp">Mani izdevumi</h2>
       <div id="expList"></div>
       <div class="row wrap" style="margin-top:10px">
-        <button class="btn sec" id="expAddCoach" style="flex:1">+ Treneris</button>
-        <button class="btn sec" id="expAddGk" style="flex:1">+ Vārtsargs</button>
-        <button class="btn sec" id="expAddOther" style="flex:1">+ Cits</button>
+        <button class="btn sec" id="expAddCoach" style="flex:1" data-i18n="bAddCoach">+ Treneris</button>
+        <button class="btn sec" id="expAddGk" style="flex:1" data-i18n="bAddGk">+ Vārtsargs</button>
+        <button class="btn sec" id="expAddOther" style="flex:1" data-i18n="bAddOther">+ Cits</button>
       </div>
       <div class="sess-sum" id="expSum" style="margin-top:12px"></div>
     </div>
@@ -304,37 +304,37 @@
   <!-- KOPSAVILKUMS -->
   <section id="v-summary" class="hide">
     <div class="card">
-      <h2>Periods</h2>
+      <h2 data-i18n="hPeriod">Periods</h2>
       <select id="sumMonth"></select>
     </div>
     <div class="kpis">
-      <div class="kpi"><b class="green num" id="kSaņ">0</b><span>Saņemts €</span></div>
-      <div class="kpi tap" id="kpiPar"><b class="red num" id="kPar">0</b><span>Man parādā €</span></div>
-      <div class="kpi tap" id="kpiAtd"><b class="num" id="kAtd" style="color:var(--warn)">0</b><span>Man jāatdod €</span></div>
-      <div class="kpi"><b class="num" id="kTre">0</b><span>Treniņi</span></div>
-      <div class="kpi tap" id="kpiIzd"><b class="num" id="kIzd" style="color:var(--tx2)">0</b><span>Izdevumi €</span></div>
-      <div class="kpi"><b class="num" id="kAtl">0</b><span>Atlikums €</span></div>
+      <div class="kpi"><b class="green num" id="kSaņ">0</b><span data-i18n="kIn">Saņemts €</span></div>
+      <div class="kpi tap" id="kpiPar"><b class="red num" id="kPar">0</b><span data-i18n="kOwedMe">Man parādā €</span></div>
+      <div class="kpi tap" id="kpiAtd"><b class="num" id="kAtd" style="color:var(--warn)">0</b><span data-i18n="kIOwe">Man jāatdod €</span></div>
+      <div class="kpi"><b class="num" id="kTre">0</b><span data-i18n="kSess">Treniņi</span></div>
+      <div class="kpi tap" id="kpiIzd"><b class="num" id="kIzd" style="color:var(--tx2)">0</b><span data-i18n="kExp">Izdevumi €</span></div>
+      <div class="kpi"><b class="num" id="kAtl">0</b><span data-i18n="kBal">Atlikums €</span></div>
     </div>
     <div class="card">
-      <h2>Pa cilvēkiem</h2>
+      <h2 data-i18n="hByPerson">Pa cilvēkiem</h2>
       <div style="overflow-x:auto">
         <table id="sumTable"></table>
       </div>
       <div id="sumNote" class="muted" style="margin-top:10px;font-size:12px"></div>
     </div>
     <div class="card">
-      <h2>Mani izdevumi pa mēnešiem</h2>
+      <h2 data-i18n="hExpMonth">Mani izdevumi pa mēnešiem</h2>
       <div id="sumExp" style="font-size:14px"></div>
     </div>
     <div class="card">
-      <h2>Abonementi pa mēnešiem</h2>
+      <h2 data-i18n="hSubMonth">Abonementi pa mēnešiem</h2>
       <div id="sumSubs" class="muted" style="font-size:14px;line-height:1.8"></div>
     </div>
     <div class="card">
-      <h2>Eksports</h2>
+      <h2 data-i18n="hExport">Eksports</h2>
       <div class="row wrap">
-        <button class="btn sec" id="expCsv">Lejupielādēt CSV</button>
-        <button class="btn sec" id="expJson">Dublējums (JSON)</button>
+        <button class="btn sec" id="expCsv" data-i18n="bCsv">Lejupielādēt CSV</button>
+        <button class="btn sec" id="expJson" data-i18n="bJson">Dublējums (JSON)</button>
       </div>
     </div>
   </section>
@@ -342,18 +342,18 @@
   <!-- ABONEMENTI -->
   <section id="v-subs" class="hide">
     <div class="card">
-      <h2>Mēnesis un cena</h2>
+      <h2 data-i18n="hMonthPrice">Mēnesis un cena</h2>
       <div class="row">
         <select id="subMonth"></select>
-        <input type="number" id="subPrice" min="0" step="5" style="max-width:110px" placeholder="Cena">
+        <input type="number" id="subPrice" min="0" step="5" style="max-width:110px" placeholder="Cena" data-ph="phPrice">
         <span class="muted" style="font-size:20px">€</span>
       </div>
       <div class="sess-sum" id="subSum" style="margin-top:10px"></div>
       <div class="row" style="margin-top:10px">
-        <input type="text" id="subFilter" placeholder="🔍 Meklēt…">
+        <input type="text" id="subFilter" placeholder="🔍 Meklēt…" data-ph="phSearch">
       </div>
       <label class="row muted" style="margin-top:10px;gap:8px;cursor:pointer">
-        <input type="checkbox" id="subOnlyOpen" style="width:auto">Rādīt tikai neatzīmētos
+        <input type="checkbox" id="subOnlyOpen" style="width:auto"><span data-i18n="lOnlyOpen">Rādīt tikai neatzīmētos</span>
       </label>
     </div>
     <div class="card" id="subList"></div>
@@ -362,33 +362,33 @@
   <!-- KOMANDA -->
   <section id="v-people" class="hide">
     <div class="card">
-      <h2>Komanda (<span id="pCount">0</span>)</h2>
-      <p class="muted" style="margin:0 0 10px">Pastāvīgie spēlētāji — tikai šie parādās treniņa dalībnieku izvēlē.</p>
+      <h2><span data-i18n="hTeam">Komanda</span> (<span id="pCount">0</span>)</h2>
+      <p class="muted" style="margin:0 0 10px" data-i18n="pTeam">Pastāvīgie spēlētāji — tikai šie parādās treniņa dalībnieku izvēlē.</p>
       <div id="pList"></div>
     </div>
     <div class="card">
-      <h2>Pievienot cilvēkus</h2>
-      <textarea id="bulk" placeholder="Viens vārds katrā rindā, piemēram:&#10;Jānis Bērziņš&#10;Kārlis Ozols&#10;Anna Liepa"></textarea>
+      <h2 data-i18n="hAddPeople">Pievienot cilvēkus</h2>
+      <textarea id="bulk" placeholder="Viens vārds katrā rindā, piemēram:&#10;Jānis Bērziņš&#10;Kārlis Ozols&#10;Anna Liepa" data-ph="phBulk"></textarea>
       <div class="row wrap" style="margin-top:10px">
-        <button class="btn" id="addPeople" style="flex:1">Komandai</button>
-        <button class="btn sec" id="addGuests" style="flex:1">Viesiem</button>
+        <button class="btn" id="addPeople" style="flex:1" data-i18n="bToTeam">Komandai</button>
+        <button class="btn sec" id="addGuests" style="flex:1" data-i18n="bToGuests">Viesiem</button>
       </div>
     </div>
     <div class="card">
       <details id="aBox">
         <summary style="cursor:pointer;list-style:none">
           <div class="row" style="justify-content:space-between;gap:10px">
-            <h2 style="margin:0">Arhīvs (<span id="aCount">0</span>)</h2>
+            <h2 style="margin:0"><span data-i18n="hArch">Arhīvs</span> (<span id="aCount">0</span>)</h2>
             <span class="muted" style="font-size:12px" id="aBreak"></span>
           </div>
         </summary>
-        <p class="muted" style="margin:10px 0">Nenāk uz treniņiem. Izvēlnēs neparādās, bet vēsture un parādi saglabājas.</p>
+        <p class="muted" style="margin:10px 0" data-i18n="pArch">Nenāk uz treniņiem. Izvēlnēs neparādās, bet vēsture un parādi saglabājas.</p>
         <div id="aList"></div>
       </details>
     </div>
     <div class="card">
-      <h2>Viesi (<span id="gCount">0</span>)</h2>
-      <p class="muted" style="margin:0 0 10px">Cilvēki, kas pievienoti konkrētā treniņā. Izvēlnē tie neparādās.</p>
+      <h2><span data-i18n="hGuests">Viesi</span> (<span id="gCount">0</span>)</h2>
+      <p class="muted" style="margin:0 0 10px" data-i18n="pGuests">Cilvēki, kas pievienoti konkrētā treniņā. Izvēlnē tie neparādās.</p>
       <div id="gList"></div>
     </div>
   </section>
@@ -396,41 +396,48 @@
   <!-- IESTATĪJUMI -->
   <section id="v-settings" class="hide">
     <div class="card">
-      <h2>Treniņa cena</h2>
+      <h2 data-i18n="hSessPrice">Treniņa cena</h2>
       <div class="row">
         <input type="number" id="price" min="0" step="0.5">
         <span class="muted" style="font-size:20px">€</span>
       </div>
-      <p class="muted" style="margin:10px 0 0">Cenu izmanto, lai rēķinātu parādu, kad kāds iedod tikai daļu naudas.</p>
+      <p class="muted" style="margin:10px 0 0" data-i18n="pSessPrice">Cenu izmanto, lai rēķinātu parādu, kad kāds iedod tikai daļu naudas.</p>
     </div>
     <div class="card">
-      <h2>Logo</h2>
+      <h2 data-i18n="hLogo">Logo</h2>
       <div class="row" style="gap:12px;align-items:center">
         <img id="logoPrev" alt="" style="height:46px;width:auto;max-width:90px;background:var(--panel2);border-radius:10px;padding:5px">
         <div style="flex:1">
-          <button class="btn sec" id="logoPick" style="width:100%">Izvēlēties attēlu</button>
-          <button class="btn sec" id="logoReset" style="width:100%;margin-top:8px">Noņemt logo</button>
+          <button class="btn sec" id="logoPick" style="width:100%" data-i18n="bPickImg">Izvēlēties attēlu</button>
+          <button class="btn sec" id="logoReset" style="width:100%;margin-top:8px" data-i18n="bRmLogo">Noņemt logo</button>
         </div>
       </div>
       <input type="file" id="logoFile" accept="image/*" class="hide">
-      <p class="muted" style="margin:10px 0 0">Attēls parādās virsrakstā. Tas tiek samazināts un saglabāts kopā ar datiem. Mājas ekrāna ikona nomainīsies tikai tad, ja īsceļu pievienosi no jauna.</p>
+      <p class="muted" style="margin:10px 0 0" data-i18n="pLogo">Attēls parādās virsrakstā. Tas tiek samazināts un saglabāts kopā ar datiem. Mājas ekrāna ikona nomainīsies tikai tad, ja īsceļu pievienosi no jauna.</p>
     </div>
     <div class="card">
-      <h2>Izskats</h2>
+      <h2 data-i18n="hLang">Valoda</h2>
       <div class="row wrap">
-        <button class="btn sec" id="thDark" style="flex:1">🌙 Tumšs</button>
-        <button class="btn sec" id="thLight" style="flex:1">☀️ Gaišs</button>
+        <button class="btn sec" id="lgLv" style="flex:1">🇱🇻 Latviski</button>
+        <button class="btn sec" id="lgEn" style="flex:1">🇬🇧 English</button>
       </div>
     </div>
     <div class="card">
-      <h2>Dati</h2>
-      <p class="muted" style="margin:0 0 10px">Dati glabājas šajā ierīcē. Taisi dublējumu regulāri — tas ir viens fails, ko var ielādēt atpakaļ jebkurā brīdī.</p>
+      <h2 data-i18n="hLook">Izskats</h2>
+      <div class="row wrap">
+        <button class="btn sec" id="thDark" style="flex:1" data-i18n="bDark">🌙 Tumšs</button>
+        <button class="btn sec" id="thLight" style="flex:1" data-i18n="bLight">☀️ Gaišs</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="hData">Dati</h2>
+      <p class="muted" style="margin:0 0 10px" data-i18n="pData">Dati glabājas šajā ierīcē. Taisi dublējumu regulāri — tas ir viens fails, ko var ielādēt atpakaļ jebkurā brīdī.</p>
       <div id="wvWarn" class="hide" style="background:var(--warnbg);border:1px solid var(--warnln);border-radius:10px;padding:10px;margin-bottom:12px;font-size:13px;line-height:1.5">
         ⚠️ Atvērts <b>aplikācijas priekšskatījumā</b> — šeit lejupielāde var nestrādāt un dati var nesaglabāties. Atver ar Chrome.
       </div>
       <div id="bkStatus" class="muted" style="margin-bottom:10px"></div>
-      <button class="btn" id="expJson2" style="width:100%">💾 Lejupielādēt failu</button>
-      <button class="btn sec" id="impBtn" style="width:100%;margin-top:8px">📂 Ielādēt JSON</button>
+      <button class="btn" id="expJson2" style="width:100%" data-i18n="bDlFile">💾 Lejupielādēt failu</button>
+      <button class="btn sec" id="impBtn" style="width:100%;margin-top:8px" data-i18n="bLoadJson">📂 Ielādēt JSON</button>
       <input type="file" id="impFile" accept="application/json,.json" class="hide">
       <button class="btn sec hide" id="showJson"></button>
       <button class="btn sec hide" id="shareJson"></button>
@@ -438,7 +445,7 @@
       <button class="btn sec hide" id="loadBuilt"></button>
       <textarea id="pasteBox" class="hide"></textarea>
       <button class="btn sec hide" id="pasteImport"></button>
-      <button class="btn danger" id="wipe" style="width:100%;margin-top:14px">Dzēst visus datus</button>
+      <button class="btn danger" id="wipe" style="width:100%;margin-top:14px" data-i18n="bWipe">Dzēst visus datus</button>
     </div>
   </section>
 </main>
@@ -498,10 +505,10 @@
   var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); };
   var eur = function(n){ return (Math.round(n*100)/100).toFixed(2); };
 
-  var LBL = { paid:"Iedeva<br>naudu", debt:"Palika<br>parādā", part:"Iedeva<br>daļu", none:"Nebija<br>treniņā" };
-  var SHORT = { paid:"Samaksāja", debt:"Parādā", part:"Daļēji", none:"Nebija" };
+  function LBLo(){ return { paid:T.optPaid, debt:T.optDebt, part:T.optPart, none:T.optNone }; }
+  function SHORTo(){ return { paid:T.sPaid, debt:T.sDebt, part:T.sPart, none:T.sNone }; }
 
-  function toast(t){ var e=$("toast"); e.textContent=t||"Saglabāts"; e.classList.add("show"); clearTimeout(e._t); e._t=setTimeout(function(){e.classList.remove("show");},1200); }
+  function toast(t){ var e=$("toast"); e.textContent=t||T.tSaved; e.classList.add("show"); clearTimeout(e._t); e._t=setTimeout(function(){e.classList.remove("show");},1200); }
   function save(){ persist(); }
 
   /* ---------- aprēķini ---------- */
@@ -527,28 +534,214 @@
     if(pr==null) pr = S.price;
     return Math.max(0, (Number(e.a)||0) - pr);
   }
+
+  /* ---------- valodas ---------- */
+  var I18N = {
+    lv:{
+      navTr:"Treniņi", navSum:"Kopsavilkums", navSub:"Abonementi", navPpl:"Dalībnieki", navSet:"Iestatījumi",
+      hNewSess:"Jauns treniņš", bAdd:"Pievienot", bSave:"Saglabāt",
+      rHint:"Atzīmē, kuri būs treniņā", bPrev:"Kā iepriekš", bAll:"Visus", bNone:"Notīrīt",
+      phSearch:"🔍 Meklēt…", phGuest:"+ Viesis (vārds)",
+      rGuestHint:"Viesis nonāk tikai šajā treniņā un sadaļā “Dalībnieki → Viesi”, nevis pastāvīgajā izvēlnē.",
+      rPasteTitle:"📋 Ielīmēt sarakstu", phPaste:"Ielīmē vārdus (viens rindā vai ar komatiem).\nDer arī “Uzvārds Vārds” secība.",
+      bPasteGo:"Atzīmēt sarakstā", bRosterDone:"Gatavs → uz treniņu",
+      bBack:"‹ Atpakaļ", bDelSess:"Dzēst treniņu", lPrice:"Cena", bEditRoster:"Mainīt dalībniekus",
+      phSearchPerson:"🔍 Meklēt cilvēku…", lOnlyOpen:"Rādīt tikai neatzīmētos", phLate:"+ Atnāca vēl kāds (vārds)",
+      hExp:"Mani izdevumi", bAddCoach:"+ Treneris", bAddGk:"+ Vārtsargs", bAddOther:"+ Cits",
+      hPeriod:"Periods", kIn:"Saņemts €", kOwedMe:"Man parādā €", kIOwe:"Man jāatdod €", kSess:"Treniņi",
+      kExp:"Izdevumi €", kBal:"Atlikums €", hByPerson:"Pa cilvēkiem", hExpMonth:"Mani izdevumi pa mēnešiem",
+      hSubMonth:"Abonementi pa mēnešiem", hExport:"Eksports", bCsv:"Lejupielādēt CSV", bJson:"Dublējums (JSON)",
+      hMonthPrice:"Mēnesis un cena", phPrice:"Cena",
+      hTeam:"Komanda", pTeam:"Pastāvīgie spēlētāji — tikai šie parādās treniņa dalībnieku izvēlē.",
+      hAddPeople:"Pievienot cilvēkus", phBulk:"Viens vārds katrā rindā, piemēram:\nJānis Bērziņš\nKārlis Ozols\nAnna Liepa",
+      bToTeam:"Komandai", bToGuests:"Viesiem", hArch:"Arhīvs",
+      pArch:"Nenāk uz treniņiem. Izvēlnēs neparādās, bet vēsture un parādi saglabājas.",
+      hGuests:"Viesi", pGuests:"Cilvēki, kas pievienoti konkrētā treniņā. Izvēlnē tie neparādās.",
+      hSessPrice:"Treniņa cena", pSessPrice:"Cenu izmanto, lai rēķinātu parādu, kad kāds iedod tikai daļu naudas.",
+      hLogo:"Logo", bPickImg:"Izvēlēties attēlu", bRmLogo:"Noņemt logo",
+      pLogo:"Attēls parādās virsrakstā. Tas tiek samazināts un saglabāts kopā ar datiem. Mājas ekrāna ikona nomainīsies tikai tad, ja īsceļu pievienosi no jauna.",
+      hLang:"Valoda", hLook:"Izskats", bDark:"🌙 Tumšs", bLight:"☀️ Gaišs",
+      hData:"Dati", pData:"Dati glabājas šajā ierīcē. Taisi dublējumu regulāri — tas ir viens fails, ko var ielādēt atpakaļ jebkurā brīdī.",
+      bDlFile:"💾 Lejupielādēt failu", bLoadJson:"📂 Ielādēt JSON", bWipe:"Dzēst visus datus",
+      offline:"bezsaistē", bCancel:"Atcelt", bOk:"Apstiprināt", bYes:"Labi",
+      months:["Janvāris","Februāris","Marts","Aprīlis","Maijs","Jūnijs","Jūlijs","Augusts","Septembris","Oktobris","Novembris","Decembris"],
+      days:["Sv","Pr","Ot","Tr","Ce","Pk","Se"],
+      allTime:"Viss laiks", total:"Kopā", empty:"tukšs",
+      optPaid:"Iedeva<br>naudu", optPart:"Iedeva<br>daļu", optDebt:"Palika<br>parādā", optNone:"Nebija<br>treniņā",
+      sPaid:"Samaksāja", sDebt:"Parādā", sPart:"Daļēji", sNone:"Nebija",
+      lPaid:"Iedeva naudu", lPart:"Iedeva daļu", lDebt:"Palika parādā", lNone:"Nebija treniņā",
+      subPaid:"Samaksāts", subPart:"Daļēji<br>samaksāts", subSigned:"Pieteicies<br>(nav samaksāts)",
+      subPaidL:"Samaksāts", subPartL:"Daļēji samaksāts", subSignedL:"Pieteicies — nav samaksāts",
+      sub:"Abonements", subUnpaid:" · nav apmaksāts", subPartial:" · daļēji",
+      signedDebt:"Pieteicies · parādā ", noSubPrice:"⚠️ Šim mēnesim nav ievadīta abonementa cena",
+      of:" no ", got:"saņemts", owes:"parādā", giveBack:"jāatdod", gave:"Iedeva", debtW:"parāds",
+      players:" dalībnieki", signedUp:" pieteikušies", were:" bija", withSub:" ar abonementu",
+      leftN:"atlikuši ", allOk:"viss kārtībā", noPlayers:"nav dalībnieku",
+      markedN:"Atzīmēti ", incl:" (t.sk. ", withSubN:" ar abonementu)",
+      expTotal:"Izdevumi kopā: ", balance:"Atlikums: ", expenses:"izdevumi",
+      noSessions:"Vēl nav neviena treniņa.<br>Pievieno datumu augšā.",
+      noResults:"Nav rezultātu.", noRoster:"Neviens nav atzīmēts kā dalībnieks.<br>Spied “Mainīt dalībniekus”.",
+      addPeopleFirst:"Vispirms pievieno cilvēkus sadaļā “Dalībnieki”.",
+      guestsHere:"Viesi šajā treniņā", teamEmpty:"Komandā neviena nav.", archEmpty:"Arhīvs tukšs.", guestsEmpty:"Viesu vēl nav.",
+      noSubsYet:"Abonementu vēl nav.", noExpYet:"Izdevumu vēl nav.", noOne:"Nevienam nav.",
+      thName:"Vārds", thSess:"Tren.", thPaid:"Samaksāts €", thBalance:"Bilance €",
+      noteBal:'Bilance: <span class="red">sarkans</span> = man parādā · <span style="color:var(--warn)">oranžs ar mīnusu</span> = man jāatdod',
+      noteOwe:"Kopā jāatdod: ",
+      tiEdit:"Labot vārdu", tiToGuests:"Pārcelt uz viesiem", tiToTeam:"Uzņemt komandā", tiArch:"Uz arhīvu",
+      tiUnarch:"Atgriezt sarakstā", tiDel:"Dzēst", toGuests:"→ viesos", toTeam:"→ komandā", back:"↩ ",
+      trainCount:" treniņi · ", paidSuffix:" € samaksāts", debtSuffix:" € parādā",
+      askEditName:'<b>Labot vārdu</b><br><span class="muted">Vārds un uzvārds — kārtošana notiek pēc pēdējā vārda</span>',
+      askDelPerson:"Dzēst un noņemt visus viņa ierakstus?", askDelSess:"Dzēst šo treniņu un visus tā ierakstus?",
+      askDelExp:"Dzēst šo izdevumu rindu?", askWipe:"Dzēst pilnīgi visus treniņus un abonementus?<br><br>To nevar atcelt.",
+      askRmLogo:"Noņemt logo no virsraksta?", askChange:"Mainīt?", askClear:"Noņemt atzīmi?",
+      askAmount:"Summa: ", askPriceTitle:"<b>Treniņa cena</b>", askPriceInfo1:"Tiks pārrēķināti ", askPriceInfo2:" jau atzīmētie maksājumi. Mainīt?",
+      bDel:"Dzēst", bRemove:"Noņemt", bWipeAll:"Dzēst visu", bReplace:"Aizstāt", bRestore:"Atjaunot",
+      tSaved:"Saglabāts", tDeleted:"Dzēsts", tSessAdded:"Treniņš pievienots", tCopied:"Pārkopēts",
+      tRosterSaved:"Saglabāts: ", tRosterSaved2:" dalībnieki", tAddedToSess:" — treniņā", tAdded:"Pievienoti: ",
+      tMoved:" · pārcelti: ", tExisted:" · jau bija: ", tToArch:"Pārcelts uz arhīvu", tFromArch:"Atgriezts sarakstā",
+      tToGuests:"Pārcelts pie viesiem", tToTeam:"Uzņemts komandā", tNameChanged:"Vārds nomainīts",
+      tLogoChanged:"Logo nomainīts", tLogoRemoved:"Logo noņemts", tDataLoaded:"Dati ielādēti",
+      tFileSaved:"Fails saglabāts lejupielādēs", tAllDeleted:"Viss dzēsts, saraksts atjaunots",
+      eDate:"Izvēlies datumu", eDateExists:"Šis datums jau ir sarakstā", eName:"Ieraksti vārdu",
+      eNames:"Ieraksti vismaz vienu vārdu", ePaste:"Ielīmē vārdus", eNoPrev:"Nav iepriekšēja treniņa ar atzīmētiem dalībniekiem",
+      eNameEmpty:"Vārds nevar būt tukšs", eNameExists:"Tāds vārds sarakstā jau ir",
+      eReadFile:"Neizdevās nolasīt failu", eImg:"Neizdevās nolasīt attēlu", eImgProc:"Neizdevās apstrādāt attēlu",
+      pasteOk:"✅ Atzīmēti: ", pasteUnarch:" (no arhīva atgriezti: ", pasteAmb:"<br>❓ Neskaidri (vairāki sakrīt): ",
+      pasteNew:"<br>➕ Nav sarakstā: ", pasteAddBtn:"Pievienot šos ", pasteAddBtn2:" kā jaunus", pasteDone:"✅ Pievienoti un atzīmēti",
+      alreadyIn:"” jau ir sarakstā", fromArch:"” atgriezts no arhīva",
+      bkNever:"Dublējums vēl nav taisīts.", bkLast:"Pēdējais dublējums: ", bkToday:"šodien", bkYest:"vakar",
+      bkAgo:"pirms ", bkDays:" d.", bkWarnNever:"⚠️ Dublējums nav taisīts. Saglabā datus failā.",
+      bkWarn1:"⚠️ Pēdējais dublējums ", bkWarn2:" — pirms ", bkWarn3:" dienām.", atTime:" plkst. ",
+      wvWarn:"⚠️ Atvērts <b>aplikācijas priekšskatījumā</b> — šeit lejupielāde var nestrādāt un dati var nesaglabāties. Atver ar Chrome.",
+      expDef:["Treneris","Vārtsargs","Vārtsargs 2","Halle","Citi izdevumi"],
+      expCoach:"Treneris", expGk:"Vārtsargs", expOther:"Citi izdevumi",
+      guestSug:"Viesi no saraksta:", subsCount:" abon. · ",
+      archSplit:"komanda ", archSplit2:" · viesi "
+    },
+    en:{
+      navTr:"Sessions", navSum:"Summary", navSub:"Memberships", navPpl:"People", navSet:"Settings",
+      hNewSess:"New session", bAdd:"Add", bSave:"Save",
+      rHint:"Select who is attending", bPrev:"Same as last", bAll:"All", bNone:"Clear",
+      phSearch:"🔍 Search…", phGuest:"+ Guest (name)",
+      rGuestHint:"A guest is added only to this session and to “People → Guests”, not to the regular list.",
+      rPasteTitle:"📋 Paste a list", phPaste:"Paste names (one per line or comma separated).\n“Surname Firstname” order also works.",
+      bPasteGo:"Match in list", bRosterDone:"Done → to session",
+      bBack:"‹ Back", bDelSess:"Delete session", lPrice:"Price", bEditRoster:"Change participants",
+      phSearchPerson:"🔍 Search person…", lOnlyOpen:"Show only unmarked", phLate:"+ Someone else showed up (name)",
+      hExp:"My expenses", bAddCoach:"+ Coach", bAddGk:"+ Goalie", bAddOther:"+ Other",
+      hPeriod:"Period", kIn:"Received €", kOwedMe:"Owed to me €", kIOwe:"I owe €", kSess:"Sessions",
+      kExp:"Expenses €", kBal:"Balance €", hByPerson:"By person", hExpMonth:"My expenses by month",
+      hSubMonth:"Memberships by month", hExport:"Export", bCsv:"Download CSV", bJson:"Backup (JSON)",
+      hMonthPrice:"Month and price", phPrice:"Price",
+      hTeam:"Team", pTeam:"Regular players — only these appear when choosing session participants.",
+      hAddPeople:"Add people", phBulk:"One name per line, for example:\nJohn Smith\nMike Brown\nAnna Green",
+      bToTeam:"To team", bToGuests:"To guests", hArch:"Archive",
+      pArch:"Not attending. Hidden from the lists, but history and debts are kept.",
+      hGuests:"Guests", pGuests:"People added to a single session. They don't appear in the regular list.",
+      hSessPrice:"Session price", pSessPrice:"Used to calculate the debt when someone pays only part of it.",
+      hLogo:"Logo", bPickImg:"Choose image", bRmLogo:"Remove logo",
+      pLogo:"The image appears in the header. It is resized and stored with your data. The home screen icon changes only if you add the shortcut again.",
+      hLang:"Language", hLook:"Appearance", bDark:"🌙 Dark", bLight:"☀️ Light",
+      hData:"Data", pData:"Data is stored on this device. Back it up regularly — it is a single file you can load back any time.",
+      bDlFile:"💾 Download file", bLoadJson:"📂 Load JSON", bWipe:"Delete all data",
+      offline:"offline", bCancel:"Cancel", bOk:"Confirm", bYes:"OK",
+      months:["January","February","March","April","May","June","July","August","September","October","November","December"],
+      days:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
+      allTime:"All time", total:"Total", empty:"empty",
+      optPaid:"Paid<br>cash", optPart:"Paid<br>part", optDebt:"Still<br>owes", optNone:"Did not<br>attend",
+      sPaid:"Paid", sDebt:"Owes", sPart:"Partial", sNone:"Absent",
+      lPaid:"Paid cash", lPart:"Paid part", lDebt:"Still owes", lNone:"Did not attend",
+      subPaid:"Paid", subPart:"Partly<br>paid", subSigned:"Signed up<br>(not paid)",
+      subPaidL:"Paid", subPartL:"Partly paid", subSignedL:"Signed up — not paid",
+      sub:"Membership", subUnpaid:" · not paid", subPartial:" · partly",
+      signedDebt:"Signed up · owes ", noSubPrice:"⚠️ No membership price set for this month",
+      of:" of ", got:"received", owes:"owed", giveBack:"to return", gave:"Gave", debtW:"debt",
+      players:" participants", signedUp:" signed up", were:" attended", withSub:" with membership",
+      leftN:"left ", allOk:"all done", noPlayers:"no participants",
+      markedN:"Marked ", incl:" (incl. ", withSubN:" with membership)",
+      expTotal:"Expenses total: ", balance:"Balance: ", expenses:"expenses",
+      noSessions:"No sessions yet.<br>Add a date above.",
+      noResults:"No results.", noRoster:"Nobody is marked as a participant.<br>Tap “Change participants”.",
+      addPeopleFirst:"First add people in the “People” tab.",
+      guestsHere:"Guests in this session", teamEmpty:"The team is empty.", archEmpty:"Archive is empty.", guestsEmpty:"No guests yet.",
+      noSubsYet:"No memberships yet.", noExpYet:"No expenses yet.", noOne:"Nobody.",
+      thName:"Name", thSess:"Sess.", thPaid:"Paid €", thBalance:"Balance €",
+      noteBal:'Balance: <span class="red">red</span> = owed to me · <span style="color:var(--warn)">orange with minus</span> = I owe',
+      noteOwe:"Total to return: ",
+      tiEdit:"Edit name", tiToGuests:"Move to guests", tiToTeam:"Move to team", tiArch:"To archive",
+      tiUnarch:"Restore", tiDel:"Delete", toGuests:"→ guests", toTeam:"→ team", back:"↩ ",
+      trainCount:" sessions · ", paidSuffix:" € paid", debtSuffix:" € owed",
+      askEditName:'<b>Edit name</b><br><span class="muted">First and last name — sorting uses the last word</span>',
+      askDelPerson:"Delete and remove all their records?", askDelSess:"Delete this session and all its records?",
+      askDelExp:"Delete this expense row?", askWipe:"Delete all sessions and memberships?<br><br>This cannot be undone.",
+      askRmLogo:"Remove the logo from the header?", askChange:"Change?", askClear:"Remove this mark?",
+      askAmount:"Amount: ", askPriceTitle:"<b>Session price</b>", askPriceInfo1:"This will recalculate ", askPriceInfo2:" existing payments. Change?",
+      bDel:"Delete", bRemove:"Remove", bWipeAll:"Delete all", bReplace:"Replace", bRestore:"Restore",
+      tSaved:"Saved", tDeleted:"Deleted", tSessAdded:"Session added", tCopied:"Copied",
+      tRosterSaved:"Saved: ", tRosterSaved2:" participants", tAddedToSess:" — added", tAdded:"Added: ",
+      tMoved:" · moved: ", tExisted:" · already there: ", tToArch:"Moved to archive", tFromArch:"Restored",
+      tToGuests:"Moved to guests", tToTeam:"Moved to team", tNameChanged:"Name changed",
+      tLogoChanged:"Logo changed", tLogoRemoved:"Logo removed", tDataLoaded:"Data loaded",
+      tFileSaved:"File saved to downloads", tAllDeleted:"Everything deleted, list restored",
+      eDate:"Pick a date", eDateExists:"That date is already in the list", eName:"Type a name",
+      eNames:"Type at least one name", ePaste:"Paste some names", eNoPrev:"No previous session with participants",
+      eNameEmpty:"The name cannot be empty", eNameExists:"That name is already in the list",
+      eReadFile:"Could not read the file", eImg:"Could not read the image", eImgProc:"Could not process the image",
+      pasteOk:"✅ Matched: ", pasteUnarch:" (restored from archive: ", pasteAmb:"<br>❓ Unclear (several match): ",
+      pasteNew:"<br>➕ Not in the list: ", pasteAddBtn:"Add these ", pasteAddBtn2:" as new", pasteDone:"✅ Added and selected",
+      alreadyIn:"” is already in the list", fromArch:"” restored from archive",
+      bkNever:"No backup yet.", bkLast:"Last backup: ", bkToday:"today", bkYest:"yesterday",
+      bkAgo:"", bkDays:" d ago", bkWarnNever:"⚠️ No backup yet. Save your data to a file.",
+      bkWarn1:"⚠️ Last backup ", bkWarn2:" — ", bkWarn3:" days ago.", atTime:" at ",
+      wvWarn:"⚠️ Opened in an <b>in-app preview</b> — downloads may not work and data may not persist. Open it in Chrome.",
+      expDef:["Coach","Goalie","Goalie 2","Rink","Other expenses"],
+      expCoach:"Coach", expGk:"Goalie", expOther:"Other expenses",
+      guestSug:"Guests from the list:", subsCount:" memberships · ",
+      archSplit:"team ", archSplit2:" · guests "
+    }
+  };
+  var T = I18N.lv;
+  function applyLang(){
+    T = I18N[S.lang === "en" ? "en" : "lv"];
+    document.documentElement.lang = (S.lang === "en" ? "en" : "lv");
+    [].forEach.call(document.querySelectorAll("[data-i18n]"), function(el){
+      var v = T[el.getAttribute("data-i18n")];
+      if(v != null) el.innerHTML = v;
+    });
+    [].forEach.call(document.querySelectorAll("[data-ph]"), function(el){
+      var v = T[el.getAttribute("data-ph")];
+      if(v != null) el.placeholder = v;
+    });
+    $("mdNo").textContent = T.bCancel;
+    $("wvWarn").innerHTML = T.wvWarn;
+    $("lgLv").style.borderColor = (S.lang==="en") ? "" : "var(--acc)";
+    $("lgEn").style.borderColor = (S.lang==="en") ? "var(--acc)" : "";
+  }
+  $("lgLv").onclick = function(){ S.lang="lv"; save(); applyLang(); render(); if(cur) renderDetail(); };
+  $("lgEn").onclick = function(){ S.lang="en"; save(); applyLang(); render(); if(cur) renderDetail(); };
+
   /* ---------- apstiprinājumi (tikai mainot jau atzīmētu) ---------- */
   var fresh = [];      /* pids, kuriem summa tiek ievadīta pirmo reizi */
   var amtOrig = null;  /* summa pirms rediģēšanas */
-  var LBLTXT = { paid:"Iedeva naudu", debt:"Palika parādā", part:"Iedeva daļu", none:"Nebija treniņā",
-                 spaid:"Samaksāts", spart:"Daļēji samaksāts", ssigned:"Pieteicies — nav samaksāts" };
+  function LBLTXTo(){ return { paid:T.lPaid, debt:T.lDebt, part:T.lPart, none:T.lNone,
+                 spaid:T.subPaidL, spart:T.subPartL, ssigned:T.subSignedL }; }
   function pname(pid){
     var p = S.people.filter(function(x){return x.id===pid;})[0];
     return p ? p.name : "";
   }
   function statusText(e, price){
     if(!e || !e.s) return "";
-    if(e.s==="paid") return "Iedeva naudu ("+eur(price)+" €)";
-    if(e.s==="debt") return "Palika parādā";
-    if(e.s==="part") return "Iedeva daļu ("+eur(Number(e.a)||0)+" €)";
-    if(e.s==="none") return "Nebija treniņā";
+    if(e.s==="paid") return T.lPaid+" ("+eur(price)+" €)";
+    if(e.s==="debt") return T.lDebt;
+    if(e.s==="part") return T.lPart+" ("+eur(Number(e.a)||0)+" €)";
+    if(e.s==="none") return T.lNone;
     return "";
   }
   /* ---- pašu dialogs: WebView (piem. faila priekšskatījums) ignorē confirm/alert ---- */
   var mdCb = null;
   function ask(html, cb, yesLabel, onlyOk){
     $("mdText").innerHTML = html;
-    $("mdYes").textContent = yesLabel || "Apstiprināt";
+    $("mdYes").textContent = yesLabel || T.bOk;
     $("mdNo").style.display = onlyOk ? "none" : "";
     $("modal").classList.remove("hide");
     mdCb = cb || null;
@@ -561,16 +754,16 @@
   $("mdYes").onclick = function(){ mdClose(true); };
   $("mdNo").onclick  = function(){ mdClose(false); };
   $("modal").onclick = function(ev){ if(ev.target===$("modal")) mdClose(false); };
-  function info(msg){ ask(msg, null, "Labi", true); }
+  function info(msg){ ask(msg, null, T.bYes, true); }
 
   function askChange(pid, from, to, cb){
-    ask("<b>"+esc(pname(pid))+"</b><br><br>"+from+"<br><span class='arw'>↓</span><br><b>"+to+"</b><br><br>Mainīt?", cb);
+    ask("<b>"+esc(pname(pid))+"</b><br><br>"+from+"<br><span class='arw'>↓</span><br><b>"+to+"</b><br><br>"+T.askChange, cb);
   }
   function askClear(pid, from, cb){
-    ask("<b>"+esc(pname(pid))+"</b><br><br>"+from+"<br><br>Noņemt atzīmi?", cb, "Noņemt");
+    ask("<b>"+esc(pname(pid))+"</b><br><br>"+from+"<br><br>"+T.askClear, cb, T.bRemove);
   }
   function askAmount(pid, from, to, cb){
-    ask("<b>"+esc(pname(pid))+"</b><br><br>Summa: "+eur(from)+" € <span class='arw'>→</span> <b>"+eur(to)+" €</b><br><br>Mainīt?", cb);
+    ask("<b>"+esc(pname(pid))+"</b><br><br>"+T.askAmount+eur(from)+" € <span class='arw'>→</span> <b>"+eur(to)+" €</b><br><br>"+T.askChange, cb);
   }
 
   /* kārtošana pēc uzvārda (pēdējais vārds) */
@@ -669,8 +862,7 @@
   function fmtDate(iso){
     var p = iso.split("-");
     var d = new Date(Number(p[0]), Number(p[1])-1, Number(p[2]));
-    var dws = ["Sv","Pr","Ot","Tr","Ce","Pk","Se"];
-    return p[2]+"."+p[1]+"."+p[0]+" · "+dws[d.getDay()];
+    return p[2]+"."+p[1]+"."+p[0]+" · "+T.days[d.getDay()];
   }
 
   /* ---------- navigācija ---------- */
@@ -693,7 +885,7 @@
   /* ---------- renderēšana ---------- */
   function renderSessions(){
     var w = $("sessList");
-    if(!S.sessions.length){ w.innerHTML = '<div class="empty">Vēl nav neviena treniņa.<br>Pievieno datumu augšā.</div>'; return; }
+    if(!S.sessions.length){ w.innerHTML = '<div class="empty">'+T.noSessions+'</div>'; return; }
     var arr = S.sessions.slice().sort(function(a,b){ return b.date<a.date?-1:1; });
     w.innerHTML = arr.map(function(s){
       var t = sessTotals(s);
@@ -704,17 +896,17 @@
         return !(e && e.s) && !hasSub(p.id, s.date);
       }).length;
       var pills = [];
-      if(left>0) pills.push('<span class="pill p-off">atlikuši '+left+'</span>');
-      if(t.debt>0) pills.push('<span class="pill p-bad">parādā '+eur(t.debt)+' €</span>');
-      if(t.owe>0) pills.push('<span class="pill p-warn">jāatdod '+eur(t.owe)+' €</span>');
-      if(!pills.length) pills.push(total ? '<span class="pill p-ok">viss kārtībā</span>' : '<span class="pill p-off">nav dalībnieku</span>');
+      if(left>0) pills.push('<span class="pill p-off">'+T.leftN+left+'</span>');
+      if(t.debt>0) pills.push('<span class="pill p-bad">'+T.owes+' '+eur(t.debt)+' €</span>');
+      if(t.owe>0) pills.push('<span class="pill p-warn">'+T.giveBack+' '+eur(t.owe)+' €</span>');
+      if(!pills.length) pills.push(total ? '<span class="pill p-ok">'+T.allOk+'</span>' : '<span class="pill p-off">'+T.noPlayers+'</span>');
       return '<div class="sess" data-id="'+s.id+'">'+
         '<div class="sess-top"><div class="sess-date">'+fmtDate(s.date)+'</div>'+
         '<div class="row wrap" style="gap:5px;justify-content:flex-end">'+pills.join("")+'</div>'+
         '</div>'+
-        '<div class="sess-sum">'+total+' pieteikušies · '+t.count+' bija · saņemts <b>'+eur(t.paid)+' €</b>'+
-          (t.sub? ' · '+t.sub+' ar abonementu':'')+
-          (expTotal(s)>0 ? ' · izdevumi <b>'+eur(expTotal(s))+' €</b> · atlikums <b>'+eur(t.paid-expTotal(s))+' €</b>' : '')+'</div>'+
+        '<div class="sess-sum">'+total+T.signedUp+' · '+t.count+T.were+' · '+T.got+' <b>'+eur(t.paid)+' €</b>'+
+          (t.sub? ' · '+t.sub+T.withSub:'')+
+          (expTotal(s)>0 ? ' · '+T.expenses+' <b>'+eur(expTotal(s))+' €</b> · '+T.balance.replace(": ","").toLowerCase()+' <b>'+eur(t.paid-expTotal(s))+' €</b>' : '')+'</div>'+
       '</div>';
     }).join("");
     [].forEach.call(w.querySelectorAll(".sess"), function(el){
@@ -727,14 +919,14 @@
     if(!s){ cur=null; show("sessions"); return; }
     var t = sessTotals(s);
     $("dTitle").textContent = fmtDate(s.date);
-    $("dSum").innerHTML = roster(s).length+" dalībnieki · saņemts <b>"+eur(t.paid)+" €</b> · parādā <b>"+eur(t.debt)+" €</b>"+(t.owe>0?" · jāatdod <b>"+eur(t.owe)+" €</b>":"");
+    $("dSum").innerHTML = roster(s).length+T.players+" · "+T.got+" <b>"+eur(t.paid)+" €</b> · "+T.owes+" <b>"+eur(t.debt)+" €</b>"+(t.owe>0?" · "+T.giveBack+" <b>"+eur(t.owe)+" €</b>":"");
     if(document.activeElement !== $("dPrice")) $("dPrice").value = sessPrice(s);
     renderExp();
 
     var w = $("dPeople");
-    if(!S.people.length){ w.innerHTML='<div class="empty">Vispirms pievieno cilvēkus sadaļā “Dalībnieki”.</div>'; return; }
+    if(!S.people.length){ w.innerHTML='<div class="empty">'+T.addPeopleFirst+'</div>'; return; }
     var base = roster(s);
-    if(!base.length){ w.innerHTML='<div class="empty">Neviens nav atzīmēts kā dalībnieks.<br>Spied “Mainīt dalībniekus”.</div>'; return; }
+    if(!base.length){ w.innerHTML='<div class="empty">'+T.noRoster+'</div>'; return; }
     var q = ($("pFilter").value||"").trim().toLowerCase();
     var onlyOpen = $("onlyOpen").checked;
     var list = base.filter(function(p){
@@ -742,13 +934,13 @@
       if(onlyOpen){ var e=s.entries[p.id]; if((e && e.s) || hasSub(p.id, s.date)) return false; }
       return true;
     });
-    if(!list.length){ w.innerHTML='<div class="empty">Nav rezultātu.</div>'; return; }
+    if(!list.length){ w.innerHTML='<div class="empty">'+T.noResults+'</div>'; return; }
     var doneCnt = base.filter(function(p){ var e=s.entries[p.id]; return (e && e.s) || hasSub(p.id, s.date); }).length;
-    $("dDone").textContent = "Atzīmēti "+doneCnt+" no "+base.length+(t.sub? " (t.sk. "+t.sub+" ar abonementu)":"");
+    $("dDone").textContent = T.markedN+doneCnt+T.of+base.length+(t.sub? T.incl+t.sub+T.withSubN:"");
     var firstGuest = list.filter(function(p){ return p.guest; })[0];
     w.innerHTML = list.map(function(p){
       var head = (firstGuest && p.id===firstGuest.id && list[0] !== p)
-        ? '<div class="muted" style="margin:14px 0 8px;padding-top:10px;border-top:1px solid var(--line)">Viesi</div>' : '';
+        ? '<div class="muted" style="margin:14px 0 8px;padding-top:10px;border-top:1px solid var(--line)">'+T.hGuests+'</div>' : '';
       return head + rowHtml(p);
     }).join("");
 
@@ -761,39 +953,39 @@
         var un = (se.s==="signed");
         return '<div class="crow s-'+(un?"part":"paid")+'" style="cursor:default">'+
           '<span class="cname">'+esc(p.name)+'</span>'+
-          '<span class="pill '+(un?"p-warn":"p-ok")+'">Abonements'+
-            (un?" · nav apmaksāts":(se.s==="part"?" · daļēji":""))+'</span></div>';
+          '<span class="pill '+(un?"p-warn":"p-ok")+'">'+T.sub+
+            (un?T.subUnpaid:(se.s==="part"?T.subPartial:""))+'</span></div>';
       }
       /* saritināta rinda, ja izvēle jau izdarīta un rinda nav atvērta */
       if(e.s && open.indexOf(p.id)<0){
         var txt, cls;
-        if(e.s==="paid"){ txt="Samaksāja · "+eur(sessPrice(s))+" €"; cls="p-ok"; }
-        else if(e.s==="debt"){ txt="Parādā "+eur(sessPrice(s))+" €"; cls="p-bad"; }
+        if(e.s==="paid"){ txt=T.sPaid+" · "+eur(sessPrice(s))+" €"; cls="p-ok"; }
+        else if(e.s==="debt"){ txt=T.sDebt+" "+eur(sessPrice(s))+" €"; cls="p-bad"; }
         else if(e.s==="part"){
-          txt = "Iedeva "+eur(Number(e.a)||0)+" € · "+(entryOwe(e,sessPrice(s))>0 ? "jāatdod "+eur(entryOwe(e,sessPrice(s)))+" €" : "parāds "+eur(entryDebt(e,sessPrice(s)))+" €");
+          txt = T.gave+" "+eur(Number(e.a)||0)+" € · "+(entryOwe(e,sessPrice(s))>0 ? T.giveBack+" "+eur(entryOwe(e,sessPrice(s)))+" €" : T.debtW+" "+eur(entryDebt(e,sessPrice(s)))+" €");
           cls="p-warn";
         }
-        else { txt="Nebija"; cls="p-off"; }
+        else { txt=T.sNone; cls="p-off"; }
         return '<div class="crow s-'+e.s+'" data-open="'+p.id+'">'+
           '<span class="cname">'+esc(p.name)+'</span>'+
           '<span class="pill '+cls+'">'+txt+'</span></div>';
       }
       var opts = ["paid","part","debt","none"].map(function(k){
-        return '<button class="opt'+(e.s===k?" on":"")+'" data-s="'+k+'" data-p="'+p.id+'">'+LBL[k]+'</button>';
+        return '<button class="opt'+(e.s===k?" on":"")+'" data-s="'+k+'" data-p="'+p.id+'">'+LBLo()[k]+'</button>';
       }).join("");
       return '<div class="prow">'+
         '<div class="pname"><span>'+esc(p.name)+(hasSub(p.id, s.date)? (subEntry(p.id, s.date.slice(0,7)).s==="signed"
-              ? ' <span class="pill p-warn">Abonements · nav apmaksāts</span>'
-              : ' <span class="pill p-ok">Abonements</span>') : '')+'</span>'+
+              ? ' <span class="pill p-warn">'+T.sub+T.subUnpaid+'</span>'
+              : ' <span class="pill p-ok">'+T.sub+'</span>') : '')+'</span>'+
           (entryDebt(e,sessPrice(s))>0 ? '<span class="pill p-bad">-'+eur(entryDebt(e,sessPrice(s)))+' €</span>'
-            : (entryOwe(e,sessPrice(s))>0 ? '<span class="pill p-warn">jāatdod '+eur(entryOwe(e,sessPrice(s)))+' €</span>'
+            : (entryOwe(e,sessPrice(s))>0 ? '<span class="pill p-warn">'+T.giveBack+' '+eur(entryOwe(e,sessPrice(s)))+' €</span>'
             : (entryPaid(e,sessPrice(s))>0? '<span class="pill p-ok">'+eur(entryPaid(e,sessPrice(s)))+' €</span>':'')))+
         '</div>'+
         '<div class="opts">'+opts+'</div>'+
         '<div class="partbox'+(e.s==="part"?" show":"")+'" data-box="'+p.id+'">'+
-          '<span class="muted">Iedeva:</span>'+
+          '<span class="muted">'+T.gave+':</span>'+
           '<input type="number" min="0" step="0.5" value="'+(e.a!=null?e.a:"")+'" data-amt="'+p.id+'" placeholder="0">'+
-          '<span class="muted">€ no '+eur(sessPrice(s))+' €</span>'+
+          '<span class="muted">€'+T.of+eur(sessPrice(s))+' €</span>'+
         '</div>'+
       '</div>';
     }
@@ -828,7 +1020,7 @@
         }
         /* apstiprinājums tikai tad, ja maina jau atzīmētu */
         if(e.s===st){ askClear(pid, statusText(e, sessPrice(s)), function(ok){ if(ok) clear(); }); }
-        else if(e.s && e.s!==st){ askChange(pid, statusText(e, sessPrice(s)), LBLTXT[st], function(ok){ if(ok) apply(); }); }
+        else if(e.s && e.s!==st){ askChange(pid, statusText(e, sessPrice(s)), LBLTXTo()[st], function(ok){ if(ok) apply(); }); }
         else apply();
       };
     });
@@ -840,7 +1032,7 @@
         s.entries[pid] = {s:"part", a: v};
         save();
         var tt=sessTotals(s);
-        $("dSum").innerHTML = roster(s).length+" dalībnieki · saņemts <b>"+eur(tt.paid)+" €</b> · parādā <b>"+eur(tt.debt)+" €</b>"+(tt.owe>0?" · jāatdod <b>"+eur(tt.owe)+" €</b>":"");
+        $("dSum").innerHTML = roster(s).length+T.players+" · "+T.got+" <b>"+eur(tt.paid)+" €</b> · "+T.owes+" <b>"+eur(tt.debt)+" €</b>"+(tt.owe>0?" · "+T.giveBack+" <b>"+eur(tt.owe)+" €</b>":"");
       };
       f.onblur = function(){
         var pid = f.dataset.amt, fi = fresh.indexOf(pid);
@@ -873,9 +1065,9 @@
   }
 
   /* ---------- treniņa izdevumi ---------- */
-  var EXP_DEF = ["Treneris","Vārtsargs","Vārtsargs 2","Halle","Citi izdevumi"];
+  function EXP_DEF(){ return T.expDef; }
   function expOf(s){
-    if(!s.exp){ s.exp = EXP_DEF.map(function(n){ return {n:n, a:0}; }); save(); }
+    if(!s.exp){ s.exp = EXP_DEF().map(function(n){ return {n:n, a:0}; }); save(); }
     return s.exp;
   }
   function expTotal(s){
@@ -896,7 +1088,7 @@
         '<input type="text" data-en="'+i+'" value="'+esc(x.n)+'" style="flex:1;min-width:0;padding:9px 10px">'+
         '<input type="number" data-ea="'+i+'" min="0" step="0.5" value="'+(x.a?x.a:"")+'" placeholder="0" style="width:82px;text-align:center;padding:9px 4px">'+
         '<span class="muted" style="font-size:15px">€</span>'+
-        '<button class="btn mini rd" data-ed="'+i+'" title="Dzēst">✕</button></div>';
+        '<button class="btn mini rd" data-ed="'+i+'" title="'+T.tiDel+'">✕</button></div>';
     }).join("") || '<div class="muted">Nav nevienas rindas.</div>';
 
     [].forEach.call(w.querySelectorAll("[data-en]"), function(f){
@@ -911,32 +1103,32 @@
     [].forEach.call(w.querySelectorAll("[data-ed]"), function(b){
       b.onclick = function(){
         var i = Number(b.dataset.ed), row = list[i];
-        ask("<b>"+esc(row.n||"Rinda")+"</b><br><br>Dzēst šo izdevumu rindu?", function(ok){
+        ask("<b>"+esc(row.n||"—")+"</b><br><br>"+T.askDelExp, function(ok){
           if(!ok) return;
           list.splice(i,1); save(); renderExp(); renderSessions(); renderSummary();
-        }, "Dzēst");
+        }, T.bDel);
       };
     });
     updateExpSum(s);
   }
   function updateExpSum(s){
     var t = sessTotals(s), e = expTotal(s), bal = t.paid - e;
-    $("expSum").innerHTML = "Izdevumi kopā: <b>"+eur(e)+" €</b> · saņemts <b>"+eur(t.paid)+" €</b><br>"+
-      "Atlikums: <b style=\"color:"+(bal<0?"var(--bad)":"var(--ok)")+"\">"+eur(bal)+" €</b>";
+    $("expSum").innerHTML = T.expTotal+"<b>"+eur(e)+" €</b> · "+T.got+" <b>"+eur(t.paid)+" €</b><br>"+
+      T.balance+"<b style=\"color:"+(bal<0?"var(--bad)":"var(--ok)")+"\">"+eur(bal)+" €</b>";
   }
   function expAdd(base){
     var s = S.sessions.filter(function(x){return x.id===cur;})[0];
     if(!s) return;
     var list = expOf(s), n = 1;
     list.forEach(function(x){ if(x.n && x.n.indexOf(base)===0) n++; });
-    list.push({n: base==="Cits" ? "Citi izdevumi" : (n>1 ? base+" "+n : base), a:0});
+    list.push({n: base==="other" ? T.expOther : (n>1 ? base+" "+n : base), a:0});
     save(); renderExp();
     var f = $("expList").querySelector('[data-ea="'+(list.length-1)+'"]');
     if(f) f.focus();
   }
-  $("expAddCoach").onclick = function(){ expAdd("Treneris"); };
-  $("expAddGk").onclick    = function(){ expAdd("Vārtsargs"); };
-  $("expAddOther").onclick = function(){ expAdd("Cits"); };
+  $("expAddCoach").onclick = function(){ expAdd(T.expCoach); };
+  $("expAddGk").onclick    = function(){ expAdd(T.expGk); };
+  $("expAddOther").onclick = function(){ expAdd("other"); };
 
   /* ---------- dalībnieku izvēle ---------- */
   var draft = null; // pagaidu id saraksts
@@ -952,26 +1144,26 @@
     var team = byLast(S.people.filter(function(p){ return !p.guest && !p.arch; }));
     /* viesi rādās tikai tad, ja jau ir šajā treniņā */
     var gIn = byLast(S.people.filter(function(p){ return p.guest && draft.indexOf(p.id)>=0; }));
-    $("rCount").textContent = draft.length + " / " + team.length + (gIn.length? " +"+gIn.length+" viesi" : "");
+    $("rCount").textContent = draft.length + " / " + team.length + (gIn.length? " +"+gIn.length+" "+T.hGuests.toLowerCase() : "");
     var q = ($("rFilter").value||"").trim().toLowerCase();
     function match(p){ return !q || p.name.toLowerCase().indexOf(q)>=0; }
     var list = team.filter(match), gl = gIn.filter(match);
     var w = $("rList");
-    if(!list.length && !gl.length){ w.innerHTML='<div class="empty">Nav rezultātu.</div>'; return; }
+    if(!list.length && !gl.length){ w.innerHTML='<div class="empty">'+T.noResults+'</div>'; return; }
     function chip(p){
       var on = draft.indexOf(p.id)>=0;
       return '<label class="chip" style="cursor:pointer"><span'+(on?'':' class="muted"')+'>'+esc(p.name)+'</span>'+
         '<input type="checkbox" data-r="'+p.id+'" '+(on?'checked':'')+' style="width:24px;height:24px;accent-color:#3b82f6"></label>';
     }
     w.innerHTML = list.map(chip).join("") +
-      (gl.length ? '<div class="muted" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)">Viesi šajā treniņā</div>'+gl.map(chip).join("") : "");
+      (gl.length ? '<div class="muted" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)">'+T.guestsHere+'</div>'+gl.map(chip).join("") : "");
     [].forEach.call(w.querySelectorAll("[data-r]"), function(c){
       c.onchange = function(){
         var id=c.dataset.r, i=draft.indexOf(id);
         if(c.checked){ if(i<0) draft.push(id); } else if(i>=0){ draft.splice(i,1); }
         var team = S.people.filter(function(x){ return !x.guest && !x.arch; });
         var gIn = S.people.filter(function(x){ return x.guest && draft.indexOf(x.id)>=0; });
-        $("rCount").textContent = draft.length + " / " + team.length + (gIn.length? " +"+gIn.length+" viesi" : "");
+        $("rCount").textContent = draft.length + " / " + team.length + (gIn.length? " +"+gIn.length+" "+T.hGuests.toLowerCase() : "");
         c.parentNode.firstChild.className = c.checked ? "" : "muted";
       };
     });
@@ -981,36 +1173,36 @@
   function editName(pid){
     var p = S.people.filter(function(x){return x.id===pid;})[0];
     if(!p) return;
-    ask('<b>Labot vārdu</b><br><span class="muted">Vārds un uzvārds — kārtošana notiek pēc pēdējā vārda</span>'+
+    ask(T.askEditName+
         '<input type="text" id="mdInput" style="margin-top:10px" value="'+esc(p.name)+'">',
       function(ok){
         if(!ok) return;
         var v = ($("mdInput").value||"").trim().replace(/\s+/g," ");
-        if(!v){ info("Vārds nevar būt tukšs"); return; }
+        if(!v){ info(T.eNameEmpty); return; }
         if(v===p.name) return;
         if(S.people.some(function(x){ return x.id!==pid && x.name.toLowerCase()===v.toLowerCase(); })){
-          info("Tāds vārds sarakstā jau ir"); return;
+          info(T.eNameExists); return;
         }
-        p.name = v; save(); render(); toast("Vārds nomainīts");
-      }, "Saglabāt");
+        p.name = v; save(); render(); toast(T.tNameChanged);
+      }, T.bSave);
     setTimeout(function(){ var f=$("mdInput"); if(f){ f.focus(); f.select&&f.select(); } }, 60);
   }
 
   function personRow(p, extraBtn){
     var t = personTotals(p.id);
     return '<div class="chip"><div style="min-width:0"><div>'+esc(p.name)+'</div>'+
-      '<div class="muted">'+t.att+' treniņi · '+eur(t.paid)+' € samaksāts'+(t.debt>0?' · <span class="red">'+eur(t.debt)+' € parādā</span>':'')+'</div></div>'+
+      '<div class="muted">'+t.att+T.trainCount+eur(t.paid)+T.paidSuffix+(t.debt>0?' · <span class="red">'+eur(t.debt)+T.debtSuffix+'</span>':'')+'</div></div>'+
       '<div class="row" style="gap:6px;flex:0 0 auto">'+
-      '<button class="btn mini" data-edit="'+p.id+'" title="Labot vārdu">✎</button>'+
+      '<button class="btn mini" data-edit="'+p.id+'" title="'+T.tiEdit+'">✎</button>'+
       (extraBtn||'')+
-      '<button class="btn mini rd" data-del="'+p.id+'" title="Dzēst">✕</button></div></div>';
+      '<button class="btn mini rd" data-del="'+p.id+'" title="'+T.tiDel+'">✕</button></div></div>';
   }
   function bindPersonBtns(w){
     [].forEach.call(w.querySelectorAll("[data-del]"), function(b){
       b.onclick = function(){
         var p = S.people.filter(function(x){return x.id===b.dataset.del;})[0];
         var did = b.dataset.del;
-        ask("<b>"+esc(p.name)+"</b><br><br>Dzēst un noņemt visus viņa ierakstus?", function(ok){
+        ask("<b>"+esc(p.name)+"</b><br><br>"+T.askDelPerson, function(ok){
           if(!ok) return;
           S.people = S.people.filter(function(x){return x.id!==did;});
           S.sessions.forEach(function(s){
@@ -1018,8 +1210,8 @@
             if(s.roster) s.roster = s.roster.filter(function(x){return x!==did;});
           });
           Object.keys(S.subs).forEach(function(m){ delete S.subs[m].entries[did]; });
-          save(); render(); toast("Dzēsts");
-        }, "Dzēst");
+          save(); render(); toast(T.tDeleted);
+        }, T.bDel);
       };
     });
     [].forEach.call(w.querySelectorAll("[data-edit]"), function(b){
@@ -1029,14 +1221,14 @@
       b.onclick = function(){
         var p = S.people.filter(function(x){return x.id===b.dataset.move;})[0];
         p.guest = !p.guest;
-        save(); render(); toast(p.guest ? "Pārcelts pie viesiem" : "Uzņemts komandā");
+        save(); render(); toast(p.guest ? T.tToGuests : T.tToTeam);
       };
     });
     [].forEach.call(w.querySelectorAll("[data-arch]"), function(b){
       b.onclick = function(){
         var p = S.people.filter(function(x){return x.id===b.dataset.arch;})[0];
         p.arch = !p.arch;
-        save(); render(); toast(p.arch ? "Pārcelts uz arhīvu" : "Atgriezts sarakstā");
+        save(); render(); toast(p.arch ? T.tToArch : T.tFromArch);
       };
     });
   }
@@ -1051,36 +1243,36 @@
     var w = $("pList");
     w.innerHTML = team.length ? team.map(function(p){
       return personRow(p,
-        '<button class="btn mini" data-move="'+p.id+'" title="Pārcelt uz viesiem">→ viesos</button>'+
-        '<button class="btn mini" data-arch="'+p.id+'" title="Uz arhīvu">📦</button>');
-    }).join("") : '<div class="empty">Komandā neviena nav.</div>';
+        '<button class="btn mini" data-move="'+p.id+'" title="'+T.tiToGuests+'">'+T.toGuests+'</button>'+
+        '<button class="btn mini" data-arch="'+p.id+'" title="'+T.tiArch+'">📦</button>');
+    }).join("") : '<div class="empty">'+T.teamEmpty+'</div>';
     bindPersonBtns(w);
 
     var archTeam = arch.filter(function(p){ return !p.guest; });
     var archGuest = arch.filter(function(p){ return p.guest; });
     $("aBreak").textContent = arch.length
-      ? "komanda " + archTeam.length + " · viesi " + archGuest.length
-      : "tukšs";
+      ? T.archSplit + archTeam.length + T.archSplit2 + archGuest.length
+      : T.empty;
     var a = $("aList");
     function archRow(p){
       return personRow(p,
-        '<button class="btn mini gr" data-arch="'+p.id+'" title="Atgriezt sarakstā">↩ '+(p.guest?"viesos":"komandā")+'</button>');
+        '<button class="btn mini gr" data-arch="'+p.id+'" title="'+T.tiUnarch+'">'+T.back+(p.guest?T.hGuests.toLowerCase():T.hTeam.toLowerCase())+'</button>');
     }
     a.innerHTML = arch.length
       ? archTeam.map(archRow).join("") +
         (archGuest.length
-          ? '<div class="muted" style="margin:14px 0 4px;padding-top:10px;border-top:1px solid var(--line);font-size:11px;text-transform:uppercase;letter-spacing:.5px">Viesi</div>'
+          ? '<div class="muted" style="margin:14px 0 4px;padding-top:10px;border-top:1px solid var(--line);font-size:11px;text-transform:uppercase;letter-spacing:.5px">'+T.hGuests+'</div>'
             + archGuest.map(archRow).join("")
           : "")
-      : '<div class="empty">Arhīvs tukšs.</div>';
+      : '<div class="empty">'+T.archEmpty+'</div>';
     bindPersonBtns(a);
 
     var g = $("gList");
     g.innerHTML = guests.length ? guests.map(function(p){
       return personRow(p,
-        '<button class="btn mini gr" data-move="'+p.id+'" title="Uzņemt komandā">→ komandā</button>'+
-        '<button class="btn mini" data-arch="'+p.id+'" title="Uz arhīvu">📦</button>');
-    }).join("") : '<div class="empty">Viesu vēl nav.</div>';
+        '<button class="btn mini gr" data-move="'+p.id+'" title="'+T.tiToTeam+'">'+T.toTeam+'</button>'+
+        '<button class="btn mini" data-arch="'+p.id+'" title="'+T.tiArch+'">📦</button>');
+    }).join("") : '<div class="empty">'+T.guestsEmpty+'</div>';
     bindPersonBtns(g);
   }
 
@@ -1116,9 +1308,9 @@
       if(e && e.s) cnt++;
       paid += subPaid(e,b.price); debt += subDebt(e,b.price); owe += subOwe(e,b.price);
     });
-    $("subSum").innerHTML = cnt+" no "+team.length+" · saņemts <b>"+eur(paid)+" €</b>"+
-      (debt>0? " · parādā <b>"+eur(debt)+" €</b>":"")+(owe>0? " · jāatdod <b>"+eur(owe)+" €</b>":"")+
-      (b.price>0 ? "" : '<br><span style="color:var(--warn)">⚠️ Šim mēnesim nav ievadīta abonementa cena</span>');
+    $("subSum").innerHTML = cnt+T.of+team.length+" · "+T.got+" <b>"+eur(paid)+" €</b>"+
+      (debt>0? " · "+T.owes+" <b>"+eur(debt)+" €</b>":"")+(owe>0? " · "+T.giveBack+" <b>"+eur(owe)+" €</b>":"")+
+      (b.price>0 ? "" : '<br><span style="color:var(--warn)">'+T.noSubPrice+'</span>');
 
     var q = ($("subFilter").value||"").trim().toLowerCase();
     var list = team.filter(function(p){
@@ -1127,27 +1319,27 @@
       return true;
     });
     var w = $("subList");
-    if(!list.length){ w.innerHTML='<div class="empty">Nav rezultātu.</div>'; return; }
+    if(!list.length){ w.innerHTML='<div class="empty">'+T.noResults+'</div>'; return; }
     w.innerHTML = list.map(function(p){
       var e = b.entries[p.id] || {};
       if(e.s && subOpen.indexOf(p.id)<0){
         var txt, cls, bar;
-        if(e.s==="paid"){ txt="Samaksāts · "+eur(b.price)+" €"; cls="p-ok"; bar="paid"; }
-        else if(e.s==="signed"){ txt="Pieteicies · parādā "+eur(b.price)+" €"; cls="p-bad"; bar="debt"; }
-        else { txt = "Iedeva "+eur(Number(e.a)||0)+" € · "+(subOwe(e,b.price)>0 ? "jāatdod "+eur(subOwe(e,b.price))+" €" : "parāds "+eur(subDebt(e,b.price))+" €"); cls="p-warn"; bar="part"; }
+        if(e.s==="paid"){ txt=T.subPaidL+" · "+eur(b.price)+" €"; cls="p-ok"; bar="paid"; }
+        else if(e.s==="signed"){ txt=T.signedDebt+eur(b.price)+" €"; cls="p-bad"; bar="debt"; }
+        else { txt = T.gave+" "+eur(Number(e.a)||0)+" € · "+(subOwe(e,b.price)>0 ? T.giveBack+" "+eur(subOwe(e,b.price))+" €" : T.debtW+" "+eur(subDebt(e,b.price))+" €"); cls="p-warn"; bar="part"; }
         return '<div class="crow s-'+bar+'" data-sopen="'+p.id+'">'+
           '<span class="cname">'+esc(p.name)+'</span><span class="pill '+cls+'">'+txt+'</span></div>';
       }
-      var SUBL = { paid:"Samaksāts", part:"Daļēji<br>samaksāts", signed:"Pieteicies<br>(nav samaksāts)" };
+      var SUBL = { paid:T.subPaid, part:T.subPart, signed:T.subSigned };
       var opts = ["paid","part","signed"].map(function(k){
         return '<button class="opt'+(e.s===k?" on":"")+'" data-ss="'+k+'" data-sp="'+p.id+'">'+SUBL[k]+'</button>';
       }).join("");
       return '<div class="prow"><div class="pname"><span>'+esc(p.name)+'</span></div>'+
         '<div class="opts" style="grid-template-columns:repeat(3,1fr)">'+opts+'</div>'+
         '<div class="partbox'+(e.s==="part"?" show":"")+'">'+
-          '<span class="muted">Iedeva:</span>'+
+          '<span class="muted">'+T.gave+':</span>'+
           '<input type="number" min="0" step="5" value="'+(e.a!=null?e.a:"")+'" data-samt="'+p.id+'" placeholder="0">'+
-          '<span class="muted">€ no '+eur(b.price)+' €</span>'+
+          '<span class="muted">€'+T.of+eur(b.price)+' €</span>'+
         '</div></div>';
     }).join("");
 
@@ -1156,9 +1348,9 @@
     });
     function subStatusText(e){
       if(!e || !e.s) return "";
-      if(e.s==="paid") return "Samaksāts ("+eur(b.price)+" €)";
-      if(e.s==="signed") return "Pieteicies — nav samaksāts";
-      return "Daļēji samaksāts ("+eur(Number(e.a)||0)+" €)";
+      if(e.s==="paid") return T.subPaidL+" ("+eur(b.price)+" €)";
+      if(e.s==="signed") return T.subSignedL;
+      return T.subPartL+" ("+eur(Number(e.a)||0)+" €)";
     }
     [].forEach.call(w.querySelectorAll("[data-ss]"), function(btn){
       btn.onclick = function(){
@@ -1181,7 +1373,7 @@
         }
         function clear(){ delete b.entries[pid]; if(i>=0) subOpen.splice(i,1); finish(); }
         if(e.s===st){ askClear(pid, subStatusText(e), function(ok){ if(ok) clear(); }); }
-        else if(e.s && e.s!==st){ askChange(pid, subStatusText(e), LBLTXT["s"+st], function(ok){ if(ok) apply(); }); }
+        else if(e.s && e.s!==st){ askChange(pid, subStatusText(e), LBLTXTo()["s"+st], function(ok){ if(ok) apply(); }); }
         else apply();
       };
     });
@@ -1230,8 +1422,7 @@
     save(); renderSubs(); renderSummary();
   };
 
-  var MON = ["Janvāris","Februāris","Marts","Aprīlis","Maijs","Jūnijs","Jūlijs","Augusts","Septembris","Oktobris","Novembris","Decembris"];
-  function monthName(m){ return MON[Number(m.slice(5,7))-1]+" "+m.slice(0,4); }
+  function monthName(m){ return T.months[Number(m.slice(5,7))-1]+" "+m.slice(0,4); }
   function allMonths(){
     var set = {};
     S.sessions.forEach(function(s){ set[s.date.slice(0,7)] = 1; });
@@ -1244,7 +1435,7 @@
     /* mēnešu izvēle */
     var sel = $("sumMonth"), months = allMonths();
     var prev = sumPicked ? sel.value : null;   /* ja lietotājs vēl nav izvēlējies — noklusējums */
-    var opts = '<option value="">Viss laiks</option>' +
+    var opts = '<option value="">'+T.allTime+'</option>' +
       months.map(function(m){ return '<option value="'+m+'">'+monthName(m)+'</option>'; }).join("");
     if(sel.innerHTML !== opts) sel.innerHTML = opts;
     if(prev!==null && (prev==="" || months.indexOf(prev)>=0)) sel.value = prev;
@@ -1284,9 +1475,9 @@
           : '<td class="num">0.00</td>')+'</tr>';
     }).join("");
     $("sumTable").innerHTML = rows ?
-      '<thead><tr><th>Vārds</th><th>Tren.</th><th>Samaksāts €</th><th>Bilance €</th></tr></thead>'+
+      '<thead><tr><th>'+T.thName+'</th><th>'+T.thSess+'</th><th>'+T.thPaid+'</th><th>'+T.thBalance+'</th></tr></thead>'+
       '<tbody>'+rows+'</tbody>'+
-      '<tfoot><tr><td>Kopā</td><td></td><td class="num green">'+eur(tp)+'</td>'+
+      '<tfoot><tr><td>'+T.total+'</td><td></td><td class="num green">'+eur(tp)+'</td>'+
         '<td class="num '+(td>0?"red":"")+'">'+eur(td)+'</td></tr></tfoot>'
       : '<tbody><tr><td class="muted" style="text-align:center;padding:24px">Nav datu</td></tr></tbody>';
     /* izdevumi pa mēnešiem (ar sadalījumu pa nosaukumiem) */
@@ -1314,23 +1505,22 @@
       /* ja periods jau izvēlēts augšā, mēneša nosaukumu neatkārto */
       if(m) return '<div>'+rows+
         '<div class="row" style="justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:6px;margin-top:6px">'+
-          '<b>Kopā</b><b class="num">'+eur(b2.total)+' €</b></div></div>';
+          '<b>'+T.total+'</b><b class="num">'+eur(b2.total)+' €</b></div></div>';
       return '<div style="margin-bottom:14px">'+
         '<div class="row" style="justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:6px">'+
           '<b>'+monthName(k)+'</b><b class="num">'+eur(b2.total)+' €</b></div>'+
         rows+'</div>';
-    }).join("") : '<span class="muted">Izdevumu vēl nav.</span>';
+    }).join("") : '<span class="muted">'+T.noExpYet+'</span>';
 
     var subMonths = Object.keys(S.subs).sort().reverse().filter(function(x){ return !m || x===m; });
     var subInfo = subMonths.map(function(x){
       var b=S.subs[x], sum=0, n=0;
       S.people.forEach(function(p){ var e=b.entries[p.id]; if(e&&e.s){ n++; sum+=subPaid(e,b.price); } });
-      return n ? monthName(x)+": "+n+" abon. · <b>"+eur(sum)+" €</b>" : "";
+      return n ? monthName(x)+": "+n+T.subsCount+"<b>"+eur(sum)+" €</b>" : "";
     }).filter(Boolean).join("<br>");
-    $("sumSubs").innerHTML = subInfo || '<span class="muted">Abonementu vēl nav.</span>';
-    $("sumNote").innerHTML = 'Bilance: <span class="red">sarkans</span> = man parādā · '+
-      '<span style="color:var(--warn)">oranžs ar mīnusu</span> = man jāatdod'+
-      (to>0 ? '<br>Kopā jāatdod: <b style="color:var(--warn)">'+eur(to)+' €</b>' : '');
+    $("sumSubs").innerHTML = subInfo || '<span class="muted">'+T.noSubsYet+'</span>';
+    $("sumNote").innerHTML = T.noteBal +
+      (to>0 ? '<br>'+T.noteOwe+'<b style="color:var(--warn)">'+eur(to)+' €</b>' : '');
   }
 
   /* ---- kopsavilkuma lauciņu klikšķi ---- */
@@ -1343,17 +1533,17 @@
     }).filter(function(x){ return x.v > 0; })
       .sort(function(a,b){ return b.v - a.v; });
     var total = rows.reduce(function(t,x){ return t + x.v; }, 0);
-    var per = m ? monthName(m) : "Viss laiks";
+    var per = m ? monthName(m) : T.allTime;
     var col = kind==="debt" ? "var(--bad)" : "var(--warn)";
-    var head = "<b>"+(kind==="debt" ? "Man parādā" : "Man jāatdod")+"</b><br><span class='muted'>"+per+"</span>";
-    if(!rows.length) return ask(head+"<br><br>Nevienam nav.", null, "Labi", true);
+    var head = "<b>"+(kind==="debt" ? T.kOwedMe.replace(" €","") : T.kIOwe.replace(" €",""))+"</b><br><span class='muted'>"+per+"</span>";
+    if(!rows.length) return ask(head+"<br><br>"+T.noOne, null, T.bYes, true);
     ask(head+
       '<div class="dlglist">'+rows.map(function(x){
         return '<div class="row"><span>'+esc(x.name)+'</span><b class="num" style="color:'+col+'">'+eur(x.v)+' €</b></div>';
       }).join("")+'</div>'+
       '<div class="row" style="justify-content:space-between;border-top:1px solid var(--line);padding-top:8px;margin-top:6px">'+
-        '<b>Kopā</b><b class="num" style="color:'+col+'">'+eur(total)+' €</b></div>',
-      null, "Labi", true);
+        '<b>'+T.total+'</b><b class="num" style="color:'+col+'">'+eur(total)+' €</b></div>',
+      null, T.bYes, true);
   }
   $("kpiPar").onclick = function(){ debtList("debt"); };
   $("kpiAtd").onclick = function(){ debtList("owe"); };
@@ -1378,14 +1568,14 @@
   $("newDate").value = new Date().toISOString().slice(0,10);
   $("addSess").onclick = function(){
     var d = $("newDate").value;
-    if(!d){ info("Izvēlies datumu"); return; }
-    if(S.sessions.some(function(s){return s.date===d;})){ info("Šis datums jau ir sarakstā"); return; }
+    if(!d){ info(T.eDate); return; }
+    if(S.sessions.some(function(s){return s.date===d;})){ info(T.eDateExists); return; }
     var s = {id:uid(), date:d, entries:{}, price: S.price};
     S.sessions.push(s); save(); cur=s.id; renderSessions();
     openRoster();
     var prev = prevRoster();
     if(prev){ draft = prev.slice(); renderRoster(); }
-    toast("Treniņš pievienots");
+    toast(T.tSessAdded);
   };
 
   function prevRoster(){
@@ -1401,11 +1591,11 @@
   /* ātrā spēlētāja pievienošana (atgriež person id vai null) */
   function quickAdd(name, isGuest){
     name = (name||"").trim();
-    if(!name){ info("Ieraksti vārdu"); return null; }
+    if(!name){ info(T.eName); return null; }
     var ex = S.people.filter(function(p){ return p.name.toLowerCase()===name.toLowerCase(); })[0];
     if(ex){
-      if(ex.arch){ ex.arch = false; save(); toast("“"+ex.name+"” atgriezts no arhīva"); }
-      else toast("“"+ex.name+"” jau ir sarakstā");
+      if(ex.arch){ ex.arch = false; save(); toast("“"+ex.name+T.fromArch); }
+      else toast("“"+ex.name+T.alreadyIn);
       return ex.id;
     }
     var p = {id:uid(), name:name, guest: !!isGuest};
@@ -1442,7 +1632,7 @@
   var unmatched = [];
   $("rPasteGo").onclick = function(){
     var lines = $("rPaste").value.split(/[\n,;]+/).map(function(x){return x.trim();}).filter(Boolean);
-    if(!lines.length){ info("Ielīmē vārdus"); return; }
+    if(!lines.length){ info(T.ePaste); return; }
     var ok=0, unarch=0, amb=[]; unmatched=[];
     lines.forEach(function(l){
       var m = findPerson(l);
@@ -1455,15 +1645,15 @@
     });
     renderRoster();
     if(unarch) save();
-    var msg = "✅ Atzīmēti: "+ok + (unarch? " (no arhīva atgriezti: "+unarch+")" : "");
-    if(amb.length) msg += "<br>❓ Neskaidri (vairāki sakrīt): "+amb.map(esc).join(", ");
-    if(unmatched.length) msg += '<br>➕ Nav sarakstā: '+unmatched.map(esc).join(", ")+
-      '<br><button class="btn" id="rAddUnm" style="margin-top:8px">Pievienot šos '+unmatched.length+' kā jaunus</button>';
+    var msg = T.pasteOk+ok + (unarch? T.pasteUnarch+unarch+")" : "");
+    if(amb.length) msg += T.pasteAmb+amb.map(esc).join(", ");
+    if(unmatched.length) msg += T.pasteNew+unmatched.map(esc).join(", ")+
+      '<br><button class="btn" id="rAddUnm" style="margin-top:8px">'+T.pasteAddBtn+unmatched.length+T.pasteAddBtn2+'</button>';
     $("rPasteRes").innerHTML = msg;
     var btn = $("rAddUnm");
     if(btn) btn.onclick = function(){
       unmatched.forEach(function(n){ var id=quickAdd(n,false); if(id && draft.indexOf(id)<0) draft.push(id); });
-      unmatched=[]; $("rPasteRes").innerHTML="✅ Pievienoti un atzīmēti"; renderRoster(); renderPeople();
+      unmatched=[]; $("rPasteRes").innerHTML=T.pasteDone; renderRoster(); renderPeople();
     };
   };
 
@@ -1474,7 +1664,7 @@
     if(!s.roster) s.roster = S.people.map(function(x){return x.id;});
     if(s.roster.indexOf(id)<0) s.roster.push(id);
     save(); $("dNew").value=""; $("pFilter").value=""; hideSug();
-    render(); toast((name||"Pievienots")+" — treniņā");
+    render(); toast((name||"")+T.tAddedToSess);
   }
   $("dAdd").onclick = function(){
     var id = quickAdd($("dNew").value, true);
@@ -1499,7 +1689,7 @@
       return q.length>=3 && norm(p.name).indexOf(q)>=0;
     }).slice(0, 8);
     if(!list.length){ hideSug(); return; }
-    w.innerHTML = '<div class="muted" style="font-size:12px;margin-bottom:6px">Viesi no saraksta:</div>'+
+    w.innerHTML = '<div class="muted" style="font-size:12px;margin-bottom:6px">'+T.guestSug+'</div>'+
       '<div class="sug">'+list.map(function(p){
         return '<button data-sug="'+p.id+'">'+esc(p.name)+'</button>';
       }).join("")+'</div>';
@@ -1518,15 +1708,15 @@
   $("rNone").onclick = function(){ draft = []; renderRoster(); };
   $("rPrev").onclick = function(){
     var prev = prevRoster();
-    if(!prev){ info("Nav iepriekšēja treniņa ar atzīmētiem dalībniekiem"); return; }
-    draft = prev.slice(); renderRoster(); toast("Pārkopēts");
+    if(!prev){ info(T.eNoPrev); return; }
+    draft = prev.slice(); renderRoster(); toast(T.tCopied);
   };
   $("rSave").onclick = function(){
     var s = S.sessions.filter(function(x){return x.id===cur;})[0];
     s.roster = draft.slice();
     Object.keys(s.entries).forEach(function(pid){ if(draft.indexOf(pid)<0) delete s.entries[pid]; });
     save(); open=[]; $("pFilter").value=""; $("onlyOpen").checked=false;
-    render(); show("detail"); toast("Saglabāts: "+draft.length+" dalībnieki");
+    render(); show("detail"); toast(T.tRosterSaved+draft.length+T.tRosterSaved2);
   };
   /* treniņa cena (noklusējums — iestatījumu cena) */
   var prcOrig = null;
@@ -1549,8 +1739,8 @@
     if(now===was) return;
     var used = Object.keys(s.entries).length;
     if(!used){ renderSessions(); renderSummary(); return; }
-    ask("<b>Treniņa cena</b><br><br>"+eur(was)+" € <span class='arw'>→</span> <b>"+eur(now)+" €</b><br><br>"+
-        "Tiks pārrēķināti "+used+" jau atzīmētie maksājumi. Mainīt?", function(ok){
+    ask(T.askPriceTitle+"<br><br>"+eur(was)+" € <span class='arw'>→</span> <b>"+eur(now)+" €</b><br><br>"+
+        T.askPriceInfo1+used+T.askPriceInfo2, function(ok){
       if(!ok){ s.price = was; save(); }
       render();
     });
@@ -1560,15 +1750,15 @@
   $("onlyOpen").onchange = function(){ if(cur) renderDetail(); };
   $("backBtn").onclick = function(){ cur=null; open=[]; $("pFilter").value=""; $("onlyOpen").checked=false; render(); show("sessions"); };
   $("delSess").onclick = function(){
-    ask("Dzēst šo treniņu un visus tā ierakstus?", function(ok){
+    ask(T.askDelSess, function(ok){
       if(!ok) return;
       S.sessions = S.sessions.filter(function(x){return x.id!==cur;});
-      cur=null; save(); render(); show("sessions"); toast("Dzēsts");
-    }, "Dzēst");
+      cur=null; save(); render(); show("sessions"); toast(T.tDeleted);
+    }, T.bDel);
   };
   function addBulk(asGuest){
     var names = $("bulk").value.split(/[\n,;]+/).map(function(x){return x.trim().replace(/\s+/g," ");}).filter(Boolean);
-    if(!names.length){ info("Ieraksti vismaz vienu vārdu"); return; }
+    if(!names.length){ info(T.eNames); return; }
     var added=0, moved=0, skipped=0;
     names.forEach(function(n){
       var ex = S.people.filter(function(p){return p.name.toLowerCase()===n.toLowerCase();})[0];
@@ -1582,9 +1772,9 @@
       S.people.push({id:uid(), name:n, guest:!!asGuest, arch:false}); added++;
     });
     $("bulk").value=""; save(); render();
-    var msg = "Pievienoti: "+added;
-    if(moved) msg += " · pārcelti: "+moved;
-    if(skipped) msg += " · jau bija: "+skipped;
+    var msg = T.tAdded+added;
+    if(moved) msg += T.tMoved+moved;
+    if(skipped) msg += T.tExisted+skipped;
     toast(msg);
   }
   $("addPeople").onclick = function(){ addBulk(false); };
@@ -1610,7 +1800,7 @@
       var row = [p.name, p.guest?"viesis":"komanda"];
       dates.forEach(function(s){
         var e = s.entries[p.id];
-        row.push(!e||!e.s ? "" : (e.s==="part" ? "Daleji "+eur(Number(e.a)||0) : SHORT[e.s]));
+        row.push(!e||!e.s ? "" : (e.s==="part" ? "Daleji "+eur(Number(e.a)||0) : SHORTo()[e.s]));
       });
       row.push(eur(t.paid), eur(t.debt), eur(t.owe));
       lines.push(row.join(";"));
@@ -1622,7 +1812,7 @@
     var d = new Date();
     var name = "payments-"+d.getFullYear()+pad2(d.getMonth()+1)+pad2(d.getDate())+"-"+pad2(d.getHours())+pad2(d.getMinutes())+".json";
     dl(name, JSON.stringify(S,null,2), "application/json");
-    markBackup("Fails saglabāts lejupielādēs");
+    markBackup(T.tFileSaved);
   }
   $("expJson").onclick = expJson; $("expJson2").onclick = expJson;
 
@@ -1631,7 +1821,7 @@
   function markBackup(msg){
     S.backup = Date.now(); save(); renderBackup();
     var d = new Date(S.backup);
-    toast((msg||"Dublējums saglabāts")+" "+pad2(d.getHours())+":"+pad2(d.getMinutes()));
+    toast((msg||T.tFileSaved)+" "+pad2(d.getHours())+":"+pad2(d.getMinutes()));
   }
 
   function showJsonText(){
@@ -1692,19 +1882,19 @@
   function thisMonth(){ var d=new Date(); return d.getFullYear()+"-"+pad2(d.getMonth()+1); }
   function fmtDT(ts){
     var d = new Date(ts);
-    return pad2(d.getDate())+"."+pad2(d.getMonth()+1)+"."+d.getFullYear()+" plkst. "+pad2(d.getHours())+":"+pad2(d.getMinutes());
+    return pad2(d.getDate())+"."+pad2(d.getMonth()+1)+"."+d.getFullYear()+T.atTime+pad2(d.getHours())+":"+pad2(d.getMinutes());
   }
   function renderBackup(){
     var marked = S.sessions.some(function(s){ return Object.keys(s.entries).length; });
     var days = S.backup ? Math.floor((Date.now()-S.backup)/86400000) : null;
     $("bkStatus").innerHTML = days===null
-      ? "Dublējums vēl nav taisīts."
-      : "Pēdējais dublējums: <b>"+fmtDT(S.backup)+"</b> ("+(days===0 ? "šodien" : days===1 ? "vakar" : "pirms "+days+" d.")+")";
+      ? T.bkNever
+      : T.bkLast+"<b>"+fmtDT(S.backup)+"</b> ("+(days===0 ? T.bkToday : days===1 ? T.bkYest : T.bkAgo+days+T.bkDays)+")";
     var warn = marked && (days===null || days>=7);
     $("bkWarn").classList.toggle("hide", !warn);
     $("bkText").innerHTML = days===null
-      ? "⚠️ Dublējums nav taisīts. Saglabā datus failā."
-      : "⚠️ Pēdējais dublējums "+fmtDT(S.backup)+" — pirms "+days+" dienām.";
+      ? T.bkWarnNever
+      : T.bkWarn1+fmtDT(S.backup)+T.bkWarn2+days+T.bkWarn3;
   }
 
   function parseData(txt){ return JSON.parse(String(txt).replace(/^﻿/,"").trim()); }
@@ -1729,7 +1919,7 @@
       S.sessions.forEach(function(s){ if(typeof s.price !== "number") s.price = S.price; });
       S.v = 3;
     }
-    save(); cur=null; open=[]; subOpen=[]; applyTheme(); applyLogo(); render(); show("sessions"); toast("Dati ielādēti");
+    save(); cur=null; open=[]; subOpen=[]; applyLang(); applyTheme(); applyLogo(); render(); show("sessions"); toast(T.tDataLoaded);
   }
   $("copyJson").onclick = function(){
     var txt = JSON.stringify(S);
@@ -1760,16 +1950,16 @@
     var r = new FileReader();
     r.onload = function(){
       try{ applyData(parseData(r.result)); }
-      catch(e){ info("Neizdevās nolasīt failu"); }
+      catch(e){ info(T.eReadFile); }
     };
     r.readAsText(f); ev.target.value="";
   };
   $("wipe").onclick = function(){
-    ask("Dzēst pilnīgi visus treniņus un abonementus?<br><br>To nevar atcelt. Komandas saraksts tiks atjaunots.", function(ok){
+    ask(T.askWipe, function(ok){
       if(!ok) return;
       S = {price:S.price, people:JSON.parse(JSON.stringify(DATA.people)), sessions:[], subs:{}, v:3};
-      cur=null; save(); render(); show("sessions"); toast("Viss dzēsts, saraksts atjaunots");
-    }, "Dzēst visu");
+      cur=null; save(); render(); show("sessions"); toast(T.tAllDeleted);
+    }, T.bWipeAll);
   };
 
   /* ---------- logo ---------- */
@@ -1825,21 +2015,22 @@
           c.height = Math.max(1, Math.round(im.height*sc));
           c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
           S.logo = c.toDataURL("image/png");
-          save(); applyLogo(); toast("Logo nomainīts");
-        }catch(e){ info("Neizdevās apstrādāt attēlu"); }
+          save(); applyLogo(); toast(T.tLogoChanged);
+        }catch(e){ info(T.eImgProc); }
       };
-      im.onerror = function(){ info("Neizdevās nolasīt attēlu"); };
+      im.onerror = function(){ info(T.eImg); };
       im.src = r.result;
     };
     r.readAsDataURL(f);
   };
   $("logoReset").onclick = function(){
-    ask("Noņemt logo no virsraksta?", function(ok){
+    ask(T.askRmLogo, function(ok){
       if(!ok) return;
-      delete S.logo; save(); applyLogo(); toast("Logo noņemts");
-    }, "Noņemt");
+      delete S.logo; save(); applyLogo(); toast(T.tLogoRemoved);
+    }, T.bRemove);
   };
   applyLogo();
+  applyLang();
 
   /* ---------- izskats: tumšs / gaišs ---------- */
   function applyTheme(){
