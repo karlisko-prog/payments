@@ -1,6 +1,7 @@
-/* Payments — bezsaistes režīms */
-var CACHE = "payments-v1";
-var ASSETS = ["./", "./index.html"];
+/* Ledus kase — bezsaistes režīms */
+var CACHE = "ledus-kase-v2";
+var ASSETS = ["./", "./index.html", "./manifest.webmanifest",
+              "./icon-192.png", "./icon-512.png", "./icon-180.png", "./icon-maskable.png"];
 
 self.addEventListener("install", function(e){
   e.waitUntil(
