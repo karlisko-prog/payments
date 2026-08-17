@@ -545,7 +545,7 @@
   }
 
   /* ---------- valodas ---------- */
-  var APP_VER = "1.1";
+  var APP_VER = "1.2";
   var I18N = {
     lv:{
       navTr:"Treniņi", navSum:"Kopsavilkums", navSub:"Abonementi", navPpl:"Dalībnieki", navSet:"Iestatījumi",
@@ -1979,8 +1979,9 @@
   };
 
   /* ---------- logo ---------- */
-  var DEF_ICONS = [].map.call(document.querySelectorAll('link[rel="apple-touch-icon"],link[rel="icon"],link[rel="shortcut icon"]'),
-                              function(l){ return l.href; });
+  var ICON_LINKS = 'link[rel="apple-touch-icon"],link[rel="icon"],link[rel="shortcut icon"]';
+  var DEF_ICONS = [].map.call(document.querySelectorAll(ICON_LINKS), function(l){ return l.href; });
+  var DEF_MANIFEST = (document.querySelector('link[rel="manifest"]')||{}).href || "";
   function applyLogo(){
     var src = S.logo || "";
     var hl = $("hdrLogo"), pv = $("logoPrev");
@@ -1988,21 +1989,36 @@
     pv.classList.toggle("hide", !src);
     if(src){
       hl.src = src; pv.src = src;
-      makeIcon(src, function(icon){
-        [].forEach.call(document.querySelectorAll('link[rel="apple-touch-icon"],link[rel="icon"],link[rel="shortcut icon"]'),
-          function(l){ l.href = icon; });
+      makeIcon(src, 192, function(i192){
+        [].forEach.call(document.querySelectorAll(ICON_LINKS), function(l){ l.href = i192; });
+        makeIcon(src, 512, function(i512){ setManifest(i192, i512); });
       });
     } else {
-      [].forEach.call(document.querySelectorAll('link[rel="apple-touch-icon"],link[rel="icon"],link[rel="shortcut icon"]'),
-        function(l,i){ if(DEF_ICONS[i]) l.href = DEF_ICONS[i]; });
+      [].forEach.call(document.querySelectorAll(ICON_LINKS), function(l,i){ if(DEF_ICONS[i]) l.href = DEF_ICONS[i]; });
+      var ml = document.querySelector('link[rel="manifest"]');
+      if(ml && DEF_MANIFEST) ml.href = DEF_MANIFEST;
     }
   }
+  /* mājas ekrāna ikonu ņem no manifesta, tāpēc pārrakstām arī to */
+  function setManifest(i192, i512){
+    try{
+      var man = {
+        name:"Payments", short_name:"Payments", start_url:".", display:"standalone",
+        background_color:"#0e1116", theme_color:"#0e1116",
+        icons:[{src:i192, sizes:"192x192", type:"image/png", purpose:"any maskable"},
+               {src:i512, sizes:"512x512", type:"image/png", purpose:"any maskable"}]
+      };
+      var url = "data:application/manifest+json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(man))));
+      var ml = document.querySelector('link[rel="manifest"]');
+      if(ml) ml.href = url;
+    }catch(e){}
+  }
   /* kvadrātveida ikona ar atstarpi malās */
-  function makeIcon(src, cb){
+  function makeIcon(src, N, cb){
     var im = new Image();
     im.onload = function(){
       try{
-        var N = 192, pad = 0.74;
+        var pad = 0.74;
         var c = document.createElement("canvas"); c.width=N; c.height=N;
         var x = c.getContext("2d");
         x.fillStyle = "#0e1116"; x.fillRect(0,0,N,N);
