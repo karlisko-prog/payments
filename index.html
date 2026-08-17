@@ -454,7 +454,7 @@
         </summary>
         <div id="aboutText" style="font-size:14px;line-height:1.6;margin-top:10px"></div>
       </details>
-      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v1.0</div>
+      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v1.6</div>
     </div>
   </section>
 </main>
@@ -545,7 +545,7 @@
   }
 
   /* ---------- valodas ---------- */
-  var APP_VER = "1.5";
+  var APP_VER = "1.6";
   var I18N = {
     lv:{
       navTr:"Treniņi", navSum:"Kopsavilkums", navSub:"Abonementi", navPpl:"Dalībnieki", navSet:"Iestatījumi",
@@ -2099,8 +2099,17 @@
   offlineBadge();
 
   if("serviceWorker" in navigator && window.isSecureContext && location.protocol !== "file:"){
+    var swReloaded = false;
+    navigator.serviceWorker.addEventListener("controllerchange", function(){
+      if(swReloaded) return;
+      swReloaded = true;
+      location.reload();
+    });
     window.addEventListener("load", function(){
-      navigator.serviceWorker.register("sw.js").catch(function(){});
+      navigator.serviceWorker.register("sw.js", {updateViaCache:"none"}).then(function(reg){
+        try{ reg.update(); }catch(e){}
+        setInterval(function(){ try{ reg.update(); }catch(e){} }, 60*60*1000);
+      }).catch(function(){});
     });
   }
 

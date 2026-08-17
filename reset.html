@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="lv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Ledus kase — atiestatīšana</title>
+<style>
+  body{margin:0;padding:24px;background:#0f1216;color:#e7edf3;
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.6}
+  h1{font-size:20px;margin:0 0 16px}
+  .box{background:#171c22;border:1px solid #2a323b;border-radius:12px;padding:16px;margin-bottom:14px}
+  .big{font-size:28px;font-weight:700;margin:6px 0}
+  .ok{color:#4ade80} .bad{color:#f87171} .muted{color:#9aa7b4;font-size:13px}
+  a.btn{display:block;text-align:center;background:#2563eb;color:#fff;text-decoration:none;
+        padding:14px;border-radius:10px;font-weight:600;margin-top:8px}
+  ul{margin:8px 0 0 18px;padding:0}
+</style>
+</head>
+<body>
+<h1>Ledus kase — atiestatīšana</h1>
+
+<div class="box">
+  <div class="muted">Versija, kas šobrīd ir serverī:</div>
+  <div class="big" id="srv">pārbauda…</div>
+  <div class="muted" id="srvNote"></div>
+</div>
+
+<div class="box">
+  <div class="muted">Tīrīšana:</div>
+  <ul id="log"></ul>
+</div>
+
+<a class="btn" href="./" id="go">Atvērt aplikāciju</a>
+<p class="muted">Ja augšā rāda v1.6, bet aplikācijā joprojām vecu versiju — atinstalē mājas ekrāna ikonu un atver šo lapu vēlreiz.</p>
+
+<script>
+(function(){
+  var log = document.getElementById("log");
+  function add(t, cls){
+    var li = document.createElement("li");
+    li.textContent = t;
+    if(cls) li.className = cls;
+    log.appendChild(li);
+  }
+
+  /* 1. Nolasa versiju tieši no servera, apejot jebkuru kešu */
+  var bust = "nocache=" + Math.random().toString(36).slice(2) + Date.now();
+  fetch("./index.html?" + bust, {cache:"no-store"})
+    .then(function(r){ return r.text(); })
+    .then(function(t){
+      var m = t.match(/APP_VER\s*=\s*"([\d.]+)"/);
+      document.getElementById("srv").textContent = m ? ("v" + m[1]) : "nezināma";
+      document.getElementById("srvNote").textContent =
+        m ? "Tā ir īstā versija GitHub Pages serverī." : "Neizdevās atrast versijas numuru failā.";
+    })
+    .catch(function(){
+      document.getElementById("srv").textContent = "kļūda";
+      document.getElementById("srvNote").textContent = "Nav interneta savienojuma.";
+    });
+
+  /* 2. Noņem visus service worker'us */
+  if("serviceWorker" in navigator){
+    navigator.serviceWorker.getRegistrations().then(function(rs){
+      if(!rs.length){ add("Service worker: nebija neviena", "muted"); return; }
+      rs.forEach(function(r){ r.unregister(); });
+      add("Service worker: noņemti " + rs.length + " gab.", "ok");
+    }).catch(function(){ add("Service worker: neizdevās", "bad"); });
+  } else {
+    add("Service worker: nav atbalstīts", "muted");
+  }
+
+  /* 3. Izdzēš visus kešus */
+  if(window.caches && caches.keys){
+    caches.keys().then(function(keys){
+      if(!keys.length){ add("Kešatmiņa: tukša", "muted"); return; }
+      return Promise.all(keys.map(function(k){ return caches.delete(k); })).then(function(){
+        add("Kešatmiņa: izdzēsta (" + keys.join(", ") + ")", "ok");
+      });
+    }).catch(function(){ add("Kešatmiņa: neizdevās", "bad"); });
+  } else {
+    add("Kešatmiņa: nav pieejama", "muted");
+  }
+
+  /* Saite ar cache-bust, lai pārlūks nepaņem veco HTML */
+  document.getElementById("go").href = "./?fresh=" + Date.now();
+})();
+</script>
+</body>
+</html>
