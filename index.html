@@ -9,30 +9,36 @@
 <meta name="apple-mobile-web-app-title" content="Ledus kase">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0e1116">
+<meta name="theme-color" content="#0f141b">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <link rel="shortcut icon" type="image/png" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0e1116; --panel:#161b22; --panel2:#1c232c; --line:#2a323d;
-    --tx:#e8edf3; --tx2:#96a1b0;
-    --acc:#3b82f6;
-    --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444; --off:#64748b;
-    --hdr:rgba(14,17,22,.92);
+    --bg:#0f141b; --panel:#1b2027; --panel2:#252a32; --line:#2a323d;
+    --tx:#dee2ec; --tx2:#96a1b0;
+    --acc:#3b82f6; --acc2:#1d4ed8;
+    --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444; --off:#5c6875;
+    --hdr:rgba(15,20,27,.82);
     --warnbg:#241c08; --warnln:#7a5a12;
     --okbg:#0f2a17; --oktx:#7ef0a5; --okln:#1f5c33;
-    --r:14px;
+    --r:12px; --r2:10px;
+    --fh:"Archivo Narrow",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    --fb:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    --fm:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   }
   /* gaišā tēma */
   body.light{
-    --bg:#f2f5f9; --panel:#ffffff; --panel2:#eef2f7; --line:#d9e0e9;
-    --tx:#141a22; --tx2:#5d6a78;
-    --acc:#2563eb;
+    --bg:#eef2f7; --panel:#ffffff; --panel2:#f3f6fa; --line:#d9e0e9;
+    --tx:#0f141b; --tx2:#5d6a78;
+    --acc:#2563eb; --acc2:#1d4ed8;
     --ok:#15803d; --warn:#b45309; --bad:#dc2626; --off:#8a95a3;
-    --hdr:rgba(242,245,249,.94);
+    --hdr:rgba(238,242,247,.88);
     --warnbg:#fff7e6; --warnln:#e6c37a;
     --okbg:#e8f7ee; --oktx:#15803d; --okln:#a7e0bd;
   }
@@ -42,47 +48,62 @@
   body.light .opt.on[data-s=debt],body.light .opt.on[data-ss=signed]{color:#fff}
   body.light .opt.on[data-s=part],body.light .opt.on[data-ss=part]{color:#fff}
   body.light .opt.on[data-s=none]{color:#fff}
-  body.light nav button.on{color:#fff}
   body.light .mask{background:rgba(16,24,40,.45)}
   body.light .dlg b{color:#000}
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
   body{
     background:var(--bg); color:var(--tx);
-    font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;
-    padding-bottom:90px;
+    font:16px/1.5 var(--fb);
+    padding-bottom:calc(86px + env(safe-area-inset-bottom,0px));
   }
   header{
     position:sticky; top:0; z-index:20; background:var(--hdr);
-    backdrop-filter:blur(10px); border-bottom:1px solid var(--line);
-    padding:14px 16px 0;
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+    padding:14px 16px; padding-top:calc(14px + env(safe-area-inset-top,0px));
   }
-  h1{font-size:18px;margin:0 0 12px;letter-spacing:.2px}
+  h1{font-family:var(--fh);font-size:20px;font-weight:600;margin:0;letter-spacing:.05em;text-transform:uppercase}
   h1 span{color:var(--acc)}
-  nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
-  nav::-webkit-scrollbar{display:none}
-  nav button{
-    flex:0 0 auto;background:var(--panel);border:1px solid var(--line);color:var(--tx2);
-    padding:8px 14px;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;
+  /* apakšējā navigācija */
+  nav{
+    position:fixed;left:0;right:0;bottom:0;z-index:30;
+    display:grid;grid-template-columns:repeat(5,1fr);
+    background:var(--hdr);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-top:1px solid var(--line);
+    padding:8px 2px calc(8px + env(safe-area-inset-bottom,0px));
   }
-  nav button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+  nav button{
+    background:none;border:none;color:var(--tx2);cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+    padding:4px 1px;min-height:48px;
+    font-family:var(--fm);font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;line-height:1;
+  }
+  nav button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  nav button.on{color:var(--acc)}
+  nav button.on svg{filter:drop-shadow(0 0 6px rgba(59,130,246,.5))}
+  nav button:active{transform:scale(.92)}
+  nav button span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
   main{padding:16px;max-width:820px;margin:0 auto}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
-  .card h2{font-size:14px;text-transform:uppercase;letter-spacing:.6px;color:var(--tx2);margin:0 0 10px}
+  .card h2{font-family:var(--fm);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--tx2);margin:0 0 12px}
   .row{display:flex;gap:8px;align-items:center}
   .row.wrap{flex-wrap:wrap}
   input,select,textarea,button{font-family:inherit;font-size:16px}
   input[type=text],input[type=date],input[type=number],select,textarea{
     background:var(--panel2);border:1px solid var(--line);color:var(--tx);
-    border-radius:10px;padding:11px 12px;width:100%;outline:none;
+    border-radius:var(--r2);padding:12px;width:100%;outline:none;min-height:44px;
+    transition:border-color .15s,box-shadow .15s;
   }
-  input:focus,textarea:focus,select:focus{border-color:var(--acc)}
+  input:focus,textarea:focus,select:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(59,130,246,.14)}
   textarea{min-height:96px;resize:vertical;line-height:1.5}
   .btn{
-    background:var(--acc);color:#fff;border:none;border-radius:10px;padding:11px 16px;
-    font-weight:700;cursor:pointer;white-space:nowrap;
+    background:linear-gradient(180deg,var(--acc),var(--acc2));color:#fff;border:none;
+    border-radius:var(--r2);padding:12px 18px;min-height:44px;
+    font-family:var(--fh);font-size:16px;font-weight:600;letter-spacing:.03em;
+    cursor:pointer;white-space:nowrap;box-shadow:0 0 14px rgba(59,130,246,.22);
   }
-  .btn.sec{background:var(--panel2);color:var(--tx);border:1px solid var(--line)}
+  .btn.sec{background:var(--panel2);color:var(--tx);border:1px solid var(--line);box-shadow:none}
   .btn.danger{background:transparent;color:var(--bad);border:1px solid var(--line);padding:8px 12px;font-weight:600}
   .btn:active{transform:scale(.98)}
   .muted{color:var(--tx2);font-size:14px}
@@ -90,18 +111,30 @@
 
   /* treniņu saraksts */
   .sess{
+    position:relative;overflow:hidden;
     background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
-    padding:14px;margin-bottom:10px;cursor:pointer;
+    padding:14px 14px 14px 20px;margin-bottom:10px;cursor:pointer;
+    transition:transform .12s;
   }
+  .sess:active{transform:scale(.985)}
+  .sess::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--line)}
+  .sess.k-ok::before{background:var(--ok);box-shadow:0 0 8px rgba(34,197,94,.4)}
+  .sess.k-bad::before{background:var(--bad);box-shadow:0 0 8px rgba(239,68,68,.5)}
+  .sess.k-warn::before{background:var(--warn);box-shadow:0 0 8px rgba(245,158,11,.45)}
   .sess.act{border-color:var(--acc)}
-  .sess-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
-  .sess-date{font-weight:700;font-size:16px}
+  .sess-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .sess-date{font-family:var(--fh);font-weight:600;font-size:20px;letter-spacing:.01em;white-space:nowrap}
+  .sess-top > div:first-child{min-width:0}
+  .crow .cname{min-width:0;flex:1}
   .sess-sum{font-size:13px;color:var(--tx2);margin-top:6px}
-  .pill{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
-  .p-ok{background:rgba(34,197,94,.15);color:var(--ok)}
-  .p-bad{background:rgba(239,68,68,.15);color:var(--bad)}
-  .p-warn{background:rgba(245,158,11,.15);color:var(--warn)}
-  .p-off{background:rgba(100,116,139,.18);color:#9aa7b8}
+  .pill{
+    font-family:var(--fm);font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+    padding:5px 9px;border-radius:6px;white-space:nowrap;border:1px solid transparent;
+  }
+  .p-ok{background:rgba(34,197,94,.1);color:var(--ok);border-color:rgba(34,197,94,.24)}
+  .p-bad{background:rgba(239,68,68,.1);color:var(--bad);border-color:rgba(239,68,68,.24)}
+  .p-warn{background:rgba(245,158,11,.1);color:var(--warn);border-color:rgba(245,158,11,.24)}
+  .p-off{background:rgba(100,116,139,.12);color:var(--tx2);border-color:rgba(100,116,139,.24)}
 
   /* persona rindā */
   .prow{border-top:1px solid var(--line);padding:12px 0}
@@ -110,11 +143,13 @@
   .opts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
   .opt{
     border:1px solid var(--line);background:var(--panel2);color:var(--tx2);
-    border-radius:10px;padding:9px 4px;font-size:12px;font-weight:700;cursor:pointer;text-align:center;line-height:1.25;
+    border-radius:8px;padding:10px 3px;min-height:44px;cursor:pointer;text-align:center;
+    font-family:var(--fm);font-size:9.5px;font-weight:700;letter-spacing:.04em;
+    text-transform:uppercase;line-height:1.35;
   }
-  .opt.on[data-s=paid],.opt.on[data-ss=paid]{background:var(--ok);border-color:var(--ok);color:#06240f}
-  .opt.on[data-s=debt],.opt.on[data-ss=signed]{background:var(--bad);border-color:var(--bad);color:#2b0505}
-  .opt.on[data-s=part],.opt.on[data-ss=part]{background:var(--warn);border-color:var(--warn);color:#2b1c00}
+  .opt.on[data-s=paid],.opt.on[data-ss=paid]{background:var(--ok);border-color:var(--ok);color:#06240f;box-shadow:0 0 12px rgba(34,197,94,.3)}
+  .opt.on[data-s=debt],.opt.on[data-ss=signed]{background:var(--bad);border-color:var(--bad);color:#2b0505;box-shadow:0 0 12px rgba(239,68,68,.3)}
+  .opt.on[data-s=part],.opt.on[data-ss=part]{background:var(--warn);border-color:var(--warn);color:#2b1c00;box-shadow:0 0 12px rgba(245,158,11,.3)}
   .opt.on[data-s=none]{background:var(--off);border-color:var(--off);color:#0b0f14}
   /* nospiešanas atgriezeniskā saite */
   .opt:active{transform:scale(.96);filter:brightness(1.35)}
@@ -127,8 +162,8 @@
   /* saritinātā rinda */
   .crow{
     display:flex;justify-content:space-between;align-items:center;gap:10px;
-    padding:11px 10px;border-radius:10px;background:var(--panel2);
-    border-left:3px solid var(--line);cursor:pointer;margin-bottom:6px;
+    padding:12px 12px;border-radius:var(--r2);background:var(--panel2);
+    border-left:4px solid var(--line);cursor:pointer;margin-bottom:6px;min-height:48px;
   }
   .crow:active{opacity:.7}
   .crow .cname{font-weight:600;font-size:15px}
@@ -142,16 +177,16 @@
 
   table{width:100%;border-collapse:collapse;font-size:15px}
   th,td{padding:10px 6px;text-align:right;border-bottom:1px solid var(--line)}
-  th{color:var(--tx2);font-size:12px;text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+  th{color:var(--tx2);font-family:var(--fm);font-size:10px;text-transform:uppercase;letter-spacing:.07em;font-weight:700}
   th:first-child,td:first-child{text-align:left}
   tfoot td{font-weight:800;border-bottom:none}
   .num{font-variant-numeric:tabular-nums}
   .red{color:var(--bad)} .green{color:var(--ok)}
 
   .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
-  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 10px;text-align:center}
-  .kpi b{display:block;font-size:20px;font-variant-numeric:tabular-nums;margin-bottom:2px}
-  .kpi span{font-size:11px;color:var(--tx2);text-transform:uppercase;letter-spacing:.4px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 10px;text-align:center}
+  .kpi b{display:block;font-family:var(--fh);font-size:26px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums;margin-bottom:5px}
+  .kpi span{font-family:var(--fm);font-size:9px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.07em}
   .kpi.tap{cursor:pointer;position:relative}
   .kpi.tap:active{transform:scale(.98)}
   .kpi.tap::after{content:"›";position:absolute;top:6px;right:9px;color:var(--tx2);font-size:14px;opacity:.7}
@@ -165,21 +200,21 @@
   .sug{display:flex;flex-wrap:wrap;gap:6px}
   .sug button{
     background:var(--panel2);border:1px solid var(--acc);color:var(--tx);
-    border-radius:999px;padding:8px 13px;font-size:14px;font-weight:600;cursor:pointer;
+    border-radius:8px;padding:9px 13px;min-height:40px;font-size:14px;font-weight:600;cursor:pointer;
   }
   .sug button:active{transform:scale(.97)}
-  .btn.mini{padding:6px 9px;font-size:11px;font-weight:700;border-radius:8px;background:var(--panel2);border:1px solid var(--line);color:var(--tx2)}
+  .btn.mini{padding:7px 9px;font-family:var(--fm);font-size:10px;font-weight:700;letter-spacing:.03em;border-radius:6px;background:var(--panel2);border:1px solid var(--line);color:var(--tx2);min-height:34px;box-shadow:none}
   .btn.mini.gr{color:var(--ok)} .btn.mini.rd{color:var(--bad)}
   .chip{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
   .chip:last-child{border-bottom:none}
   .hide{display:none!important}
-  .save{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;background:var(--okbg);color:var(--oktx);
+  .save{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));background:var(--okbg);color:var(--oktx);
     border:1px solid var(--okln);padding:9px 18px;border-radius:999px;font-size:14px;font-weight:600;
     opacity:0;transition:opacity .25s;pointer-events:none;z-index:50}
   .save.show{opacity:1}
   /* pašu dialogs (WebView bloķē confirm/alert) */
   .mask{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
-  .dlg{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;max-width:420px;width:100%;
+  .dlg{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;max-width:420px;width:100%;
        box-shadow:0 20px 60px rgba(0,0,0,.6);font-size:15px;line-height:1.5}
   .dlg b{color:#fff}
   .dlg .arw{color:var(--acc);font-weight:800}
@@ -191,13 +226,6 @@
 <header>
   <span id="offBadge" class="pill p-off hide" style="position:absolute;right:16px;top:16px" data-i18n="offline">bezsaistē</span>
   <h1 style="display:flex;align-items:center;gap:9px"><img id="hdrLogo" alt="" class="hide" style="height:26px;width:auto"><span style="color:var(--tx)">Ledus <span style="color:var(--acc)">kase</span></span></h1>
-  <nav>
-    <button data-t="sessions" class="on" data-i18n="navTr">Treniņi</button>
-    <button data-t="summary" data-i18n="navSum">Kopsavilkums</button>
-    <button data-t="subs" data-i18n="navSub">Abonementi</button>
-    <button data-t="people" data-i18n="navPpl">Dalībnieki</button>
-    <button data-t="settings" data-i18n="navSet">Iestatījumi</button>
-  </nav>
 </header>
 
 <main>
@@ -454,10 +482,17 @@
         </summary>
         <div id="aboutText" style="font-size:14px;line-height:1.6;margin-top:10px"></div>
       </details>
-      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v1.6</div>
+      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v2.0</div>
     </div>
   </section>
 </main>
+<nav>
+  <button data-t="sessions" class="on"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span data-i18n="navTr">Treniņi</span></button>
+  <button data-t="summary"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/></svg><span data-i18n="navSum">Kopsavilkums</span></button>
+  <button data-t="subs"><svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 10h19"/></svg><span data-i18n="navSub">Abonementi</span></button>
+  <button data-t="people"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16.5 11.2a3 3 0 0 0 0-5.9M18 20c0-2.4-.9-4.2-2.4-5.2"/></svg><span data-i18n="navPpl">Dalībnieki</span></button>
+  <button data-t="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg><span data-i18n="navSet">Iestatījumi</span></button>
+</nav>
 
 <div class="save" id="toast">Saglabāts</div>
 
@@ -545,7 +580,7 @@
   }
 
   /* ---------- valodas ---------- */
-  var APP_VER = "1.6";
+  var APP_VER = "2.0";
   var I18N = {
     lv:{
       navTr:"Treniņi", navSum:"Kopsavilkums", navSub:"Abonementi", navPpl:"Dalībnieki", navSet:"Iestatījumi",
@@ -916,7 +951,8 @@
       if(t.debt>0) pills.push('<span class="pill p-bad">'+T.owes+' '+eur(t.debt)+' €</span>');
       if(t.owe>0) pills.push('<span class="pill p-warn">'+T.giveBack+' '+eur(t.owe)+' €</span>');
       if(!pills.length) pills.push(total ? '<span class="pill p-ok">'+T.allOk+'</span>' : '<span class="pill p-off">'+T.noPlayers+'</span>');
-      return '<div class="sess" data-id="'+s.id+'">'+
+      var kind = t.debt>0 ? "k-bad" : (t.owe>0 ? "k-warn" : (left>0 ? "" : (total ? "k-ok" : "")));
+      return '<div class="sess '+kind+'" data-id="'+s.id+'">'+
         '<div class="sess-top"><div class="sess-date">'+fmtDate(s.date)+'</div>'+
         '<div class="row wrap" style="gap:5px;justify-content:flex-end">'+pills.join("")+'</div>'+
         '</div>'+
@@ -2003,7 +2039,7 @@
     try{
       var man = {
         name:"Payments", short_name:"Payments", start_url:".", display:"standalone",
-        background_color:"#0e1116", theme_color:"#0e1116",
+        background_color:"#0f141b", theme_color:"#0f141b",
         icons:[{src:i192, sizes:"192x192", type:"image/png", purpose:"any maskable"},
                {src:i512, sizes:"512x512", type:"image/png", purpose:"any maskable"}]
       };
@@ -2020,7 +2056,7 @@
         var pad = 0.74;
         var c = document.createElement("canvas"); c.width=N; c.height=N;
         var x = c.getContext("2d");
-        x.fillStyle = "#0e1116"; x.fillRect(0,0,N,N);
+        x.fillStyle = "#0f141b"; x.fillRect(0,0,N,N);
         var sc = Math.min(N*pad/im.width, N*pad/im.height);
         var w = im.width*sc, hh = im.height*sc;
         x.drawImage(im, (N-w)/2, (N-hh)/2, w, hh);
@@ -2068,7 +2104,7 @@
     var light = S.theme === "light";
     document.body.classList.toggle("light", light);
     var m = document.querySelector('meta[name="theme-color"]');
-    if(m) m.setAttribute("content", light ? "#f2f5f9" : "#0e1116");
+    if(m) m.setAttribute("content", light ? "#eef2f7" : "#0f141b");
     $("thDark").classList.toggle("on2", !light);
     $("thLight").classList.toggle("on2", light);
     $("thDark").style.borderColor = light ? "" : "var(--acc)";
