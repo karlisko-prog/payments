@@ -122,10 +122,18 @@
   .sess.k-bad::before{background:var(--bad);box-shadow:0 0 8px rgba(239,68,68,.5)}
   .sess.k-warn::before{background:var(--warn);box-shadow:0 0 8px rgba(245,158,11,.45)}
   .sess.act{border-color:var(--acc)}
-  .sess-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .sess-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap}
   .sess-date{font-family:var(--fh);font-weight:600;font-size:20px;letter-spacing:.01em;white-space:nowrap}
-  .sess-top > div:first-child{min-width:0}
-  .crow .cname{min-width:0;flex:1}
+  .sess-top > div:first-child{flex:1 1 auto;min-width:150px}
+  .sess-top > .row{flex:1 1 auto;justify-content:flex-end;min-width:0}
+  .crow{flex-wrap:wrap}
+  .crow .cname{flex:1 1 auto;min-width:0}
+  .crow .pill{margin-left:auto;white-space:normal;max-width:100%;text-align:right}
+  .pname{flex-wrap:wrap}
+  .pname > span:first-child{flex:1 1 auto;min-width:0}
+  .pname > .pill{margin-left:auto;white-space:normal;max-width:100%;text-align:right}
+  .chip{flex-wrap:wrap}
+  .chip > div:first-child{flex:1 1 auto;min-width:0}
   .sess-sum{font-size:13px;color:var(--tx2);margin-top:6px}
   .pill{
     font-family:var(--fm);font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
@@ -482,7 +490,7 @@
         </summary>
         <div id="aboutText" style="font-size:14px;line-height:1.6;margin-top:10px"></div>
       </details>
-      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v2.0</div>
+      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v2.2</div>
     </div>
   </section>
 </main>
@@ -580,7 +588,7 @@
   }
 
   /* ---------- valodas ---------- */
-  var APP_VER = "2.0";
+  var APP_VER = "2.2";
   var I18N = {
     lv:{
       navTr:"Treniņi", navSum:"Kopsavilkums", navSub:"Abonementi", navPpl:"Dalībnieki", navSet:"Iestatījumi",
