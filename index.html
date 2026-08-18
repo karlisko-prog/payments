@@ -490,7 +490,7 @@
         </summary>
         <div id="aboutText" style="font-size:14px;line-height:1.6;margin-top:10px"></div>
       </details>
-      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v2.2</div>
+      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v2.3</div>
     </div>
   </section>
 </main>
@@ -588,7 +588,7 @@
   }
 
   /* ---------- valodas ---------- */
-  var APP_VER = "2.2";
+  var APP_VER = "2.3";
   var I18N = {
     lv:{
       navTr:"Treniņi", navSum:"Kopsavilkums", navSub:"Abonementi", navPpl:"Dalībnieki", navSet:"Iestatījumi",
@@ -610,6 +610,7 @@
       bToTeam:"Komandai", bToGuests:"Viesiem", hArch:"Arhīvs",
       pArch:"Nenāk uz treniņiem. Izvēlnēs neparādās, bet vēsture un parādi saglabājas.",
       hGuests:"Viesi", pGuests:"Cilvēki, kas pievienoti konkrētā treniņā. Izvēlnē tie neparādās.",
+      doneHead:"Atzīmētie",
       hSessPrice:"Treniņa cena", pSessPrice:"Cenu izmanto, lai rēķinātu parādu, kad kāds iedod tikai daļu naudas.",
       hLogo:"Logo", bPickImg:"Izvēlēties attēlu", bRmLogo:"Noņemt logo",
       pLogo:"Attēls parādās virsrakstā. Tas tiek samazināts un saglabāts kopā ar datiem. Mājas ekrāna ikona nomainīsies tikai tad, ja īsceļu pievienosi no jauna.",
@@ -693,6 +694,7 @@
       bToTeam:"To team", bToGuests:"To guests", hArch:"Archive",
       pArch:"Not attending. Hidden from the lists, but history and debts are kept.",
       hGuests:"Guests", pGuests:"People added to a single session. They don't appear in the regular list.",
+      doneHead:"Marked",
       hSessPrice:"Session price", pSessPrice:"Used to calculate the debt when someone pays only part of it.",
       hLogo:"Logo", bPickImg:"Choose image", bRmLogo:"Remove logo",
       pLogo:"The image appears in the header. It is resized and stored with your data. The home screen icon changes only if you add the shortcut again.",
@@ -786,7 +788,7 @@
                  spaid:T.subPaidL, spart:T.subPartL, ssigned:T.subSignedL }; }
   function pname(pid){
     var p = S.people.filter(function(x){return x.id===pid;})[0];
-    return p ? p.name : "";
+    return p ? dn(p.name) : "";
   }
   function statusText(e, price){
     if(!e || !e.s) return "";
@@ -829,6 +831,12 @@
   function lastName(n){
     var t = String(n).trim().split(/\s+/);
     return t[t.length-1] || "";
+  }
+  /* rāda "Uzvārds Vārds" (glabājas joprojām "Vārds Uzvārds") */
+  function dn(n){
+    var t = String(n||"").trim().split(/\s+/);
+    if(t.length < 2) return String(n||"");
+    return t[t.length-1] + " " + t.slice(0, t.length-1).join(" ");
   }
   /* komanda alfabētā, tad viesi alfabētā */
   function teamFirst(arr){
@@ -997,12 +1005,25 @@
     if(!list.length){ w.innerHTML='<div class="empty">'+T.noResults+'</div>'; return; }
     var doneCnt = base.filter(function(p){ var e=s.entries[p.id]; return (e && e.s) || hasSub(p.id, s.date); }).length;
     $("dDone").textContent = T.markedN+doneCnt+T.of+base.length+(t.sub? T.incl+t.sub+T.withSubN:"");
-    var firstGuest = list.filter(function(p){ return p.guest; })[0];
-    w.innerHTML = list.map(function(p){
-      var head = (firstGuest && p.id===firstGuest.id && list[0] !== p)
-        ? '<div class="muted" style="margin:14px 0 8px;padding-top:10px;border-top:1px solid var(--line)">'+T.hGuests+'</div>' : '';
-      return head + rowHtml(p);
-    }).join("");
+    function inDone(p){
+      if(open.indexOf(p.id)>=0) return false;          /* atvērts rediģēšanai — paliek vietā */
+      var e = s.entries[p.id];
+      if(e && e.s) return true;
+      return hasSub(p.id, s.date);
+    }
+    var pend = list.filter(function(p){ return !inDone(p); });
+    var done = list.filter(inDone);
+    function grp(arr, guestHead){
+      var fg = arr.filter(function(p){ return p.guest; })[0];
+      return arr.map(function(p){
+        var head = (guestHead && fg && p.id===fg.id && arr[0] !== p)
+          ? '<div class="muted" style="margin:14px 0 8px;padding-top:10px;border-top:1px solid var(--line)">'+T.hGuests+'</div>' : '';
+        return head + rowHtml(p);
+      }).join("");
+    }
+    w.innerHTML = grp(pend, true) + (done.length
+      ? '<div class="muted" style="margin:16px 0 10px;padding-top:12px;border-top:1px solid var(--line);font-family:var(--fm);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em">'+T.doneHead+'</div>' + grp(done, false)
+      : "");
 
     function rowHtml(p){
       var e = s.entries[p.id] || {};
@@ -1012,7 +1033,7 @@
         var se = subEntry(p.id, s.date.slice(0,7));
         var un = (se.s==="signed");
         return '<div class="crow s-'+(un?"part":"paid")+'" style="cursor:default">'+
-          '<span class="cname">'+esc(p.name)+'</span>'+
+          '<span class="cname">'+esc(dn(p.name))+'</span>'+
           '<span class="pill '+(un?"p-warn":"p-ok")+'">'+T.sub+
             (un?T.subUnpaid:(se.s==="part"?T.subPartial:""))+'</span></div>';
       }
@@ -1027,14 +1048,14 @@
         }
         else { txt=T.sNone; cls="p-off"; }
         return '<div class="crow s-'+e.s+'" data-open="'+p.id+'">'+
-          '<span class="cname">'+esc(p.name)+'</span>'+
+          '<span class="cname">'+esc(dn(p.name))+'</span>'+
           '<span class="pill '+cls+'">'+txt+'</span></div>';
       }
       var opts = ["paid","part","debt","none"].map(function(k){
         return '<button class="opt'+(e.s===k?" on":"")+'" data-s="'+k+'" data-p="'+p.id+'">'+LBLo()[k]+'</button>';
       }).join("");
       return '<div class="prow">'+
-        '<div class="pname"><span>'+esc(p.name)+(hasSub(p.id, s.date)? (subEntry(p.id, s.date.slice(0,7)).s==="signed"
+        '<div class="pname"><span>'+esc(dn(p.name))+(hasSub(p.id, s.date)? (subEntry(p.id, s.date.slice(0,7)).s==="signed"
               ? ' <span class="pill p-warn">'+T.sub+T.subUnpaid+'</span>'
               : ' <span class="pill p-ok">'+T.sub+'</span>') : '')+'</span>'+
           (entryDebt(e,sessPrice(s))>0 ? '<span class="pill p-bad">-'+eur(entryDebt(e,sessPrice(s)))+' €</span>'
@@ -1212,7 +1233,7 @@
     if(!list.length && !gl.length){ w.innerHTML='<div class="empty">'+T.noResults+'</div>'; return; }
     function chip(p){
       var on = draft.indexOf(p.id)>=0;
-      return '<label class="chip" style="cursor:pointer"><span'+(on?'':' class="muted"')+'>'+esc(p.name)+'</span>'+
+      return '<label class="chip" style="cursor:pointer"><span'+(on?'':' class="muted"')+'>'+esc(dn(p.name))+'</span>'+
         '<input type="checkbox" data-r="'+p.id+'" '+(on?'checked':'')+' style="width:24px;height:24px;accent-color:#3b82f6"></label>';
     }
     w.innerHTML = list.map(chip).join("") +
@@ -1250,7 +1271,7 @@
 
   function personRow(p, extraBtn){
     var t = personTotals(p.id);
-    return '<div class="chip"><div style="min-width:0"><div>'+esc(p.name)+'</div>'+
+    return '<div class="chip"><div style="min-width:0"><div>'+esc(dn(p.name))+'</div>'+
       '<div class="muted">'+t.att+T.trainCount+eur(t.paid)+T.paidSuffix+(t.debt>0?' · <span class="red">'+eur(t.debt)+T.debtSuffix+'</span>':'')+'</div></div>'+
       '<div class="row" style="gap:6px;flex:0 0 auto">'+
       '<button class="btn mini" data-edit="'+p.id+'" title="'+T.tiEdit+'">✎</button>'+
@@ -1262,7 +1283,7 @@
       b.onclick = function(){
         var p = S.people.filter(function(x){return x.id===b.dataset.del;})[0];
         var did = b.dataset.del;
-        ask("<b>"+esc(p.name)+"</b><br><br>"+T.askDelPerson, function(ok){
+        ask("<b>"+esc(dn(p.name))+"</b><br><br>"+T.askDelPerson, function(ok){
           if(!ok) return;
           S.people = S.people.filter(function(x){return x.id!==did;});
           S.sessions.forEach(function(s){
@@ -1388,13 +1409,13 @@
         else if(e.s==="signed"){ txt=T.signedDebt+eur(b.price)+" €"; cls="p-bad"; bar="debt"; }
         else { txt = T.gave+" "+eur(Number(e.a)||0)+" € · "+(subOwe(e,b.price)>0 ? T.giveBack+" "+eur(subOwe(e,b.price))+" €" : T.debtW+" "+eur(subDebt(e,b.price))+" €"); cls="p-warn"; bar="part"; }
         return '<div class="crow s-'+bar+'" data-sopen="'+p.id+'">'+
-          '<span class="cname">'+esc(p.name)+'</span><span class="pill '+cls+'">'+txt+'</span></div>';
+          '<span class="cname">'+esc(dn(p.name))+'</span><span class="pill '+cls+'">'+txt+'</span></div>';
       }
       var SUBL = { paid:T.subPaid, part:T.subPart, signed:T.subSigned };
       var opts = ["paid","part","signed"].map(function(k){
         return '<button class="opt'+(e.s===k?" on":"")+'" data-ss="'+k+'" data-sp="'+p.id+'">'+SUBL[k]+'</button>';
       }).join("");
-      return '<div class="prow"><div class="pname"><span>'+esc(p.name)+'</span></div>'+
+      return '<div class="prow"><div class="pname"><span>'+esc(dn(p.name))+'</span></div>'+
         '<div class="opts" style="grid-template-columns:repeat(3,1fr)">'+opts+'</div>'+
         '<div class="partbox'+(e.s==="part"?" show":"")+'">'+
           '<span class="muted">'+T.gave+':</span>'+
@@ -1751,7 +1772,7 @@
     if(!list.length){ hideSug(); return; }
     w.innerHTML = '<div class="muted" style="font-size:12px;margin-bottom:6px">'+T.guestSug+'</div>'+
       '<div class="sug">'+list.map(function(p){
-        return '<button data-sug="'+p.id+'">'+esc(p.name)+'</button>';
+        return '<button data-sug="'+p.id+'">'+esc(dn(p.name))+'</button>';
       }).join("")+'</div>';
     w.classList.remove("hide");
     [].forEach.call(w.querySelectorAll("[data-sug]"), function(btn){
