@@ -274,7 +274,7 @@
         <input type="text" id="rFilter" placeholder="🔍 Meklēt…" data-ph="phSearch">
       </div>
       <div class="row" style="margin-top:10px">
-        <input type="text" id="rNew" placeholder="+ Viesis (vārds)" data-ph="phGuest">
+        <input type="text" id="rNew" placeholder="+ Viesis (uzvārds vārds)" data-ph="phGuest">
         <button class="btn" id="rAdd" data-i18n="bAdd">Pievienot</button>
       </div>
       <p class="muted" style="margin:8px 0 0" data-i18n="rGuestHint">Viesis nonāk tikai šajā treniņā un sadaļā “Dalībnieki → Viesi”, nevis pastāvīgajā izvēlnē.</p>
@@ -404,7 +404,7 @@
     </div>
     <div class="card">
       <h2 data-i18n="hAddPeople">Pievienot cilvēkus</h2>
-      <textarea id="bulk" placeholder="Viens vārds katrā rindā, piemēram:&#10;Jānis Bērziņš&#10;Kārlis Ozols&#10;Anna Liepa" data-ph="phBulk"></textarea>
+      <textarea id="bulk" placeholder="Viens cilvēks katrā rindā — uzvārds, tad vārds:&#10;Bērziņš Jānis&#10;Ozols Kārlis&#10;Liepa Anna" data-ph="phBulk"></textarea>
       <div class="row wrap" style="margin-top:10px">
         <button class="btn" id="addPeople" style="flex:1" data-i18n="bToTeam">Komandai</button>
         <button class="btn sec" id="addGuests" style="flex:1" data-i18n="bToGuests">Viesiem</button>
@@ -490,7 +490,7 @@
         </summary>
         <div id="aboutText" style="font-size:14px;line-height:1.6;margin-top:10px"></div>
       </details>
-      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v2.3</div>
+      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v2.4</div>
     </div>
   </section>
 </main>
@@ -588,15 +588,15 @@
   }
 
   /* ---------- valodas ---------- */
-  var APP_VER = "2.3";
+  var APP_VER = "2.4";
   var I18N = {
     lv:{
       navTr:"Treniņi", navSum:"Kopsavilkums", navSub:"Abonementi", navPpl:"Dalībnieki", navSet:"Iestatījumi",
       hNewSess:"Jauns treniņš", bAdd:"Pievienot", bSave:"Saglabāt",
       rHint:"Atzīmē, kuri būs treniņā", bPrev:"Kā iepriekš", bAll:"Visus", bNone:"Notīrīt",
-      phSearch:"🔍 Meklēt…", phGuest:"+ Viesis (vārds)",
+      phSearch:"🔍 Meklēt…", phGuest:"+ Viesis (uzvārds vārds)",
       rGuestHint:"Viesis nonāk tikai šajā treniņā un sadaļā “Dalībnieki → Viesi”, nevis pastāvīgajā izvēlnē.",
-      rPasteTitle:"📋 Ielīmēt sarakstu", phPaste:"Ielīmē vārdus (viens rindā vai ar komatiem).\nDer arī “Uzvārds Vārds” secība.",
+      rPasteTitle:"📋 Ielīmēt sarakstu", phPaste:"Ielīmē vārdus (viens rindā vai ar komatiem).\nDer jebkura secība — “Uzvārds Vārds” vai “Vārds Uzvārds”.",
       bPasteGo:"Atzīmēt sarakstā", bRosterDone:"Gatavs → uz treniņu",
       bBack:"‹ Atpakaļ", bDelSess:"Dzēst treniņu", lPrice:"Cena", bEditRoster:"Mainīt dalībniekus",
       phSearchPerson:"🔍 Meklēt cilvēku…", lOnlyOpen:"Rādīt tikai neatzīmētos", phLate:"+ Atnāca vēl kāds (vārds)",
@@ -606,7 +606,7 @@
       hSubMonth:"Abonementi pa mēnešiem", hExport:"Eksports", bCsv:"Lejupielādēt CSV", bJson:"Dublējums (JSON)",
       hMonthPrice:"Mēnesis un cena", phPrice:"Cena",
       hTeam:"Komanda", pTeam:"Pastāvīgie spēlētāji — tikai šie parādās treniņa dalībnieku izvēlē.",
-      hAddPeople:"Pievienot cilvēkus", phBulk:"Viens vārds katrā rindā, piemēram:\nJānis Bērziņš\nKārlis Ozols\nAnna Liepa",
+      hAddPeople:"Pievienot cilvēkus", phBulk:"Viens cilvēks katrā rindā — uzvārds, tad vārds:\nBērziņš Jānis\nOzols Kārlis\nLiepa Anna",
       bToTeam:"Komandai", bToGuests:"Viesiem", hArch:"Arhīvs",
       pArch:"Nenāk uz treniņiem. Izvēlnēs neparādās, bet vēsture un parādi saglabājas.",
       hGuests:"Viesi", pGuests:"Cilvēki, kas pievienoti konkrētā treniņā. Izvēlnē tie neparādās.",
@@ -646,7 +646,7 @@
       tiEdit:"Labot vārdu", tiToGuests:"Pārcelt uz viesiem", tiToTeam:"Uzņemt komandā", tiArch:"Uz arhīvu",
       tiUnarch:"Atgriezt sarakstā", tiDel:"Dzēst", toGuests:"→ viesos", toTeam:"→ komandā", back:"↩ ",
       trainCount:" treniņi · ", paidSuffix:" € samaksāts", debtSuffix:" € parādā",
-      askEditName:'<b>Labot vārdu</b><br><span class="muted">Vārds un uzvārds — kārtošana notiek pēc pēdējā vārda</span>',
+      askEditName:'<b>Labot vārdu</b><br><span class="muted">Uzvārds, tad vārds — tāpat kā sarakstā</span>',
       askDelPerson:"Dzēst un noņemt visus viņa ierakstus?", askDelSess:"Dzēst šo treniņu un visus tā ierakstus?",
       askDelExp:"Dzēst šo izdevumu rindu?", askWipe:"Dzēst pilnīgi visus treniņus un abonementus?<br><br>To nevar atcelt.",
       askRmLogo:"Noņemt logo no virsraksta?", askChange:"Mainīt?", askClear:"Noņemt atzīmi?",
@@ -678,7 +678,7 @@
       navTr:"Sessions", navSum:"Summary", navSub:"Memberships", navPpl:"People", navSet:"Settings",
       hNewSess:"New session", bAdd:"Add", bSave:"Save",
       rHint:"Select who is attending", bPrev:"Same as last", bAll:"All", bNone:"Clear",
-      phSearch:"🔍 Search…", phGuest:"+ Guest (name)",
+      phSearch:"🔍 Search…", phGuest:"+ Guest (last name first)",
       rGuestHint:"A guest is added only to this session and to “People → Guests”, not to the regular list.",
       rPasteTitle:"📋 Paste a list", phPaste:"Paste names (one per line or comma separated).\n“Surname Firstname” order also works.",
       bPasteGo:"Match in list", bRosterDone:"Done → to session",
@@ -690,7 +690,7 @@
       hSubMonth:"Memberships by month", hExport:"Export", bCsv:"Download CSV", bJson:"Backup (JSON)",
       hMonthPrice:"Month and price", phPrice:"Price",
       hTeam:"Team", pTeam:"Regular players — only these appear when choosing session participants.",
-      hAddPeople:"Add people", phBulk:"One name per line, for example:\nJohn Smith\nMike Brown\nAnna Green",
+      hAddPeople:"Add people", phBulk:"One person per line — last name, then first name:\nSmith John\nBrown Mike\nGreen Anna",
       bToTeam:"To team", bToGuests:"To guests", hArch:"Archive",
       pArch:"Not attending. Hidden from the lists, but history and debts are kept.",
       hGuests:"Guests", pGuests:"People added to a single session. They don't appear in the regular list.",
@@ -730,7 +730,7 @@
       tiEdit:"Edit name", tiToGuests:"Move to guests", tiToTeam:"Move to team", tiArch:"To archive",
       tiUnarch:"Restore", tiDel:"Delete", toGuests:"→ guests", toTeam:"→ team", back:"↩ ",
       trainCount:" sessions · ", paidSuffix:" € paid", debtSuffix:" € owed",
-      askEditName:'<b>Edit name</b><br><span class="muted">First and last name — sorting uses the last word</span>',
+      askEditName:'<b>Edit name</b><br><span class="muted">Last name, then first name — as shown in the list</span>',
       askDelPerson:"Delete and remove all their records?", askDelSess:"Delete this session and all its records?",
       askDelExp:"Delete this expense row?", askWipe:"Delete all sessions and memberships?<br><br>This cannot be undone.",
       askRmLogo:"Remove the logo from the header?", askChange:"Change?", askClear:"Remove this mark?",
@@ -831,6 +831,12 @@
   function lastName(n){
     var t = String(n).trim().split(/\s+/);
     return t[t.length-1] || "";
+  }
+  /* ievade "Uzvārds Vārds" -> glabāšanas formāts "Vārds Uzvārds" */
+  function un(n){
+    var t = String(n||"").trim().replace(/\s+/g," ").split(" ");
+    if(t.length < 2) return String(n||"").trim();
+    return t.slice(1).join(" ") + " " + t[0];
   }
   /* rāda "Uzvārds Vārds" (glabājas joprojām "Vārds Uzvārds") */
   function dn(n){
@@ -1255,10 +1261,10 @@
     var p = S.people.filter(function(x){return x.id===pid;})[0];
     if(!p) return;
     ask(T.askEditName+
-        '<input type="text" id="mdInput" style="margin-top:10px" value="'+esc(p.name)+'">',
+        '<input type="text" id="mdInput" style="margin-top:10px" value="'+esc(dn(p.name))+'">',
       function(ok){
         if(!ok) return;
-        var v = ($("mdInput").value||"").trim().replace(/\s+/g," ");
+        var v = un(($("mdInput").value||"").trim().replace(/\s+/g," "));
         if(!v){ info(T.eNameEmpty); return; }
         if(v===p.name) return;
         if(S.people.some(function(x){ return x.id!==pid && x.name.toLowerCase()===v.toLowerCase(); })){
@@ -1671,7 +1677,7 @@
   }
   /* ātrā spēlētāja pievienošana (atgriež person id vai null) */
   function quickAdd(name, isGuest){
-    name = (name||"").trim();
+    name = un((name||"").trim());
     if(!name){ info(T.eName); return null; }
     var ex = S.people.filter(function(p){ return p.name.toLowerCase()===name.toLowerCase(); })[0];
     if(ex){
@@ -1838,7 +1844,7 @@
     }, T.bDel);
   };
   function addBulk(asGuest){
-    var names = $("bulk").value.split(/[\n,;]+/).map(function(x){return x.trim().replace(/\s+/g," ");}).filter(Boolean);
+    var names = $("bulk").value.split(/[\n,;]+/).map(function(x){return un(x.trim().replace(/\s+/g," "));}).filter(Boolean);
     if(!names.length){ info(T.eNames); return; }
     var added=0, moved=0, skipped=0;
     names.forEach(function(n){
