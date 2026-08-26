@@ -160,6 +160,8 @@
   .opt.on[data-s=part],.opt.on[data-ss=part]{background:var(--warn);border-color:var(--warn);color:#2b1c00;box-shadow:0 0 12px rgba(245,158,11,.3)}
   .opt.on[data-s=none]{background:var(--off);border-color:var(--off);color:#0b0f14}
   /* nospiešanas atgriezeniskā saite */
+  .opt .bal{display:block;font-size:10px;font-weight:700;margin-top:3px;letter-spacing:0}
+  .opt .bal.g{color:var(--ok)} .opt .bal.y{color:var(--warn)} .opt .bal.r{color:var(--bad)}
   .opt:active{transform:scale(.96);filter:brightness(1.35)}
   .opt.hit{animation:hit .35s ease}
   @keyframes hit{
@@ -275,15 +277,9 @@
       </div>
       <div class="row" style="margin-top:10px">
         <input type="text" id="rNew" placeholder="+ Viesis (vārds)" data-ph="phGuest">
-        <button class="btn" id="rAdd" data-i18n="bAdd">Pievienot</button>
+        <button class="btn sec" id="rAdd" data-i18n="bAdd">Pievienot</button>
       </div>
       <p class="muted" style="margin:8px 0 0" data-i18n="rGuestHint">Viesis nonāk tikai šajā treniņā un sadaļā “Dalībnieki → Viesi”, nevis pastāvīgajā izvēlnē.</p>
-      <details style="margin-top:12px">
-        <summary class="muted" style="cursor:pointer" data-i18n="rPasteTitle">📋 Ielīmēt sarakstu no SportEasy</summary>
-        <textarea id="rPaste" placeholder="Ielīmē vārdus (viens rindā vai ar komatiem).&#10;Der arī “Uzvārds Vārds” secība." data-ph="phPaste"></textarea>
-        <button class="btn" id="rPasteGo" style="width:100%;margin-top:8px" data-i18n="bPasteGo">Atzīmēt sarakstā</button>
-        <div id="rPasteRes" class="muted" style="margin-top:8px"></div>
-      </details>
     </div>
     <div class="card" id="rList"></div>
     <button class="btn" id="rSave" style="width:100%;padding:15px;font-size:17px" data-i18n="bRosterDone">Gatavs → uz treniņu</button>
@@ -320,7 +316,7 @@
       </label>
       <div class="row" style="margin-top:10px">
         <input type="text" id="dNew" placeholder="+ Atnāca vēl kāds (vārds)" autocomplete="off" data-ph="phLate">
-        <button class="btn" id="dAdd" data-i18n="bAdd">Pievienot</button>
+        <button class="btn sec" id="dAdd" data-i18n="bAdd">Pievienot</button>
       </div>
       <div id="dSug" class="hide" style="margin-top:8px"></div>
     </div>
@@ -498,7 +494,7 @@
         </summary>
         <div id="aboutText" style="font-size:14px;line-height:1.6;margin-top:10px"></div>
       </details>
-      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v2.5</div>
+      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v3.4</div>
     </div>
   </section>
 </main>
@@ -574,10 +570,17 @@
   /* ---------- aprēķini ---------- */
   /* treniņa cena: ja treniņam nav savas, izmanto iestatījumu cenu */
   function sessPrice(s){ return (s && typeof s.price === "number") ? s.price : S.price; }
+  /* e.c = cik segts no iepriekšējā atlikuma (vecais formāts: paid + c===1 => visa cena) */
+  function entryCred(e, pr){
+    if(!e) return 0;
+    if(pr==null) pr = S.price;
+    if(e.s==="paid" && (e.c===true || e.c===1)) return pr;
+    return Number(e.c)||0;
+  }
   function entryPaid(e, pr){
     if(!e) return 0;
     if(pr==null) pr = S.price;
-    if(e.s==="paid") return pr;
+    if(e.s==="paid") return Math.max(0, pr - entryCred(e,pr));   /* skaidrā nauda */
     if(e.s==="part") return Number(e.a)||0;
     return 0;
   }
@@ -585,18 +588,21 @@
     if(!e) return 0;
     if(pr==null) pr = S.price;
     if(e.s==="debt") return pr;
-    if(e.s==="part") return Math.max(0, pr - (Number(e.a)||0));
+    if(e.s==="part") return Math.max(0, pr - (Number(e.a)||0) - entryCred(e,pr));
     return 0;
   }
-  /* iedeva vairāk nekā treniņa cena → es esmu parādā */
+  /* iedeva vairāk nekā treniņa cena → es esmu parādā; izmantotais atlikums to samazina */
   function entryOwe(e, pr){
-    if(!e || e.s!=="part") return 0;
+    if(!e) return 0;
     if(pr==null) pr = S.price;
-    return Math.max(0, (Number(e.a)||0) - pr);
+    var c = entryCred(e,pr);
+    if(e.s==="paid") return -c;
+    if(e.s!=="part") return 0;
+    return Math.max(0, (Number(e.a)||0) + c - pr) - c;
   }
 
   /* ---------- valodas ---------- */
-  var APP_VER = "2.5";
+  var APP_VER = "3.4";
   var I18N = {
     lv:{
       navTr:"Treniņi", navSum:"Kopsavilkums", navSub:"Abonementi", navPpl:"Dalībnieki", navSet:"Iestatījumi",
@@ -639,6 +645,10 @@
       allTime:"Viss laiks", total:"Kopā", empty:"tukšs",
       optPaid:"Iedeva<br>naudu", optPart:"Iedeva<br>daļu", optDebt:"Palika<br>parādā", optNone:"Nebija<br>treniņā",
       sPaid:"Samaksāja", sDebt:"Parādā", sPart:"Daļēji", sNone:"Nebija",
+      fromBal:"No atlikuma", balLeft:"Atlikums", bFromBal:"No atlikuma", bWithCash:"Ar naudu",
+      askBal1:"Atlikums: ", askBal2:"Treniņš: ", askBal3:"Segt šo treniņu no atlikuma?",
+      askBalP:"Izmantot atlikumu un pārējo atzīmēt kā parādu?", bUseBal:"Izmantot", bNoBal:"Bez atlikuma",
+      balUsed:"no atlikuma", balHint:"izmantots atlikums ",
       lPaid:"Iedeva naudu", lPart:"Iedeva daļu", lDebt:"Palika parādā", lNone:"Nebija treniņā",
       subPaid:"Samaksāts", subPart:"Daļēji<br>samaksāts", subSigned:"Pieteicies<br>(nav samaksāts)",
       subPaidL:"Samaksāts", subPartL:"Daļēji samaksāts", subSignedL:"Pieteicies — nav samaksāts",
@@ -729,6 +739,10 @@
       allTime:"All time", total:"Total", empty:"empty",
       optPaid:"Paid<br>cash", optPart:"Paid<br>part", optDebt:"Still<br>owes", optNone:"Did not<br>attend",
       sPaid:"Paid", sDebt:"Owes", sPart:"Partial", sNone:"Absent",
+      fromBal:"From balance", balLeft:"Balance", bFromBal:"From balance", bWithCash:"With cash",
+      askBal1:"Balance: ", askBal2:"Session: ", askBal3:"Cover this session from the balance?",
+      askBalP:"Use the balance and mark the rest as owed?", bUseBal:"Use it", bNoBal:"Without balance",
+      balUsed:"from balance", balHint:"balance used ",
       lPaid:"Paid cash", lPart:"Paid part", lDebt:"Still owes", lNone:"Did not attend",
       subPaid:"Paid", subPart:"Partly<br>paid", subSigned:"Signed up<br>(not paid)",
       subPaidL:"Paid", subPartL:"Partly paid", subSignedL:"Signed up — not paid",
@@ -817,17 +831,18 @@
   }
   function statusText(e, price){
     if(!e || !e.s) return "";
-    if(e.s==="paid") return T.lPaid+" ("+eur(price)+" €)";
+    if(e.s==="paid") return entryCred(e,price)>0 ? T.fromBal+" ("+eur(price)+" €)" : T.lPaid+" ("+eur(price)+" €)";
     if(e.s==="debt") return T.lDebt;
-    if(e.s==="part") return T.lPart+" ("+eur(Number(e.a)||0)+" €)";
+    if(e.s==="part") return T.lPart+" ("+eur(Number(e.a)||0)+" €"+(entryCred(e,price)>0 ? " + "+eur(entryCred(e,price))+" € "+T.balUsed : "")+")";
     if(e.s==="none") return T.lNone;
     return "";
   }
   /* ---- pašu dialogs: WebView (piem. faila priekšskatījums) ignorē confirm/alert ---- */
   var mdCb = null;
-  function ask(html, cb, yesLabel, onlyOk){
+  function ask(html, cb, yesLabel, onlyOk, noLabel){
     $("mdText").innerHTML = html;
     $("mdYes").textContent = yesLabel || T.bOk;
+    $("mdNo").textContent = noLabel || T.bCancel;
     $("mdNo").style.display = onlyOk ? "none" : "";
     $("modal").classList.remove("hide");
     mdCb = cb || null;
@@ -985,12 +1000,57 @@
   });
 
   /* ---------- renderēšana ---------- */
+  /* Nesegtie parādi/atlikumi pa treniņiem: vēlākie maksājumi sedz vecākos parādus.
+     Atgriež {sessId: {debt, owe}} — tikai to, kas šodien vēl nav nokārtots. */
+  function residualBySession(){
+    var out = {};
+    S.sessions.forEach(function(s){ out[s.id] = {debt:0, owe:0}; });
+    var byDate = S.sessions.slice().sort(function(a,b){ return a.date<b.date?-1:1; });
+    S.people.forEach(function(p){
+      var evs = byDate.map(function(s){
+        var pr = sessPrice(s), e = s.entries[p.id];
+        return {id:s.id, date:s.date, net: entryOwe(e,pr) - entryDebt(e,pr)};
+      });
+      Object.keys(S.subs).forEach(function(m){
+        var b = S.subs[m], e = b.entries[p.id];
+        if(!e || !e.s) return;
+        evs.push({id:null, date:m+"-15", net: subOwe(e,b.price) - subDebt(e,b.price)});
+      });
+      evs.sort(function(a,b){ return a.date<b.date?-1:1; });
+      var debts = [], creds = [], i, take;
+      evs.forEach(function(ev){
+        if(ev.net > 0){
+          var c = ev.net;
+          for(i=0; i<debts.length && c>0.0001; i++){
+            take = Math.min(debts[i].amt, c);
+            debts[i].amt -= take; c -= take;
+          }
+          debts = debts.filter(function(x){ return x.amt > 0.0001; });
+          if(c > 0.0001) creds.push({id:ev.id, amt:c});
+        } else if(ev.net < 0){
+          var need = -ev.net;
+          for(i=0; i<creds.length && need>0.0001; i++){
+            take = Math.min(creds[i].amt, need);
+            creds[i].amt -= take; need -= take;
+          }
+          creds = creds.filter(function(x){ return x.amt > 0.0001; });
+          if(need > 0.0001) debts.push({id:ev.id, amt:need});
+        }
+      });
+      debts.forEach(function(x){ if(x.id && out[x.id]) out[x.id].debt += x.amt; });
+      creds.forEach(function(x){ if(x.id && out[x.id]) out[x.id].owe  += x.amt; });
+    });
+    return out;
+  }
+
   function renderSessions(){
     var w = $("sessList");
     if(!S.sessions.length){ w.innerHTML = '<div class="empty">'+T.noSessions+'</div>'; return; }
     var arr = S.sessions.slice().sort(function(a,b){ return b.date<a.date?-1:1; });
+    var RES = residualBySession();
     w.innerHTML = arr.map(function(s){
       var t = sessTotals(s);
+      var r = RES[s.id] || {debt:0, owe:0};
       var total = roster(s).length;
       /* cik vēl nav atzīmēti (abonementi skaitās kā nokārtoti) */
       var left = roster(s).filter(function(p){
@@ -999,10 +1059,10 @@
       }).length;
       var pills = [];
       if(left>0) pills.push('<span class="pill p-off">'+T.leftN+left+'</span>');
-      if(t.debt>0) pills.push('<span class="pill p-bad">'+T.owes+' '+eur(t.debt)+' €</span>');
-      if(t.owe>0) pills.push('<span class="pill p-warn">'+T.giveBack+' '+eur(t.owe)+' €</span>');
+      if(r.debt>0.004) pills.push('<span class="pill p-bad">'+T.owes+' '+eur(r.debt)+' €</span>');
+      if(r.owe>0.004) pills.push('<span class="pill p-warn">'+T.giveBack+' '+eur(r.owe)+' €</span>');
       if(!pills.length) pills.push(total ? '<span class="pill p-ok">'+T.allOk+'</span>' : '<span class="pill p-off">'+T.noPlayers+'</span>');
-      var kind = t.debt>0 ? "k-bad" : (t.owe>0 ? "k-warn" : (left>0 ? "" : (total ? "k-ok" : "")));
+      var kind = r.debt>0.004 ? "k-bad" : (r.owe>0.004 ? "k-warn" : (left>0 ? "" : (total ? "k-ok" : "")));
       return '<div class="sess '+kind+'" data-id="'+s.id+'">'+
         '<div class="sess-top"><div class="sess-date">'+fmtDate(s.date)+'</div>'+
         '<div class="row wrap" style="gap:5px;justify-content:flex-end">'+pills.join("")+'</div>'+
@@ -1040,6 +1100,21 @@
     if(!list.length){ w.innerHTML='<div class="empty">'+T.noResults+'</div>'; return; }
     var doneCnt = base.filter(function(p){ var e=s.entries[p.id]; return (e && e.s) || hasSub(p.id, s.date); }).length;
     $("dDone").textContent = T.markedN+doneCnt+T.of+base.length+(t.sub? T.incl+t.sub+T.withSubN:"");
+    /* cilvēka atlikums (man jāatdod) pirms šī treniņa */
+    function creditOf(pid){
+      var o=0, d=0;
+      S.sessions.forEach(function(x){
+        if(x.id===s.id) return;
+        var e = x.entries[pid], pr = sessPrice(x);
+        o += entryOwe(e,pr); d += entryDebt(e,pr);
+      });
+      Object.keys(S.subs).forEach(function(m){
+        var bx = S.subs[m], e = bx.entries[pid];
+        if(!e) return;
+        o += subOwe(e,bx.price); d += subDebt(e,bx.price);
+      });
+      return o - d;
+    }
     function inDone(p){
       if(open.indexOf(p.id)>=0) return false;          /* atvērts rediģēšanai — paliek vietā */
       var e = s.entries[p.id];
@@ -1074,23 +1149,50 @@
       }
       /* saritināta rinda, ja izvēle jau izdarīta un rinda nav atvērta */
       if(e.s && open.indexOf(p.id)<0){
-        var txt, cls;
-        if(e.s==="paid"){ txt=T.sPaid+" · "+eur(sessPrice(s))+" €"; cls="p-ok"; }
-        else if(e.s==="debt"){ txt=T.sDebt+" "+eur(sessPrice(s))+" €"; cls="p-bad"; }
+        var prc0 = sessPrice(s);
+        var ec = entryCred(e, prc0);
+        /* kopējā bilance, ieskaitot šo treniņu: + = man jāatdod, − = viņš parādā */
+        var tb = creditOf(p.id) + entryOwe(e,prc0) - entryDebt(e,prc0);
+        var bits = [];
+        if(e.s==="paid" && ec>0) bits.push(T.fromBal);
+        else if(e.s==="paid") bits.push(T.sPaid+" · "+eur(prc0)+" €");
+        else if(e.s==="debt"){ if(tb >= 0) bits.push(T.sDebt+" "+eur(prc0)+" €"); }
         else if(e.s==="part"){
-          txt = T.gave+" "+eur(Number(e.a)||0)+" € · "+(entryOwe(e,sessPrice(s))>0 ? T.giveBack+" "+eur(entryOwe(e,sessPrice(s)))+" €" : T.debtW+" "+eur(entryDebt(e,sessPrice(s)))+" €");
-          cls="p-warn";
+          if(ec>0) bits.push(eur(ec)+" € "+T.balUsed);
+          if((Number(e.a)||0) > 0 || ec===0) bits.push(T.gave+" "+eur(Number(e.a)||0)+" €");
         }
-        else { txt=T.sNone; cls="p-off"; }
-        return '<div class="crow s-'+e.s+'" data-open="'+p.id+'">'+
+        else bits.push(T.sNone);
+        var cls, bar;
+        if(tb < 0){
+          bits.push('<span style="color:var(--bad)">'+T.owes+" "+eur(-tb)+' €</span>');
+          cls="p-bad"; bar="debt";
+        } else if(tb > 0){
+          bits.push('<span style="color:var(--warn)">'+T.giveBack+" "+eur(tb)+' €</span>');
+          cls="p-warn"; bar="part";
+        } else if(e.s==="none"){
+          cls="p-off"; bar="none";
+        } else {
+          bits.push('<span style="color:var(--ok)">'+T.allOk+'</span>');
+          cls="p-ok"; bar="paid";
+        }
+        return '<div class="crow s-'+bar+'" data-open="'+p.id+'">'+
           '<span class="cname">'+esc(dn(p.name))+'</span>'+
-          '<span class="pill '+cls+'">'+txt+'</span></div>';
+          '<span class="pill '+cls+'">'+bits.join(" · ")+'</span></div>';
       }
+      var pr0 = sessPrice(s);
+      var cr = e.s ? 0 : creditOf(p.id);
+      var crFull = cr > 0 && cr >= pr0 && pr0 > 0;
+      var crPart = cr > 0 && cr <  pr0 && pr0 > 0;
+      var badges = {};
+      if(crFull) badges.paid = '<span class="bal g">+'+eur(cr)+' €</span>';
+      if(crPart) badges.part = '<span class="bal y">+'+eur(cr)+' €</span>';
+      else if(cr < 0) badges.part = '<span class="bal r">−'+eur(-cr)+' €</span>';
       var opts = ["paid","part","debt","none"].map(function(k){
-        return '<button class="opt'+(e.s===k?" on":"")+'" data-s="'+k+'" data-p="'+p.id+'">'+LBLo()[k]+'</button>';
+        return '<button class="opt'+(e.s===k?" on":"")+'" data-s="'+k+'" data-p="'+p.id+'">'+LBLo()[k]+(badges[k]||"")+'</button>';
       }).join("");
       return '<div class="prow">'+
-        '<div class="pname"><span>'+esc(dn(p.name))+(hasSub(p.id, s.date)? (subEntry(p.id, s.date.slice(0,7)).s==="signed"
+        '<div class="pname"><span>'+esc(dn(p.name))+
+          (hasSub(p.id, s.date)? (subEntry(p.id, s.date.slice(0,7)).s==="signed"
               ? ' <span class="pill p-warn">'+T.sub+T.subUnpaid+'</span>'
               : ' <span class="pill p-ok">'+T.sub+'</span>') : '')+'</span>'+
           (entryDebt(e,sessPrice(s))>0 ? '<span class="pill p-bad">-'+eur(entryDebt(e,sessPrice(s)))+' €</span>'
@@ -1102,6 +1204,7 @@
           '<span class="muted">'+T.gave+':</span>'+
           '<input type="number" min="0" step="0.5" inputmode="decimal" enterkeyhint="done" value="'+(e.a!=null?e.a:"")+'" data-amt="'+p.id+'" placeholder="0">'+
           '<span class="muted">€'+T.of+eur(sessPrice(s))+' €</span>'+
+          (entryCred(e,sessPrice(s))>0 ? '<span class="muted" style="font-size:12px">('+T.balHint+eur(entryCred(e,sessPrice(s)))+' €)</span>' : '')+
         '</div>'+
       '</div>';
     }
@@ -1123,9 +1226,10 @@
             if(st==="part"){ var f=w.querySelector('[data-amt="'+pid+'"]'); if(f){ f.focus(); f.select&&f.select(); } }
           }, 260);
         }
-        function apply(){
+        function apply(credAmt){
           if(e.s!=="part" && st==="part") fresh.push(pid);   /* pirmā summas ievade */
           s.entries[pid] = {s:st, a: st==="part" ? (e.a!=null?e.a:0) : null};
+          if(credAmt > 0) s.entries[pid].c = credAmt;
           if(st==="part"){ if(i<0) open.push(pid); }        /* atstāj vaļā summas ievadei */
           else if(i>=0){ open.splice(i,1); }                 /* saritina uzreiz */
           finish();
@@ -1135,9 +1239,18 @@
           finish();
         }
         /* apstiprinājums tikai tad, ja maina jau atzīmētu */
+        var prc = sessPrice(s);
+        var crd = e.s ? 0 : creditOf(pid);
+        function balAsk(text, yes, no, amt){
+          ask("<b>"+esc(pname(pid))+"</b><br><br>"+T.askBal1+"<b>"+eur(crd)+" €</b><br>"+
+              T.askBal2+eur(prc)+" €<br><br>"+text,
+              function(ok){ apply(ok ? amt : 0); }, yes, false, no);
+        }
         if(e.s===st){ askClear(pid, statusText(e, sessPrice(s)), function(ok){ if(ok) clear(); }); }
-        else if(e.s && e.s!==st){ askChange(pid, statusText(e, sessPrice(s)), LBLTXTo()[st], function(ok){ if(ok) apply(); }); }
-        else apply();
+        else if(e.s && e.s!==st){ askChange(pid, statusText(e, sessPrice(s)), LBLTXTo()[st], function(ok){ if(ok) apply(0); }); }
+        else if(st==="paid" && crd>0 && crd>=prc && prc>0){ balAsk(T.askBal3, T.bFromBal, T.bWithCash, prc); }
+        else if(st==="part" && crd>0 && crd<prc && prc>0){ balAsk(T.askBalP, T.bUseBal, T.bNoBal, crd); }
+        else apply(0);
       };
     });
     [].forEach.call(w.querySelectorAll("[data-amt]"), function(f){
@@ -1145,7 +1258,9 @@
       f.oninput = function(){
         var pid=f.dataset.amt, v=parseFloat(f.value);
         if(isNaN(v)) v=0;
+        var oc = Number((s.entries[pid]||{}).c)||0;
         s.entries[pid] = {s:"part", a: v};
+        if(oc>0) s.entries[pid].c = oc;
         save();
         var tt=sessTotals(s);
         $("dSum").innerHTML = roster(s).length+T.players+" · "+T.got+" <b>"+eur(tt.paid)+" €</b> · "+T.owes+" <b>"+eur(tt.debt)+" €</b>"+(tt.owe>0?" · "+T.giveBack+" <b>"+eur(tt.owe)+" €</b>":"");
@@ -1159,15 +1274,17 @@
           if(i>=0) open.splice(i,1);   /* saritina, kad summa ievadīta */
           renderDetail();
         }
-        /* 0 vai tukšs = nav atzīmes */
-        if(!(v>0)){
-          if(fi>=0 || !was){ fresh.splice(fi,1); delete s.entries[pid]; save(); done(); }
+        var oc = Number((s.entries[pid]||{}).c)||0;
+        /* 0 vai tukšs = nav atzīmes, ja vien nav izmantots atlikums */
+        if(!(v>0) && !oc){
+          if(fi>=0 || !was){ if(fi>=0) fresh.splice(fi,1); delete s.entries[pid]; save(); done(); }
           else askClear(pid, statusText({s:"part",a:was}, sessPrice(s)), function(ok){
             if(ok) delete s.entries[pid]; else s.entries[pid] = {s:"part", a: was};
             save(); done();
           });
           return;
         }
+        if(!(v>0) && oc){ if(fi>=0) fresh.splice(fi,1); done(); return; }
         if(fi>=0){ fresh.splice(fi,1); done(); }            /* pirmreizēja ievade — bez jautājuma */
         else if(was!==null && v!==was){
           askAmount(pid, was, v, function(ok){
@@ -1563,7 +1680,11 @@
     var m = sel.value || "";
 
     var tp=0, td=0, to=0;
-    S.people.forEach(function(p){ var t=personTotals(p.id, m); tp+=t.paid; td+=t.debt; to+=t.owe; });
+    S.people.forEach(function(p){
+      var t = personTotals(p.id, m); tp += t.paid;
+      var n = t.debt - t.owe;                     /* + = viņš parādā, − = man jāatdod */
+      if(n > 0.004) td += n; else if(n < -0.004) to += -n;
+    });
     $("kSaņ").textContent = eur(tp);
     $("kPar").textContent = eur(td);
     $("kAtd").textContent = eur(to);
@@ -1584,10 +1705,11 @@
       var t = personTotals(p.id, m);
       var sep = (firstG && p.id===firstG.id && shown[0]!==p)
         ? '<tr><td colspan="4" class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding-top:16px">Viesi</td></tr>' : '';
-      return sep+'<tr><td>'+esc(p.name)+'</td><td class="num">'+t.att+'</td>'+
+      var n = t.debt - t.owe;
+      return sep+'<tr><td>'+esc(dn(p.name))+'</td><td class="num">'+t.att+'</td>'+
         '<td class="num green">'+eur(t.paid)+'</td>'+
-        (t.debt>0 ? '<td class="num red">'+eur(t.debt)+'</td>'
-          : t.owe>0 ? '<td class="num" style="color:var(--warn)">−'+eur(t.owe)+'</td>'
+        (n>0.004 ? '<td class="num red">'+eur(n)+'</td>'
+          : n<-0.004 ? '<td class="num" style="color:var(--warn)">−'+eur(-n)+'</td>'
           : '<td class="num">0.00</td>')+'</tr>';
     }).join("");
     $("sumTable").innerHTML = rows ?
@@ -1644,8 +1766,8 @@
   function debtList(kind){
     var m = curSumMonth();
     var rows = teamFirst(S.people).map(function(p){
-      var t = personTotals(p.id, m);
-      return {name:p.name, v: kind==="debt" ? t.debt : t.owe};
+      var t = personTotals(p.id, m), n = t.debt - t.owe;
+      return {name:dn(p.name), v: kind==="debt" ? Math.max(0,n) : Math.max(0,-n)};
     }).filter(function(x){ return x.v > 0; })
       .sort(function(a,b){ return b.v - a.v; });
     var total = rows.reduce(function(t,x){ return t + x.v; }, 0);
@@ -1745,34 +1867,6 @@
       return t.every(function(x){ return pt.some(function(y){ return y===x || (x.length>3 && y.indexOf(x)===0) || (y.length>3 && x.indexOf(y)===0); }); });
     });
   }
-  var unmatched = [];
-  $("rPasteGo").onclick = function(){
-    var lines = $("rPaste").value.split(/[\n,;]+/).map(function(x){return x.trim();}).filter(Boolean);
-    if(!lines.length){ info(T.ePaste); return; }
-    var ok=0, unarch=0, amb=[]; unmatched=[];
-    lines.forEach(function(l){
-      var m = findPerson(l);
-      if(m.length===1){
-        if(m[0].arch){ m[0].arch = false; unarch++; }
-        if(draft.indexOf(m[0].id)<0) draft.push(m[0].id); ok++;
-      }
-      else if(m.length>1){ amb.push(l); }
-      else { unmatched.push(l); }
-    });
-    renderRoster();
-    if(unarch) save();
-    var msg = T.pasteOk+ok + (unarch? T.pasteUnarch+unarch+")" : "");
-    if(amb.length) msg += T.pasteAmb+amb.map(esc).join(", ");
-    if(unmatched.length) msg += T.pasteNew+unmatched.map(esc).join(", ")+
-      '<br><button class="btn" id="rAddUnm" style="margin-top:8px">'+T.pasteAddBtn+unmatched.length+T.pasteAddBtn2+'</button>';
-    $("rPasteRes").innerHTML = msg;
-    var btn = $("rAddUnm");
-    if(btn) btn.onclick = function(){
-      unmatched.forEach(function(n){ var id=quickAdd(n,false); if(id && draft.indexOf(id)<0) draft.push(id); });
-      unmatched=[]; $("rPasteRes").innerHTML=T.pasteDone; renderRoster(); renderPeople();
-    };
-  };
-
   /* pievieno treniņam esošu cilvēku pēc id */
   function addToSession(id, name){
     var s = S.sessions.filter(function(x){return x.id===cur;})[0];
