@@ -274,7 +274,7 @@
         <input type="text" id="rFilter" placeholder="🔍 Meklēt…" data-ph="phSearch">
       </div>
       <div class="row" style="margin-top:10px">
-        <input type="text" id="rNew" placeholder="+ Viesis (uzvārds vārds)" data-ph="phGuest">
+        <input type="text" id="rNew" placeholder="+ Viesis (vārds)" data-ph="phGuest">
         <button class="btn" id="rAdd" data-i18n="bAdd">Pievienot</button>
       </div>
       <p class="muted" style="margin:8px 0 0" data-i18n="rGuestHint">Viesis nonāk tikai šajā treniņā un sadaļā “Dalībnieki → Viesi”, nevis pastāvīgajā izvēlnē.</p>
@@ -404,7 +404,7 @@
     </div>
     <div class="card">
       <h2 data-i18n="hAddPeople">Pievienot cilvēkus</h2>
-      <textarea id="bulk" placeholder="Viens cilvēks katrā rindā — uzvārds, tad vārds:&#10;Bērziņš Jānis&#10;Ozols Kārlis&#10;Liepa Anna" data-ph="phBulk"></textarea>
+      <textarea id="bulk" placeholder="Viens cilvēks katrā rindā — uzvārds, tad vārds:&#10;Bērziņš Jānis&#10;Ozols Kārlis&#10;Liepa Anna"></textarea>
       <div class="row wrap" style="margin-top:10px">
         <button class="btn" id="addPeople" style="flex:1" data-i18n="bToTeam">Komandai</button>
         <button class="btn sec" id="addGuests" style="flex:1" data-i18n="bToGuests">Viesiem</button>
@@ -459,6 +459,14 @@
       </div>
     </div>
     <div class="card">
+      <h2 data-i18n="hNameOrder">Vārdu secība</h2>
+      <div class="row wrap">
+        <button class="btn sec" id="noFL" style="flex:1" data-i18n="bNameFL">Vārds Uzvārds</button>
+        <button class="btn sec" id="noLF" style="flex:1" data-i18n="bNameLF">Uzvārds Vārds</button>
+      </div>
+      <p class="muted" style="margin:10px 0 0" data-i18n="pNameOrder">Attiecas gan uz sarakstiem, gan uz ievadi. Kārtošana vienmēr notiek pēc uzvārda.</p>
+    </div>
+    <div class="card">
       <h2 data-i18n="hLook">Izskats</h2>
       <div class="row wrap">
         <button class="btn sec" id="thDark" style="flex:1" data-i18n="bDark">🌙 Tumšs</button>
@@ -490,7 +498,7 @@
         </summary>
         <div id="aboutText" style="font-size:14px;line-height:1.6;margin-top:10px"></div>
       </details>
-      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v2.4</div>
+      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v2.5</div>
     </div>
   </section>
 </main>
@@ -588,13 +596,13 @@
   }
 
   /* ---------- valodas ---------- */
-  var APP_VER = "2.4";
+  var APP_VER = "2.5";
   var I18N = {
     lv:{
       navTr:"Treniņi", navSum:"Kopsavilkums", navSub:"Abonementi", navPpl:"Dalībnieki", navSet:"Iestatījumi",
       hNewSess:"Jauns treniņš", bAdd:"Pievienot", bSave:"Saglabāt",
       rHint:"Atzīmē, kuri būs treniņā", bPrev:"Kā iepriekš", bAll:"Visus", bNone:"Notīrīt",
-      phSearch:"🔍 Meklēt…", phGuest:"+ Viesis (uzvārds vārds)",
+      phSearch:"🔍 Meklēt…", phGuest:"+ Viesis (vārds)",
       rGuestHint:"Viesis nonāk tikai šajā treniņā un sadaļā “Dalībnieki → Viesi”, nevis pastāvīgajā izvēlnē.",
       rPasteTitle:"📋 Ielīmēt sarakstu", phPaste:"Ielīmē vārdus (viens rindā vai ar komatiem).\nDer jebkura secība — “Uzvārds Vārds” vai “Vārds Uzvārds”.",
       bPasteGo:"Atzīmēt sarakstā", bRosterDone:"Gatavs → uz treniņu",
@@ -617,6 +625,12 @@
       hAbout:"Par programmu",
       about:"<b>Finanšu kontroles aplikācija amatieru ledus hokeja komandai.</b><br><br>Aizstāj piezīmes telefonā un Excel tabulas: kurš par treniņu samaksājis, kurš palicis parādā, kam ir abonements un cik mēnesī aizgājis trenerim, vārtsargiem un hallei.<br><br><b>Treniņi</b> — dalībnieku izvēle, maksājumu atzīmēšana, katram treniņam sava cena.<br><b>Abonementi</b> — mēneša maksa ar statusiem samaksāts, daļēji samaksāts vai pieteicies.<br><b>Dalībnieki</b> — komanda, viesi un arhīvs tiem, kas pašlaik nenāk.<br><b>Mani izdevumi</b> — treneris, vārtsargi, halle un citas rindas pie katra treniņa.<br><b>Kopsavilkums</b> — saņemts, parādi, izdevumi un atlikums pa mēnešiem.<br><br>Dati glabājas tikai šajā ierīcē un nekur netiek sūtīti. Tāpēc regulāri taisi dublējumu: sadaļā Dati spied “Lejupielādēt failu”.<br><br>Pēc pirmās atvēršanas aplikācija strādā arī bez interneta.",
       hLang:"Valoda", hLook:"Izskats", bDark:"🌙 Tumšs", bLight:"☀️ Gaišs",
+      hNameOrder:"Vārdu secība", bNameFL:"Vārds Uzvārds", bNameLF:"Uzvārds Vārds",
+      pNameOrder:"Attiecas gan uz sarakstiem, gan uz ievadi. Kārtošana vienmēr notiek pēc uzvārda.",
+      phBulkFL:"Viens cilvēks katrā rindā — vārds, tad uzvārds:\nJānis Bērziņš\nKārlis Ozols\nAnna Liepa",
+      phBulkLF:"Viens cilvēks katrā rindā — uzvārds, tad vārds:\nBērziņš Jānis\nOzols Kārlis\nLiepa Anna",
+      askEditNameFL:'<b>Labot vārdu</b><br><span class="muted">Vārds, tad uzvārds — tāpat kā sarakstā</span>',
+      askEditNameLF:'<b>Labot vārdu</b><br><span class="muted">Uzvārds, tad vārds — tāpat kā sarakstā</span>',
       hData:"Dati", pData:"Dati glabājas šajā ierīcē. Taisi dublējumu regulāri — tas ir viens fails, ko var ielādēt atpakaļ jebkurā brīdī.",
       bDlFile:"💾 Lejupielādēt failu", bLoadJson:"📂 Ielādēt JSON", bWipe:"Dzēst visus datus",
       offline:"bezsaistē", bCancel:"Atcelt", bOk:"Apstiprināt", bYes:"Labi",
@@ -678,7 +692,7 @@
       navTr:"Sessions", navSum:"Summary", navSub:"Memberships", navPpl:"People", navSet:"Settings",
       hNewSess:"New session", bAdd:"Add", bSave:"Save",
       rHint:"Select who is attending", bPrev:"Same as last", bAll:"All", bNone:"Clear",
-      phSearch:"🔍 Search…", phGuest:"+ Guest (last name first)",
+      phSearch:"🔍 Search…", phGuest:"+ Guest (name)",
       rGuestHint:"A guest is added only to this session and to “People → Guests”, not to the regular list.",
       rPasteTitle:"📋 Paste a list", phPaste:"Paste names (one per line or comma separated).\n“Surname Firstname” order also works.",
       bPasteGo:"Match in list", bRosterDone:"Done → to session",
@@ -701,6 +715,12 @@
       hAbout:"About",
       about:"<b>A finance tracking app for an amateur ice hockey team.</b><br><br>It replaces phone notes and spreadsheets: who paid for a session, who still owes, who has a membership, and how much went to the coach, the goalies and the rink each month.<br><br><b>Sessions</b> — pick participants, mark payments, set a price per session.<br><b>Memberships</b> — monthly fee with paid, partly paid or signed up status.<br><b>People</b> — team, guests and an archive for those not attending.<br><b>My expenses</b> — coach, goalies, rink and any other rows per session.<br><b>Summary</b> — received, debts, expenses and balance by month.<br><br>Data is stored on this device only and never sent anywhere. So back it up regularly: in the Data section tap “Download file”.<br><br>After the first visit the app also works offline.",
       hLang:"Language", hLook:"Appearance", bDark:"🌙 Dark", bLight:"☀️ Light",
+      hNameOrder:"Name order", bNameFL:"First Last", bNameLF:"Last First",
+      pNameOrder:"Applies to both the lists and what you type. Sorting always uses the last name.",
+      phBulkFL:"One person per line — first name, then last name:\nJohn Smith\nMike Brown\nAnna Green",
+      phBulkLF:"One person per line — last name, then first name:\nSmith John\nBrown Mike\nGreen Anna",
+      askEditNameFL:'<b>Edit name</b><br><span class="muted">First name, then last name — as shown in the list</span>',
+      askEditNameLF:'<b>Edit name</b><br><span class="muted">Last name, then first name — as shown in the list</span>',
       hData:"Data", pData:"Data is stored on this device. Back it up regularly — it is a single file you can load back any time.",
       bDlFile:"💾 Download file", bLoadJson:"📂 Load JSON", bWipe:"Delete all data",
       offline:"offline", bCancel:"Cancel", bOk:"Confirm", bYes:"OK",
@@ -777,7 +797,12 @@
     $("wvWarn").innerHTML = T.wvWarn;
     $("lgLv").style.borderColor = (S.lang==="en") ? "" : "var(--acc)";
     $("lgEn").style.borderColor = (S.lang==="en") ? "var(--acc)" : "";
+    $("noFL").style.borderColor = lfOn() ? "" : "var(--acc)";
+    $("noLF").style.borderColor = lfOn() ? "var(--acc)" : "";
+    $("bulk").placeholder = lfOn() ? T.phBulkLF : T.phBulkFL;
   }
+  $("noFL").onclick = function(){ S.nameOrder="fl"; save(); applyLang(); render(); if(cur) renderDetail(); };
+  $("noLF").onclick = function(){ S.nameOrder="lf"; save(); applyLang(); render(); if(cur) renderDetail(); };
   $("lgLv").onclick = function(){ S.lang="lv"; save(); applyLang(); render(); if(cur) renderDetail(); };
   $("lgEn").onclick = function(){ S.lang="en"; save(); applyLang(); render(); if(cur) renderDetail(); };
 
@@ -833,13 +858,17 @@
     return t[t.length-1] || "";
   }
   /* ievade "Uzvārds Vārds" -> glabāšanas formāts "Vārds Uzvārds" */
+  function lfOn(){ return S.nameOrder === "lf"; }
   function un(n){
-    var t = String(n||"").trim().replace(/\s+/g," ").split(" ");
-    if(t.length < 2) return String(n||"").trim();
+    var s0 = String(n||"").trim().replace(/\s+/g," ");
+    if(!lfOn()) return s0;
+    var t = s0.split(" ");
+    if(t.length < 2) return s0;
     return t.slice(1).join(" ") + " " + t[0];
   }
   /* rāda "Uzvārds Vārds" (glabājas joprojām "Vārds Uzvārds") */
   function dn(n){
+    if(!lfOn()) return String(n||"");
     var t = String(n||"").trim().split(/\s+/);
     if(t.length < 2) return String(n||"");
     return t[t.length-1] + " " + t.slice(0, t.length-1).join(" ");
@@ -1260,7 +1289,7 @@
   function editName(pid){
     var p = S.people.filter(function(x){return x.id===pid;})[0];
     if(!p) return;
-    ask(T.askEditName+
+    ask((lfOn()?T.askEditNameLF:T.askEditNameFL)+
         '<input type="text" id="mdInput" style="margin-top:10px" value="'+esc(dn(p.name))+'">',
       function(ok){
         if(!ok) return;
