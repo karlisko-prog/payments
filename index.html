@@ -494,7 +494,7 @@
         </summary>
         <div id="aboutText" style="font-size:14px;line-height:1.6;margin-top:10px"></div>
       </details>
-      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v3.5</div>
+      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v3.7</div>
     </div>
   </section>
 </main>
@@ -602,7 +602,7 @@
   }
 
   /* ---------- valodas ---------- */
-  var APP_VER = "3.5";
+  var APP_VER = "3.7";
   var I18N = {
     lv:{
       navTr:"Treniņi", navSum:"Kopsavilkums", navSub:"Abonementi", navPpl:"Dalībnieki", navSet:"Iestatījumi",
@@ -1141,7 +1141,23 @@
       return hasSub(p.id, s.date);
     }
     var pend = list.filter(function(p){ return !inDone(p); });
-    var done = list.filter(inDone);
+    /* Atzīmētie trīs kārtās: vispirms naudas atzīmes (jaunākā augšā),
+       tad tie, kas nebija, tad abonementu maksātāji.
+       Ieraksti bez laika zīmoga (pirms v3.6) paliek zem tiem, kam tas ir. */
+    function tier(p){
+      var e = s.entries[p.id];
+      if(!(e && e.s)) return 2;                     /* tikai abonements */
+      return e.s === "none" ? 1 : 0;                /* nebija / naudas atzīme */
+    }
+    function markedAt(p){ var e = s.entries[p.id]; return (e && Number(e.t)) || 0; }
+    var done = list.filter(inDone).sort(function(a,b){
+      var ka = tier(a), kb = tier(b);
+      if(ka !== kb) return ka - kb;
+      if(ka > 0) return 0;                          /* apakšējās kārtas — alfabēta secībā */
+      var ta = markedAt(a), tb = markedAt(b);
+      if(ta !== tb) return tb - ta;                 /* jaunākā atzīme augšā */
+      return 0;
+    });
     function grp(arr, guestHead){
       var fg = arr.filter(function(p){ return p.guest; })[0];
       return arr.map(function(p){
@@ -1247,7 +1263,7 @@
         }
         function apply(credAmt){
           if(e.s!=="part" && st==="part") fresh.push(pid);   /* pirmā summas ievade */
-          s.entries[pid] = {s:st, a: st==="part" ? (e.a!=null?e.a:0) : null};
+          s.entries[pid] = {s:st, a: st==="part" ? (e.a!=null?e.a:0) : null, t: Date.now()};
           if(credAmt > 0) s.entries[pid].c = credAmt;
           if(st==="part"){ if(i<0) open.push(pid); }        /* atstāj vaļā summas ievadei */
           else if(i>=0){ open.splice(i,1); }                 /* saritina uzreiz */
@@ -1277,8 +1293,9 @@
       f.oninput = function(){
         var pid=f.dataset.amt, v=parseFloat(f.value);
         if(isNaN(v)) v=0;
-        var oc = Number((s.entries[pid]||{}).c)||0;
-        s.entries[pid] = {s:"part", a: v};
+        var prev = s.entries[pid] || {};
+        var oc = Number(prev.c)||0, ot = Number(prev.t)||0;
+        s.entries[pid] = {s:"part", a: v, t: ot || Date.now()};
         if(oc>0) s.entries[pid].c = oc;
         save();
         var tt=sessTotals(s);
@@ -1298,7 +1315,7 @@
         if(!(v>0) && !oc){
           if(fi>=0 || !was){ if(fi>=0) fresh.splice(fi,1); delete s.entries[pid]; save(); done(); }
           else askClear(pid, statusText({s:"part",a:was}, sessPrice(s)), function(ok){
-            if(ok) delete s.entries[pid]; else s.entries[pid] = {s:"part", a: was};
+            if(ok) delete s.entries[pid]; else s.entries[pid] = {s:"part", a: was, t: Date.now()};
             save(); done();
           });
           return;
