@@ -494,7 +494,7 @@
         </summary>
         <div id="aboutText" style="font-size:14px;line-height:1.6;margin-top:10px"></div>
       </details>
-      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v3.4</div>
+      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v3.5</div>
     </div>
   </section>
 </main>
@@ -602,7 +602,7 @@
   }
 
   /* ---------- valodas ---------- */
-  var APP_VER = "3.4";
+  var APP_VER = "3.5";
   var I18N = {
     lv:{
       navTr:"Treniņi", navSum:"Kopsavilkums", navSub:"Abonementi", navPpl:"Dalībnieki", navSet:"Iestatījumi",
@@ -667,6 +667,7 @@
       thName:"Vārds", thSess:"Tren.", thPaid:"Samaksāts €", thBalance:"Bilance €",
       noteBal:'Bilance: <span class="red">sarkans</span> = man parādā · <span style="color:var(--warn)">oranžs ar mīnusu</span> = man jāatdod',
       noteOwe:"Kopā jāatdod: ",
+      noteBalTo:"Bilance — stāvoklis uz perioda beigām, ieskaitot iepriekšējos mēnešus. Saņemts un izdevumi — tikai par šo periodu.",
       tiEdit:"Labot vārdu", tiToGuests:"Pārcelt uz viesiem", tiToTeam:"Uzņemt komandā", tiArch:"Uz arhīvu",
       tiUnarch:"Atgriezt sarakstā", tiDel:"Dzēst", toGuests:"→ viesos", toTeam:"→ komandā", back:"↩ ",
       trainCount:" treniņi · ", paidSuffix:" € samaksāts", debtSuffix:" € parādā",
@@ -761,6 +762,7 @@
       thName:"Name", thSess:"Sess.", thPaid:"Paid €", thBalance:"Balance €",
       noteBal:'Balance: <span class="red">red</span> = owed to me · <span style="color:var(--warn)">orange with minus</span> = I owe',
       noteOwe:"Total to return: ",
+      noteBalTo:"Balance — the state at the end of the period, carrying over earlier months. Received and expenses — this period only.",
       tiEdit:"Edit name", tiToGuests:"Move to guests", tiToTeam:"Move to team", tiArch:"To archive",
       tiUnarch:"Restore", tiDel:"Delete", toGuests:"→ guests", toTeam:"→ team", back:"↩ ",
       trainCount:" sessions · ", paidSuffix:" € paid", debtSuffix:" € owed",
@@ -975,6 +977,23 @@
     });
     var st = subTotalsFor(pid, m);
     return {paid:paid+st.paid, debt:debt+st.debt, owe:owe+st.owe, att:att, sub:st};
+  }
+  /* Bilance uz perioda beigām: visi notikumi līdz izvēlētā mēneša beigām ieskaitot.
+     Parāds nav mēneša lielums — tas ir stāvoklis, kas nes līdzi iepriekšējos mēnešus. */
+  function personBalTo(pid, m){
+    var debt=0, owe=0;
+    S.sessions.forEach(function(s){
+      if(m && s.date.slice(0,7) > m) return;
+      var pr = sessPrice(s), e = s.entries[pid];
+      debt += entryDebt(e,pr); owe += entryOwe(e,pr);
+    });
+    Object.keys(S.subs).forEach(function(k){
+      if(m && k > m) return;
+      var b = S.subs[k], e = b.entries[pid];
+      if(!e || !e.s) return;
+      debt += subDebt(e,b.price); owe += subOwe(e,b.price);
+    });
+    return {debt:debt, owe:owe, net: debt - owe};
   }
   function fmtDate(iso){
     var p = iso.split("-");
@@ -1681,8 +1700,8 @@
 
     var tp=0, td=0, to=0;
     S.people.forEach(function(p){
-      var t = personTotals(p.id, m); tp += t.paid;
-      var n = t.debt - t.owe;                     /* + = viņš parādā, − = man jāatdod */
+      tp += personTotals(p.id, m).paid;           /* saņemtā nauda — tikai par periodu */
+      var n = personBalTo(p.id, m).net;           /* bilance — uz perioda beigām */
       if(n > 0.004) td += n; else if(n < -0.004) to += -n;
     });
     $("kSaņ").textContent = eur(tp);
@@ -1698,14 +1717,14 @@
 
     var shown = teamFirst(S.people).filter(function(p){
       var t = personTotals(p.id, m);
-      return t.att || t.paid || t.debt || t.owe;
+      return t.att || t.paid || Math.abs(personBalTo(p.id, m).net) > 0.004;
     });
     var firstG = shown.filter(function(p){ return p.guest; })[0];
     var rows = shown.map(function(p){
       var t = personTotals(p.id, m);
       var sep = (firstG && p.id===firstG.id && shown[0]!==p)
         ? '<tr><td colspan="4" class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding-top:16px">Viesi</td></tr>' : '';
-      var n = t.debt - t.owe;
+      var n = personBalTo(p.id, m).net;
       return sep+'<tr><td>'+esc(dn(p.name))+'</td><td class="num">'+t.att+'</td>'+
         '<td class="num green">'+eur(t.paid)+'</td>'+
         (n>0.004 ? '<td class="num red">'+eur(n)+'</td>'
@@ -1758,6 +1777,7 @@
     }).filter(Boolean).join("<br>");
     $("sumSubs").innerHTML = subInfo || '<span class="muted">'+T.noSubsYet+'</span>';
     $("sumNote").innerHTML = T.noteBal +
+      (m ? '<br>'+T.noteBalTo : '') +
       (to>0 ? '<br>'+T.noteOwe+'<b style="color:var(--warn)">'+eur(to)+' €</b>' : '');
   }
 
@@ -1766,7 +1786,7 @@
   function debtList(kind){
     var m = curSumMonth();
     var rows = teamFirst(S.people).map(function(p){
-      var t = personTotals(p.id, m), n = t.debt - t.owe;
+      var n = personBalTo(p.id, m).net;
       return {name:dn(p.name), v: kind==="debt" ? Math.max(0,n) : Math.max(0,-n)};
     }).filter(function(x){ return x.v > 0; })
       .sort(function(a,b){ return b.v - a.v; });
