@@ -228,6 +228,35 @@
        box-shadow:0 20px 60px rgba(0,0,0,.6);font-size:15px;line-height:1.5}
   .dlg b{color:#fff}
   .dlg .arw{color:var(--acc);font-weight:800}
+  /* ---------- mērķi ---------- */
+  .seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r2);padding:4px;margin-bottom:12px}
+  .seg button{background:none;border:1px solid transparent;color:var(--tx2);padding:10px;border-radius:8px;font-family:var(--fm);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;min-height:40px}
+  .seg button.on{background:var(--panel2);color:var(--tx);border-color:var(--line)}
+  .prog{height:8px;background:var(--panel2);border-radius:999px;overflow:hidden;margin:10px 0 6px}
+  .prog i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:999px;transition:width .3s}
+  .prog.full i{background:var(--ok)}
+  .goal{position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 14px 14px 20px;margin-bottom:10px;cursor:pointer;transition:transform .12s}
+  .goal:active{transform:scale(.985)}
+  .goal::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--acc)}
+  .goal.k-ok::before{background:var(--ok)}
+  .goal.k-bad::before{background:var(--bad)}
+  .goal.closed{opacity:.7}
+  .goal.closed::before{background:var(--off)}
+  .gt{font-family:var(--fh);font-weight:600;font-size:20px;letter-spacing:.01em}
+  .gsum{font-size:13px;color:var(--tx2);margin-top:4px}
+  .gsum b{color:var(--tx)}
+  .grp{font-family:var(--fm);font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--tx2);margin:16px 0 8px;display:flex;justify-content:space-between}
+  .grp:first-child{margin-top:0}
+  .grp b{color:var(--tx)}
+  #rTitle{white-space:normal;overflow-wrap:anywhere;min-width:0}
+  #rCount{flex:0 0 auto}
+  .share{font-family:var(--fm);font-size:11px;color:var(--tx2);white-space:nowrap;cursor:pointer;padding:7px 9px;min-height:34px;display:inline-flex;align-items:center;border-radius:6px;border:1px dashed var(--line);background:none}
+  .share.ed{color:var(--acc);border-color:var(--acc)}
+  .share.sm{font-size:10px;padding:6px 8px;min-height:36px;margin-left:6px;flex:0 0 auto}
+  .crow .amt + .share.sm, .crow .pill + .share.sm{margin-left:8px}
+  .amt{font-family:var(--fm);font-size:13px;font-weight:700;white-space:nowrap;margin-left:auto}
+  .kindsel .btn.sec.on{border-color:var(--acc);color:var(--acc)}
+  .crow.s-acc{border-left-color:var(--acc)}
   @media(max-width:380px){ .opts{grid-template-columns:repeat(2,1fr)} }
 </style>
 </head>
@@ -263,7 +292,7 @@
       <div class="row" style="justify-content:space-between">
         <div>
           <div class="sess-date" id="rTitle"></div>
-          <div class="sess-sum" data-i18n="rHint">Atzīmē, kuri būs treniņā</div>
+          <div class="sess-sum" id="rHintEl" data-i18n="rHint">Atzīmē, kuri būs treniņā</div>
         </div>
         <span class="pill p-ok" id="rCount">0</span>
       </div>
@@ -279,7 +308,7 @@
         <input type="text" id="rNew" placeholder="+ Viesis (vārds)" data-ph="phGuest">
         <button class="btn sec" id="rAdd" data-i18n="bAdd">Pievienot</button>
       </div>
-      <p class="muted" style="margin:8px 0 0" data-i18n="rGuestHint">Viesis nonāk tikai šajā treniņā un sadaļā “Dalībnieki → Viesi”, nevis pastāvīgajā izvēlnē.</p>
+      <p class="muted" id="rGuestHintEl" style="margin:8px 0 0" data-i18n="rGuestHint">Viesis nonāk tikai šajā treniņā un sadaļā “Dalībnieki → Viesi”, nevis pastāvīgajā izvēlnē.</p>
     </div>
     <div class="card" id="rList"></div>
     <button class="btn" id="rSave" style="width:100%;padding:15px;font-size:17px" data-i18n="bRosterDone">Gatavs → uz treniņu</button>
@@ -363,6 +392,10 @@
       <div id="sumSubs" class="muted" style="font-size:14px;line-height:1.8"></div>
     </div>
     <div class="card">
+      <h2 data-i18n="hSumGoals">Mērķi</h2>
+      <div id="sumGoals" style="font-size:14px"></div>
+    </div>
+    <div class="card">
       <h2 data-i18n="hExport">Eksports</h2>
       <div class="row wrap">
         <button class="btn sec" id="expCsv" data-i18n="bCsv">Lejupielādēt CSV</button>
@@ -373,6 +406,28 @@
 
   <!-- ABONEMENTI -->
   <section id="v-subs" class="hide">
+    <div class="seg">
+      <button id="segSubs" class="on" data-i18n="segSubs">Abonementi</button>
+      <button id="segGoals" data-i18n="segGoals">Mērķi</button>
+    </div>
+    <div id="goalsView" class="hide">
+      <div class="card">
+        <h2 data-i18n="hNewGoal">Jauns mērķis</h2>
+        <input type="text" id="gTitle" placeholder="Nosaukums, piem. Turnīrs Rīgā" data-ph="phGoalTitle" style="margin-bottom:8px" enterkeyhint="done">
+        <div class="row" style="margin-bottom:8px">
+          <input type="number" id="gAmount" min="0" step="1" inputmode="decimal" enterkeyhint="done" placeholder="Daļa katram €" data-ph="phShare" style="flex:1">
+          <input type="date" id="gDue" style="flex:1">
+        </div>
+        <div class="row wrap kindsel">
+          <button class="btn sec on" id="gKindFixed" style="flex:1" data-i18n="bKindFixed">Fiksēta daļa</button>
+          <button class="btn sec" id="gKindFree" style="flex:1" data-i18n="bKindFree">Brīvas iemaksas</button>
+        </div>
+        <p class="muted" style="margin:8px 0 0;font-size:12px" id="gKindHint" data-i18n="pKindFixed">Izvēlies, kam jāmaksā un cik. Kurš nav samaksājis — redzams uzreiz.</p>
+        <button class="btn" id="gCreate" style="width:100%;margin-top:10px" data-i18n="bCreateGoal">Izveidot</button>
+      </div>
+      <div id="goalList"></div>
+    </div>
+    <div id="subsView">
     <div class="card">
       <h2 data-i18n="hMonthPrice">Mēnesis un cena</h2>
       <div class="row">
@@ -389,6 +444,38 @@
       </label>
     </div>
     <div class="card" id="subList"></div>
+    </div>
+  </section>
+
+  <!-- VIENS MĒRĶIS -->
+  <section id="v-goal" class="hide">
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <button class="btn sec" id="gBack" data-i18n="bBack">‹ Atpakaļ</button>
+        <div class="row" style="gap:6px">
+          <button class="btn sec" id="gClose" style="color:var(--ok)" data-i18n="bCloseGoal">Noslēgt</button>
+          <button class="btn danger" id="gDelete" data-i18n="bDelGoal">Dzēst</button>
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px;justify-content:space-between;align-items:flex-start;gap:10px">
+        <div style="min-width:0"><div class="gt" id="gdTitle"></div><div class="gsum" id="gdMeta"></div></div>
+        <button class="btn mini" id="gEdit">✎</button>
+      </div>
+      <div class="prog" id="gdProg"><i style="width:0%"></i></div>
+      <div class="gsum" id="gdSum"></div>
+      <button class="btn sec" id="gRoster" style="width:100%;margin-top:12px" data-i18n="bEditRoster">Mainīt dalībniekus</button>
+    </div>
+    <div class="card" id="gcCard">
+      <h2 data-i18n="hAddContrib">Pievienot iemaksu</h2>
+      <div class="row">
+        <input type="text" id="gcName" placeholder="Vārds vai jebkurš teksts" data-ph="phContribName" autocomplete="off" style="flex:1">
+        <input type="number" id="gcAmt" min="0" step="1" inputmode="decimal" enterkeyhint="done" placeholder="€" style="width:84px;flex:0 0 84px">
+      </div>
+      <div id="gcSug" class="hide" style="margin-top:8px"></div>
+      <button class="btn sec" id="gcAdd" style="width:100%;margin-top:10px" data-i18n="bAdd">Pievienot</button>
+      <p class="muted" style="margin:8px 0 0;font-size:12px" data-i18n="pContribHint">Ievadot burtus, piedāvā komandu un viesus. Var ierakstīt arī cilvēku, kas nav sarakstos.</p>
+    </div>
+    <div class="card" id="gdList"></div>
   </section>
 
   <!-- KOMANDA -->
@@ -494,7 +581,7 @@
         </summary>
         <div id="aboutText" style="font-size:14px;line-height:1.6;margin-top:10px"></div>
       </details>
-      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v3.7</div>
+      <div class="muted" id="appVer" style="margin-top:12px;text-align:center;font-size:12px">v4.0</div>
     </div>
   </section>
 </main>
@@ -602,10 +689,10 @@
   }
 
   /* ---------- valodas ---------- */
-  var APP_VER = "3.7";
+  var APP_VER = "4.0";
   var I18N = {
     lv:{
-      navTr:"Treniņi", navSum:"Kopsavilkums", navSub:"Abonementi", navPpl:"Dalībnieki", navSet:"Iestatījumi",
+      navTr:"Treniņi", navSum:"Kopsavilkums", navSub:"Iemaksas", navPpl:"Dalībnieki", navSet:"Iestatījumi",
       hNewSess:"Jauns treniņš", bAdd:"Pievienot", bSave:"Saglabāt",
       rHint:"Atzīmē, kuri būs treniņā", bPrev:"Kā iepriekš", bAll:"Visus", bNone:"Notīrīt",
       phSearch:"🔍 Meklēt…", phGuest:"+ Viesis (vārds)",
@@ -697,10 +784,39 @@
       expDef:["Treneris","Vārtsargs","Vārtsargs 2","Halle","Citi izdevumi"],
       expCoach:"Treneris", expGk:"Vārtsargs", expOther:"Citi izdevumi",
       guestSug:"Viesi no saraksta:", subsCount:" abon. · ",
-      archSplit:"komanda ", archSplit2:" · viesi "
+      archSplit:"komanda ", archSplit2:" · viesi ",
+      /* mērķi */
+      segSubs:"Abonementi", segGoals:"Mērķi", hNewGoal:"Jauns mērķis",
+      phGoalTitle:"Nosaukums, piem. Turnīrs Rīgā", phShare:"Daļa katram €", phTarget:"Mērķa summa €",
+      bKindFixed:"Fiksēta daļa", bKindFree:"Brīvas iemaksas",
+      pKindFixed:"Izvēlies, kam jāmaksā un cik. Kurš nav samaksājis — redzams uzreiz.",
+      pKindFree:"Dod, kurš grib un cik grib. Parādnieku nav.",
+      bCreateGoal:"Izveidot", bCloseGoal:"Noslēgt", bReopenGoal:"Atvērt", bDelGoal:"Dzēst",
+      hAddContrib:"Pievienot iemaksu", phContribName:"Vārds vai jebkurš teksts",
+      pContribHint:"Ievadot burtus, piedāvā komandu un viesus. Var ierakstīt arī cilvēku, kas nav sarakstos.",
+      hSumGoals:"Mērķi", gNoGoals:"Mērķu vēl nav.<br>Izveido pirmo augšā.", gClosedHead:"Noslēgtie",
+      gUnpaid:"Nav samaksājuši", gPaid:"Samaksājuši", gOther:"Citas iemaksas", gContribs:"Iemaksas · jaunākā augšā",
+      gNoContribs:"Iemaksu vēl nav.", gNoRoster:"Neviens nav sastāvā.<br>Spied “Mainīt dalībniekus”.",
+      gPerEach:" no katra", gMembers:" dalībnieki", gOf:" no ", gPaidN:" samaksājuši", gContribN:" iemaksas", gContrib1:" iemaksa", gUnpaidN:"nav ",
+      gAllGoalsNote:"Visi mērķi, neatkarīgi no izvēlētā perioda — mērķa nauda ir atsevišķs maks.",
+      gAddMore:"Piemaksā", rExtraGoal:"Viesi un arhīvs šajā mērķī",
+      gCollected:"savākts", gSpent:"iztērēts", gInPot:"makā", gDue:"līdz ", gNoDue:"bez termiņa",
+      gFree:"brīvas iemaksas", gOpen:"atvērts", gClosed:"noslēgts", gMissing:"trūkst", gExtra:"papildus",
+      gShare:"daļa", gNotInRoster:"nav sastāvā", gNotInList:"nav sarakstos",
+      optGPaid:"Samaksāja", optGPart:"Iedeva<br>daļu",
+      rHintGoal:"Atzīmē, kam jāmaksā", bFromLastSess:"No pēdējā treniņa", bRosterDoneGoal:"Gatavs → uz mērķi",
+      askGoalTitle:"<b>Labot mērķi</b>", lGoalTitle:"Nosaukums", lGoalShare:"Daļa no katra €", lGoalTarget:"Mērķa summa €", lGoalDue:"Termiņš",
+      askShare:"<b>Individuāla daļa</b><br><span class='muted'>0 € = šim cilvēkam nav jāmaksā</span>",
+      askCloseGoal:"<b>Noslēgt mērķi</b><br><span class='muted'>Savākts: </span>", lSpent:"Iztērēts €",
+      askReopen:"Atvērt mērķi no jauna?", askDelGoal:"Dzēst mērķi un visas tā iemaksas?",
+      askRmContrib:"Noņemt šo iemaksu?", askRmPerson:"Noņemt visas šī cilvēka iemaksas šajā mērķī?",
+      eGoalTitle:"Ieraksti mērķa nosaukumu", eGoalAmt:"Ieraksti summu", eContrib:"Ieraksti vārdu un summu",
+      tGoalCreated:"Mērķis izveidots", tGoalClosed:"Mērķis noslēgts", tGoalReopened:"Mērķis atvērts",
+      tGoalDeleted:"Mērķis dzēsts", tContribAdded:"Iemaksa pievienota", tContribRemoved:"Iemaksa noņemta",
+      tShareSet:"Daļa nomainīta", tGoalSaved:"Mērķis saglabāts", gSugHead:"No saraksta:"
     },
     en:{
-      navTr:"Sessions", navSum:"Summary", navSub:"Memberships", navPpl:"People", navSet:"Settings",
+      navTr:"Sessions", navSum:"Summary", navSub:"Payments", navPpl:"People", navSet:"Settings",
       hNewSess:"New session", bAdd:"Add", bSave:"Save",
       rHint:"Select who is attending", bPrev:"Same as last", bAll:"All", bNone:"Clear",
       phSearch:"🔍 Search…", phGuest:"+ Guest (name)",
@@ -792,7 +908,36 @@
       expDef:["Coach","Goalie","Goalie 2","Rink","Other expenses"],
       expCoach:"Coach", expGk:"Goalie", expOther:"Other expenses",
       guestSug:"Guests from the list:", subsCount:" memberships · ",
-      archSplit:"team ", archSplit2:" · guests "
+      archSplit:"team ", archSplit2:" · guests ",
+      /* goals */
+      segSubs:"Memberships", segGoals:"Goals", hNewGoal:"New goal",
+      phGoalTitle:"Name, e.g. Riga tournament", phShare:"Share per person €", phTarget:"Target amount €",
+      bKindFixed:"Fixed share", bKindFree:"Open contributions",
+      pKindFixed:"Pick who has to pay and how much. Whoever hasn't paid is visible at once.",
+      pKindFree:"Anyone gives what they want. Nobody owes anything.",
+      bCreateGoal:"Create", bCloseGoal:"Close", bReopenGoal:"Reopen", bDelGoal:"Delete",
+      hAddContrib:"Add a contribution", phContribName:"Name or any text",
+      pContribHint:"Type a few letters to pick from the team and guests. You can also enter someone who isn't in the lists.",
+      hSumGoals:"Goals", gNoGoals:"No goals yet.<br>Create the first one above.", gClosedHead:"Closed",
+      gUnpaid:"Not paid", gPaid:"Paid", gOther:"Other contributions", gContribs:"Contributions · newest first",
+      gNoContribs:"No contributions yet.", gNoRoster:"Nobody in the roster.<br>Tap “Change participants”.",
+      gPerEach:" each", gMembers:" people", gOf:" of ", gPaidN:" paid", gContribN:" contributions", gContrib1:" contribution", gUnpaidN:"unpaid ",
+      gAllGoalsNote:"All goals regardless of the selected period — goal money is a separate pot.",
+      gAddMore:"Add", rExtraGoal:"Guests and archive in this goal",
+      gCollected:"collected", gSpent:"spent", gInPot:"in the pot", gDue:"by ", gNoDue:"no deadline",
+      gFree:"open contributions", gOpen:"open", gClosed:"closed", gMissing:"missing", gExtra:"extra",
+      gShare:"share", gNotInRoster:"not in roster", gNotInList:"not in lists",
+      optGPaid:"Paid", optGPart:"Paid<br>part",
+      rHintGoal:"Select who has to pay", bFromLastSess:"From last session", bRosterDoneGoal:"Done → to goal",
+      askGoalTitle:"<b>Edit goal</b>", lGoalTitle:"Name", lGoalShare:"Share per person €", lGoalTarget:"Target amount €", lGoalDue:"Deadline",
+      askShare:"<b>Individual share</b><br><span class='muted'>0 € = this person doesn't have to pay</span>",
+      askCloseGoal:"<b>Close goal</b><br><span class='muted'>Collected: </span>", lSpent:"Spent €",
+      askReopen:"Reopen this goal?", askDelGoal:"Delete this goal and all its contributions?",
+      askRmContrib:"Remove this contribution?", askRmPerson:"Remove all of this person's contributions to this goal?",
+      eGoalTitle:"Enter a goal name", eGoalAmt:"Enter an amount", eContrib:"Enter a name and an amount",
+      tGoalCreated:"Goal created", tGoalClosed:"Goal closed", tGoalReopened:"Goal reopened",
+      tGoalDeleted:"Goal deleted", tContribAdded:"Contribution added", tContribRemoved:"Contribution removed",
+      tShareSet:"Share changed", tGoalSaved:"Goal saved", gSugHead:"From the list:"
     }
   };
   var T = I18N.lv;
@@ -816,6 +961,7 @@
     $("noFL").style.borderColor = lfOn() ? "" : "var(--acc)";
     $("noLF").style.borderColor = lfOn() ? "var(--acc)" : "";
     $("bulk").placeholder = lfOn() ? T.phBulkLF : T.phBulkFL;
+    if(typeof setKind === "function") setKind(gKind);
   }
   $("noFL").onclick = function(){ S.nameOrder="fl"; save(); applyLang(); render(); if(cur) renderDetail(); };
   $("noLF").onclick = function(){ S.nameOrder="lf"; save(); applyLang(); render(); if(cur) renderDetail(); };
@@ -904,6 +1050,38 @@
 
   /* ---------- abonementi ---------- */
   S.subs = S.subs || {};
+  /* mērķu normalizācija — gan ielādējot, gan importējot, lai bojāts ieraksts nesalauž lapu */
+  var ID_OK = /^[A-Za-z0-9_-]{1,40}$/;
+  var MAX_AMT = 1e9;
+  function numOr0(v){ v = Number(v); return (isFinite(v) && v >= 0 && v < MAX_AMT) ? v : 0; }
+  function normGoals(){
+    var known = {};
+    (S.people||[]).forEach(function(p){ if(p && p.id) known[p.id] = 1; });
+    S.goals = (Array.isArray(S.goals) ? S.goals : []).filter(function(g){ return g && typeof g==="object"; });
+    S.goals.forEach(function(g){
+      if(typeof g.id!=="string" || !ID_OK.test(g.id)) g.id = uid();
+      g.title = String(g.title || "—").slice(0, 120);
+      g.roster = (Array.isArray(g.roster) ? g.roster : []).filter(function(x){ return typeof x==="string" && known[x]; });
+      g.contribs = (Array.isArray(g.contribs) ? g.contribs : []).filter(function(c){ return c && typeof c==="object"; });
+      g.contribs.forEach(function(c){
+        if(typeof c.id!=="string" || !ID_OK.test(c.id)) c.id = uid();
+        c.a = numOr0(c.a); c.t = Number(c.t)||0;
+        if(typeof c.pid!=="string" || !known[c.pid]){ if(c.pid!=null && !c.name) c.name = "—"; c.pid = null; }
+        c.name = (c.pid || c.name==null) ? (c.pid ? null : "—") : String(c.name).slice(0, 80);
+      });
+      var sh = (g.shares && typeof g.shares==="object") ? g.shares : {}, sh2 = {};
+      Object.keys(sh).forEach(function(k){ if(known[k] && g.roster.indexOf(k)>=0 && isFinite(Number(sh[k]))) sh2[k] = numOr0(sh[k]); });
+      g.shares = sh2;
+      g.kind = g.kind === "free" ? "free" : "fixed";
+      g.status = g.status === "closed" ? "closed" : "open";
+      if(g.kind==="fixed") g.share = numOr0(g.share); else g.target = numOr0(g.target);
+      g.due = (typeof g.due==="string" && /^\d{4}-\d{2}-\d{2}$/.test(g.due)) ? g.due : null;
+      g.created = Number(g.created)||0;
+      if(g.status==="closed"){ g.spent = numOr0(g.spent); g.closedAt = Number(g.closedAt)||0; }
+      else { delete g.spent; delete g.closedAt; }
+    });
+  }
+  normGoals();
   function subMonth(m){
     if(!S.subs[m]) S.subs[m] = {price: S.subLast || 0, entries:{}};
     return S.subs[m];
@@ -1005,17 +1183,17 @@
   var cur = null;
   var open = [];   /* rindas, kas šobrīd atvērtas rediģēšanai */
   function show(tab){
-    ["sessions","summary","people","settings","detail","roster","subs"].forEach(function(t){
+    ["sessions","summary","people","settings","detail","roster","subs","goal"].forEach(function(t){
       var el=$("v-"+t); if(el) el.classList.add("hide");
     });
     $("v-"+tab).classList.remove("hide");
     [].forEach.call(document.querySelectorAll("nav button"), function(b){
-      b.classList.toggle("on", b.dataset.t===tab);
+      b.classList.toggle("on", b.dataset.t===tab || (tab==="goal" && b.dataset.t==="subs"));
     });
     window.scrollTo(0,0);
   }
   [].forEach.call(document.querySelectorAll("nav button"), function(b){
-    b.onclick = function(){ cur=null; render(); show(b.dataset.t); };
+    b.onclick = function(){ cur=null; curGoal=null; render(); show(b.dataset.t); };
   });
 
   /* ---------- renderēšana ---------- */
@@ -1401,18 +1579,46 @@
 
   /* ---------- dalībnieku izvēle ---------- */
   var draft = null; // pagaidu id saraksts
+  var rosterMode = "sess";   /* "sess" | "goal" */
   function openRoster(){
     var s = S.sessions.filter(function(x){return x.id===cur;})[0];
     if(!s) return;
+    rosterMode = "sess";
     draft = (s.roster ? s.roster.slice() : S.people.map(function(p){return p.id;}));
     $("rTitle").textContent = fmtDate(s.date);
+    $("rHintEl").textContent = T.rHint;
+    $("rPrev").textContent = T.bPrev;
+    $("rSave").textContent = T.bRosterDone;
+    $("rGuestHintEl").classList.remove("hide");
     $("rFilter").value = "";
     renderRoster(); show("roster");
+  }
+  function openGoalRoster(){
+    var g = goalById(curGoal);
+    if(!g) return;
+    rosterMode = "goal";
+    draft = g.roster.slice();
+    $("rTitle").textContent = g.title;
+    $("rHintEl").textContent = T.rHintGoal;
+    $("rPrev").textContent = T.bFromLastSess;
+    $("rSave").textContent = T.bRosterDoneGoal;
+    $("rGuestHintEl").classList.add("hide");
+    $("rFilter").value = "";
+    renderRoster(); show("roster");
+  }
+  /* jaunākā treniņa sastāvs (bez viesiem) — mērķa noklusējumam */
+  function lastSessRoster(){
+    var withR = S.sessions.filter(function(x){ return x.roster; }).sort(function(a,b){ return a.date<b.date?1:-1; });
+    if(!withR.length) return null;
+    return withR[0].roster.filter(function(id){
+      var p = S.people.filter(function(x){return x.id===id;})[0];
+      return p && !p.guest && !p.arch;
+    });
   }
   function renderRoster(){
     var team = byLast(S.people.filter(function(p){ return !p.guest && !p.arch; }));
     /* viesi rādās tikai tad, ja jau ir šajā treniņā */
-    var gIn = byLast(S.people.filter(function(p){ return p.guest && draft.indexOf(p.id)>=0; }));
+    var gIn = byLast(S.people.filter(function(p){ return (p.guest || (rosterMode==="goal" && p.arch)) && draft.indexOf(p.id)>=0; }));
     $("rCount").textContent = draft.length + " / " + team.length + (gIn.length? " +"+gIn.length+" "+T.hGuests.toLowerCase() : "");
     var q = ($("rFilter").value||"").trim().toLowerCase();
     function match(p){ return !q || p.name.toLowerCase().indexOf(q)>=0; }
@@ -1425,7 +1631,7 @@
         '<input type="checkbox" data-r="'+p.id+'" '+(on?'checked':'')+' style="width:24px;height:24px;accent-color:#3b82f6"></label>';
     }
     w.innerHTML = list.map(chip).join("") +
-      (gl.length ? '<div class="muted" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)">'+T.guestsHere+'</div>'+gl.map(chip).join("") : "");
+      (gl.length ? '<div class="muted" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)">'+(rosterMode==="goal" ? T.rExtraGoal : T.guestsHere)+'</div>'+gl.map(chip).join("") : "");
     [].forEach.call(w.querySelectorAll("[data-r]"), function(c){
       c.onchange = function(){
         var id=c.dataset.r, i=draft.indexOf(id);
@@ -1479,6 +1685,11 @@
             if(s.roster) s.roster = s.roster.filter(function(x){return x!==did;});
           });
           Object.keys(S.subs).forEach(function(m){ delete S.subs[m].entries[did]; });
+          S.goals.forEach(function(g){
+            g.roster = g.roster.filter(function(x){ return x!==did; });
+            if(g.shares) delete g.shares[did];
+            g.contribs.forEach(function(c){ if(c.pid===did){ c.pid=null; c.name=p.name; c.pn=1; } });
+          });
           save(); render(); toast(T.tDeleted);
         }, T.bDel);
       };
@@ -1700,6 +1911,405 @@
     });
     return Object.keys(set).sort().reverse();
   }
+
+  /* ==================== MĒRĶI ==================== */
+  var curGoal = null;          /* atvērtā mērķa id */
+  var subTab  = "subs";        /* "subs" | "goals" */
+  var gKind   = "fixed";       /* jauna mērķa veids formā */
+  var gcPid   = null;          /* izvēlētais cilvēks iemaksas formā */
+
+  function goalById(id){ return S.goals.filter(function(g){ return g.id===id; })[0]; }
+  function gShare(g, pid){
+    if(g.shares && typeof g.shares[pid]==="number") return g.shares[pid];
+    return Number(g.share)||0;
+  }
+  function gPaidBy(g, pid){
+    return g.contribs.reduce(function(t,c){ return t + (c.pid===pid ? (Number(c.a)||0) : 0); }, 0);
+  }
+  function gLastBy(g, pid){
+    return g.contribs.reduce(function(t,c){ return c.pid===pid ? Math.max(t, Number(c.t)||0) : t; }, 0);
+  }
+  function gCollected(g){ return g.contribs.reduce(function(t,c){ return t + (Number(c.a)||0); }, 0); }
+  /* mērķa summa: fiksētai daļai — daļu summa; brīvai — ievadītais mērķis */
+  function gTarget(g){
+    if(g.kind==="fixed") return g.roster.reduce(function(t,pid){ return t + gShare(g,pid); }, 0);
+    return Number(g.target)||0;
+  }
+  function gStats(g){
+    var paid=0;
+    g.roster.forEach(function(pid){ if(gPaidBy(g,pid) >= gShare(g,pid) - 0.004) paid++; });
+    return {paid:paid, total:g.roster.length, collected:gCollected(g), target:gTarget(g)};
+  }
+  function potHtml(v){
+    var col = v>0.004 ? "var(--ok)" : (v<-0.004 ? "var(--bad)" : "var(--tx)");
+    return '<b style="color:'+col+'">'+(v<-0.004?"−":"")+eur(Math.abs(v))+' €</b>';
+  }
+  function gPct(g){ var st=gStats(g); return st.target>0 ? Math.min(100, Math.round(st.collected/st.target*100)) : (st.collected>0 ? 100 : 0); }
+  function fmtDue(iso){ if(!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return T.gNoDue; var p=iso.split("-"); return esc(T.gDue+p[2]+"."+p[1]+"."+p[0]); }
+  function nContrib(n){ return n + (n===1 ? T.gContrib1 : T.gContribN); }
+  function contribName(c){
+    if(c.pid){ var p = S.people.filter(function(x){return x.id===c.pid;})[0]; if(p) return dn(p.name); }
+    return c.pn ? dn(c.name||"") : (c.name || "—");
+  }
+
+  /* ---- apakšcilnes ---- */
+  function setSubTab(t){
+    subTab = t;
+    $("segSubs").classList.toggle("on", t==="subs");
+    $("segGoals").classList.toggle("on", t==="goals");
+    $("subsView").classList.toggle("hide", t!=="subs");
+    $("goalsView").classList.toggle("hide", t!=="goals");
+  }
+  $("segSubs").onclick  = function(){ setSubTab("subs"); };
+  $("segGoals").onclick = function(){ setSubTab("goals"); renderGoals(); };
+
+  /* ---- jauna mērķa forma ---- */
+  function setKind(k){
+    gKind = k;
+    $("gKindFixed").classList.toggle("on", k==="fixed");
+    $("gKindFree").classList.toggle("on", k==="free");
+    $("gAmount").placeholder = k==="fixed" ? T.phShare : T.phTarget;
+    $("gKindHint").textContent = k==="fixed" ? T.pKindFixed : T.pKindFree;
+  }
+  $("gKindFixed").onclick = function(){ setKind("fixed"); };
+  $("gKindFree").onclick  = function(){ setKind("free"); };
+  $("gCreate").onclick = function(){
+    var title = ($("gTitle").value||"").trim().replace(/\s+/g," ");
+    var amt = parseFloat($("gAmount").value);
+    if(!title){ info(T.eGoalTitle); return; }
+    if(isNaN(amt) || amt < 0) amt = 0;
+    if(!(amt < MAX_AMT) || (gKind==="fixed" && !(amt > 0))){ info(T.eGoalAmt); return; }
+    var g = { id: uid(), title: title.slice(0,120), kind: gKind, due: /^\d{4}-\d{2}-\d{2}$/.test($("gDue").value||"") ? $("gDue").value : null,
+              roster: [], shares: {}, contribs: [], status: "open", created: Date.now() };
+    if(gKind==="fixed") g.share = amt; else g.target = amt;
+    S.goals.push(g); save();
+    $("gTitle").value=""; $("gAmount").value=""; $("gDue").value="";
+    curGoal = g.id;
+    if(gKind==="fixed"){
+      var last = lastSessRoster();
+      renderGoals(); renderGoal();
+      openGoalRoster();
+      if(last && last.length){ draft = last.slice(); renderRoster(); }
+    } else {
+      render(); show("goal");
+    }
+    toast(T.tGoalCreated);
+  };
+
+  /* ---- saraksts ---- */
+  function goalCard(g){
+    var st = gStats(g), pct = gPct(g), closed = g.status==="closed";
+    var kind = closed ? "closed" : (g.kind==="fixed" ? (st.paid===st.total && st.total>0 ? "k-ok" : (st.total-st.paid>0 ? "k-bad" : "")) : (st.target>0 && st.collected>=st.target ? "k-ok" : ""));
+    var meta = closed
+      ? T.gClosed+" "+(g.closedAt ? fmtDT(g.closedAt).split(T.atTime)[0] : "")+" · "+T.gCollected+" "+eur(st.collected)+" € · "+T.gSpent+" "+eur(Number(g.spent)||0)+" €"
+      : (g.kind==="fixed"
+          ? fmtDue(g.due)+" · "+eur(Number(g.share)||0)+" €"+T.gPerEach+" · "+st.total+T.gMembers
+          : T.gFree+" · "+fmtDue(g.due));
+    var pill;
+    if(closed){
+      var pot = st.collected - (Number(g.spent)||0);
+      pill = '<span class="pill '+(pot>0.004?"p-ok":(pot<-0.004?"p-bad":"p-off"))+'">'+(pot>=0?"+":"−")+eur(Math.abs(pot))+' € '+T.gInPot+'</span>';
+    } else if(g.kind==="fixed"){
+      var left = st.total - st.paid;
+      pill = left>0 ? '<span class="pill p-bad">'+T.gUnpaidN+left+'</span>' : (st.total ? '<span class="pill p-ok">'+T.allOk+'</span>' : '<span class="pill p-off">'+T.noPlayers+'</span>');
+    } else {
+      pill = '<span class="pill '+(st.target>0 && st.collected>=st.target ? "p-ok" : "p-warn")+'">'+(st.target>0 && st.collected>=st.target ? T.allOk : T.gOpen)+'</span>';
+    }
+    var sum = closed ? '' :
+      '<div class="prog'+(pct>=100?" full":"")+'"><i style="width:'+pct+'%"></i></div>'+
+      '<div class="gsum"><b>'+eur(st.collected)+' €</b>'+(st.target>0 ? T.gOf+eur(st.target)+' €' : '')+
+        (g.kind==="fixed" ? ' · '+st.paid+T.gOf+st.total+T.gPaidN : ' · '+nContrib(g.contribs.length))+'</div>';
+    return '<div class="goal '+kind+'" data-g="'+g.id+'">'+
+      '<div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">'+
+        '<div style="min-width:0;flex:1 1 auto"><div class="gt">'+esc(g.title)+'</div><div class="gsum">'+meta+'</div></div>'+pill+
+      '</div>'+sum+'</div>';
+  }
+  function renderGoals(){
+    var w = $("goalList"); if(!w) return;
+    setSubTab(subTab); setKind(gKind);
+    if(!S.goals.length){ w.innerHTML = '<div class="empty">'+T.gNoGoals+'</div>'; return; }
+    var open = S.goals.filter(function(g){ return g.status!=="closed"; }).sort(function(a,b){ return (b.created||0)-(a.created||0); });
+    var closed = S.goals.filter(function(g){ return g.status==="closed"; }).sort(function(a,b){ return (b.closedAt||0)-(a.closedAt||0); });
+    w.innerHTML = open.map(goalCard).join("") +
+      (closed.length ? '<div class="grp" style="margin-top:18px"><span>'+T.gClosedHead+'</span><b>'+closed.length+'</b></div>'+closed.map(goalCard).join("") : "");
+    [].forEach.call(w.querySelectorAll(".goal"), function(el){
+      el.onclick = function(){ curGoal = el.dataset.g; renderGoal(); show("goal"); };
+    });
+  }
+
+  /* ---- viens mērķis ---- */
+  function addContrib(g, pid, name, amt){
+    g.contribs.push({ id: uid(), pid: pid||null, name: pid ? null : (name||"").trim(), a: amt, t: Date.now() });
+    save();
+  }
+  var gcLast = null;
+  function resetGcForm(){ gcPid=null; $("gcName").value=""; $("gcAmt").value=""; hideGcSug(); }
+  function renderGoal(){
+    var g = goalById(curGoal);
+    if(!g){ curGoal=null; show("subs"); return; }
+    if(gcLast !== g.id){ resetGcForm(); gcLast = g.id; }
+    var st = gStats(g), pct = gPct(g), closed = g.status==="closed";
+    $("gdTitle").textContent = g.title;
+    $("gdMeta").innerHTML = (g.kind==="fixed"
+        ? fmtDue(g.due)+" · "+T.gShare+" <b>"+eur(Number(g.share)||0)+" €</b>"
+        : T.gFree+" · "+fmtDue(g.due)) + (closed ? ' · <span class="pill p-off">'+T.gClosed+'</span>' : '');
+    var pr = $("gdProg"); pr.classList.toggle("full", pct>=100); pr.firstChild.style.width = pct+"%";
+    $("gdSum").innerHTML = '<b>'+eur(st.collected)+' €</b>'+(st.target>0 ? T.gOf+eur(st.target)+' €' : '')+
+      (g.kind==="fixed" ? ' · '+st.paid+T.gOf+st.total+T.gPaidN : ' · '+nContrib(g.contribs.length))+
+      (closed ? '<br>'+T.gSpent+' <b>'+eur(Number(g.spent)||0)+' €</b> · '+T.gInPot+' '+potHtml(st.collected-(Number(g.spent)||0)) : '');
+    $("gRoster").classList.toggle("hide", g.kind!=="fixed" || closed);
+    $("gcCard").classList.toggle("hide", closed);
+    $("gClose").textContent = closed ? T.bReopenGoal : T.bCloseGoal;
+    $("gClose").style.color = closed ? "var(--acc)" : "var(--ok)";
+    $("gEdit").classList.toggle("hide", closed);
+
+    var w = $("gdList"), html = "";
+    function rowContrib(c, extra){
+      return '<div class="crow s-acc"'+(closed?' style="cursor:default"':' data-c="'+c.id+'"')+'><span class="cname">'+esc(contribName(c))+
+        (extra ? ' <span class="muted" style="font-size:12px">· '+extra+'</span>' : '')+'</span>'+
+        '<span class="amt">'+eur(Number(c.a)||0)+' €</span></div>';
+    }
+    if(g.kind==="fixed"){
+      var roster = teamFirst(g.roster.map(function(pid){ return S.people.filter(function(x){return x.id===pid;})[0]; }).filter(Boolean));
+      var unpaid = roster.filter(function(p){ return gPaidBy(g,p.id) < gShare(g,p.id) - 0.004; });
+      var paid   = roster.filter(function(p){ return gPaidBy(g,p.id) >= gShare(g,p.id) - 0.004; })
+                         .sort(function(a,b){ return gLastBy(g,b.id) - gLastBy(g,a.id); });
+      var others = g.contribs.filter(function(c){ return !c.pid || g.roster.indexOf(c.pid)<0; })
+                             .sort(function(a,b){ return (b.t||0)-(a.t||0); });
+      if(!roster.length && !others.length){
+        html = '<div class="empty">'+T.gNoRoster+'</div>';
+      } else {
+        html += '<div class="grp"><span>'+T.gUnpaid+'</span><b>'+unpaid.length+'</b></div>';
+        if(!unpaid.length) html += '<div class="muted" style="padding:4px 0 6px"><span style="color:var(--ok)">'+T.allOk+'</span></div>';
+        unpaid.forEach(function(p){
+          var sh = gShare(g,p.id), got = gPaidBy(g,p.id), ind = g.shares && typeof g.shares[p.id]==="number";
+          html += '<div class="prow"><div class="pname"><span>'+esc(dn(p.name))+
+            (got>0 ? ' <span class="pill p-warn">'+T.gave+' '+eur(got)+' € · <span style="color:var(--bad)">'+T.gMissing+' '+eur(sh-got)+' €</span></span>' : '')+
+            '</span>'+(closed ? '<span class="share">'+T.gShare+' '+eur(sh)+' €</span>' : '<button class="share'+(ind?" ed":"")+'" data-sh="'+p.id+'">'+T.gShare+' '+eur(sh)+' € ✎</button>')+'</div>'+
+            (closed ? '' :
+            '<div class="opts" style="grid-template-columns:repeat(2,1fr)">'+
+              '<button class="opt" data-gp="'+p.id+'" data-gs="paid">'+T.optGPaid+'</button>'+
+              '<button class="opt" data-gp="'+p.id+'" data-gs="part">'+T.optGPart+'</button></div>'+
+            '<div class="partbox" data-gbox="'+p.id+'"><span class="muted">'+(got>0 ? T.gAddMore : T.gave)+':</span>'+
+              '<input type="number" min="0" step="1" inputmode="decimal" enterkeyhint="done" data-gamt="'+p.id+'" placeholder="0">'+
+              '<span class="muted">€ · '+T.gMissing+' '+eur(sh-got)+' €</span></div>')+
+          '</div>';
+        });
+        html += '<div class="grp"><span>'+T.gPaid+'</span><b>'+paid.length+'</b></div>';
+        if(!paid.length) html += '<div class="muted" style="padding:4px 0 6px">—</div>';
+        paid.forEach(function(p){
+          var sh = gShare(g,p.id), got = gPaidBy(g,p.id), ind2 = g.shares && typeof g.shares[p.id]==="number";
+          var pill = sh<=0
+            ? '<span class="pill p-off">'+T.gShare+' 0 €</span>'
+            : (got > sh + 0.004
+                ? '<span class="pill p-ok">'+eur(got)+' € · +'+eur(got-sh)+' '+T.gExtra+'</span>'
+                : '<span class="amt" style="color:var(--ok)">'+eur(got)+' €</span>');
+          /* ✎ pašā labajā malā aiz summas — rindas vidus paliek rindas darbībai */
+          var shBtn = closed ? '' : '<button class="share sm'+(ind2?" ed":"")+'" data-sh="'+p.id+'">✎ '+eur(sh)+'</button>';
+          html += '<div class="crow '+(sh<=0?"s-none":"s-paid")+'"'+(closed?' style="cursor:default"':' data-gperson="'+p.id+'"')+'><span class="cname">'+esc(dn(p.name))+'</span>'+pill+shBtn+'</div>';
+        });
+        if(others.length){
+          html += '<div class="grp"><span>'+T.gOther+'</span><b>'+others.length+'</b></div>';
+          others.forEach(function(c){ html += rowContrib(c, c.pid ? T.gNotInRoster : T.gNotInList); });
+        }
+      }
+    } else {
+      var all = g.contribs.slice().sort(function(a,b){ return (b.t||0)-(a.t||0); });
+      html += '<div class="grp"><span>'+T.gContribs+'</span><b>'+all.length+'</b></div>';
+      if(!all.length) html += '<div class="empty">'+T.gNoContribs+'</div>';
+      all.forEach(function(c){ html += rowContrib(c, c.pid ? "" : T.gNotInList); });
+    }
+    w.innerHTML = html;
+
+    if(closed){ return; }
+    /* ---- darbības ---- */
+    /* nesaglabātas "Iedeva daļu" summas saglabā, pirms jebkura cita darbība pārzīmē sarakstu */
+    function flushAmt(f){
+      if(f.dataset.done) return false;
+      var v = parseFloat(f.value);
+      if(!(v > 0) || v >= MAX_AMT){ return false; }
+      f.dataset.done = "1";
+      addContrib(g, f.dataset.gamt, null, Math.round(v*100)/100);
+      return true;
+    }
+    function flushAmts(){ var any=false; [].forEach.call(w.querySelectorAll("[data-gamt]"), function(f){ if(flushAmt(f)) any=true; }); return any; }
+    function refresh(){ renderGoal(); renderGoals(); renderSummary(); }
+    [].forEach.call(w.querySelectorAll("[data-sh]"), function(el){
+      el.onclick = function(ev){ ev.stopPropagation(); flushAmts(); editShare(g, el.dataset.sh); };
+    });
+    [].forEach.call(w.querySelectorAll("[data-gp]"), function(b){
+      b.onclick = function(){
+        var pid = b.dataset.gp, st2 = b.dataset.gs;
+        flushAmts();
+        if(st2==="paid"){
+          var need = gShare(g,pid) - gPaidBy(g,pid);
+          if(need > 0.004){ addContrib(g, pid, null, Math.round(need*100)/100); }
+          b.classList.add("on","hit");
+          setTimeout(function(){ refresh(); toast(T.tContribAdded); }, 220);
+        } else {
+          var box = w.querySelector('[data-gbox="'+pid+'"]');
+          if(box){ box.classList.add("show"); var f = box.querySelector("input"); if(f){ f.focus(); } }
+        }
+      };
+    });
+    [].forEach.call(w.querySelectorAll("[data-gamt]"), function(f){
+      f.onblur = function(){
+        if(flushAmt(f)){ setTimeout(function(){ refresh(); toast(T.tContribAdded); }, 150); }
+        else if(!f.dataset.done){ if(f.value!=="") toast(T.eGoalAmt); f.value=""; }
+      };
+    });
+    [].forEach.call(w.querySelectorAll("[data-gperson]"), function(r){
+      r.onclick = function(){
+        if(flushAmts()){ refresh(); return; }
+        var pid = r.dataset.gperson;
+        var p = S.people.filter(function(x){return x.id===pid;})[0];
+        ask("<b>"+esc(p?dn(p.name):"")+"</b><br><br>"+T.gave+" "+eur(gPaidBy(g,pid))+" €<br><br>"+T.askRmPerson, function(ok){
+          if(!ok) return;
+          g.contribs = g.contribs.filter(function(c){ return c.pid!==pid; });
+          save(); renderGoal(); renderGoals(); renderSummary(); toast(T.tContribRemoved);
+        }, T.bRemove);
+      };
+    });
+    [].forEach.call(w.querySelectorAll("[data-c]"), function(r){
+      r.onclick = function(){
+        if(flushAmts()){ refresh(); return; }
+        var c = g.contribs.filter(function(x){return x.id===r.dataset.c;})[0];
+        if(!c) return;
+        ask("<b>"+esc(contribName(c))+"</b><br><br>"+eur(Number(c.a)||0)+" €<br><br>"+T.askRmContrib, function(ok){
+          if(!ok) return;
+          g.contribs = g.contribs.filter(function(x){ return x.id!==c.id; });
+          save(); renderGoal(); renderGoals(); renderSummary(); toast(T.tContribRemoved);
+        }, T.bRemove);
+      };
+    });
+  }
+
+  function editShare(g, pid){
+    var p = S.people.filter(function(x){return x.id===pid;})[0];
+    var cur0 = gShare(g,pid);
+    ask(T.askShare+"<br><b>"+esc(p?dn(p.name):"")+"</b>"+
+        '<input type="number" id="mdInput" min="0" step="1" inputmode="decimal" style="margin-top:10px" value="'+cur0+'">',
+      function(ok){
+        if(!ok) return;
+        var v = parseFloat($("mdInput").value);
+        if(isNaN(v) || v < 0 || !(v < MAX_AMT)){ info(T.eGoalAmt); return; }
+        g.shares = g.shares || {};
+        if(Math.abs(v - (Number(g.share)||0)) < 0.004) delete g.shares[pid]; else g.shares[pid] = v;
+        save(); renderGoal(); renderGoals(); renderSummary(); toast(T.tShareSet);
+      }, T.bSave);
+    setTimeout(function(){ var f=$("mdInput"); if(f){ f.focus(); f.select&&f.select(); } }, 60);
+  }
+
+  $("gBack").onclick = function(){ curGoal=null; gcLast=null; resetGcForm(); subTab="goals"; render(); show("subs"); };
+  $("gRoster").onclick = openGoalRoster;
+  function openGoalEdit(vals, err){
+    var g = goalById(curGoal); if(!g) return;
+    var fixed = g.kind==="fixed";
+    vals = vals || { t: g.title, a: fixed ? (Number(g.share)||0) : (Number(g.target)||0), d: g.due||"" };
+    ask(T.askGoalTitle + (err ? '<div style="color:var(--bad);font-size:13px;margin-top:6px">'+err+'</div>' : '') +
+        '<div class="muted" style="margin-top:10px;font-size:12px">'+T.lGoalTitle+'</div><input type="text" id="mdInput" value="'+esc(vals.t)+'">'+
+        '<div class="muted" style="margin-top:8px;font-size:12px">'+(fixed?T.lGoalShare:T.lGoalTarget)+'</div><input type="number" id="mdAmt" min="0" step="1" inputmode="decimal" value="'+esc(String(vals.a))+'">'+
+        '<div class="muted" style="margin-top:8px;font-size:12px">'+T.lGoalDue+'</div><input type="date" id="mdDue" value="'+esc(vals.d)+'">',
+      function(ok){
+        if(!ok) return;
+        var t = ($("mdInput").value||"").trim().replace(/\s+/g," ");
+        var aRaw = $("mdAmt").value, a = parseFloat(aRaw), d = $("mdDue").value||"";
+        if(!t){ openGoalEdit({t:t, a:aRaw, d:d}, T.eGoalTitle); return; }
+        if(isNaN(a) || a < 0) a = 0;
+        if(!(a < MAX_AMT) || (fixed && !(a > 0))){ openGoalEdit({t:t, a:aRaw, d:d}, T.eGoalAmt); return; }
+        g.title = t.slice(0,120); g.due = /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : null;
+        if(fixed) g.share = a; else g.target = a;
+        save(); renderGoal(); renderGoals(); renderSummary(); toast(T.tGoalSaved);
+      }, T.bSave);
+    setTimeout(function(){ var f=$("mdInput"); if(f){ f.focus(); f.select&&f.select(); } }, 60);
+  }
+  $("gEdit").onclick = function(){ openGoalEdit(); };
+  $("gClose").onclick = function(){
+    var g = goalById(curGoal); if(!g) return;
+    if(g.status==="closed"){
+      ask(T.askReopen, function(ok){ if(!ok) return; g.status="open"; delete g.closedAt; delete g.spent; save(); render(); toast(T.tGoalReopened); });
+      return;
+    }
+    var col = gCollected(g);
+    ask(T.askCloseGoal+"<b>"+eur(col)+" €</b>"+
+        '<div class="muted" style="margin-top:10px;font-size:12px">'+T.lSpent+'</div>'+
+        '<input type="number" id="mdInput" min="0" step="1" inputmode="decimal" value="'+eur(col)+'">',
+      function(ok){
+        if(!ok) return;
+        var v = parseFloat($("mdInput").value); if(isNaN(v) || v<0) v = 0;
+        if(!(v < MAX_AMT)){ info(T.eGoalAmt); return; }
+        g.status = "closed"; g.spent = v; g.closedAt = Date.now();
+        save(); render(); toast(T.tGoalClosed);
+      }, T.bCloseGoal);
+    setTimeout(function(){ var f=$("mdInput"); if(f){ f.focus(); f.select&&f.select(); } }, 60);
+  };
+  $("gDelete").onclick = function(){
+    var g = goalById(curGoal); if(!g) return;
+    ask("<b>"+esc(g.title)+"</b><br><br>"+T.askDelGoal, function(ok){
+      if(!ok) return;
+      S.goals = S.goals.filter(function(x){ return x.id!==g.id; });
+      curGoal = null; save(); render(); show("subs"); toast(T.tGoalDeleted);
+    }, T.bDel);
+  };
+
+  /* ---- iemaksas forma ar ieteikumiem ---- */
+  function hideGcSug(){ var w=$("gcSug"); w.innerHTML=""; w.classList.add("hide"); }
+  $("gcName").oninput = function(){
+    gcPid = null;
+    var q = norm($("gcName").value), w = $("gcSug");
+    if(q.length < 1){ hideGcSug(); return; }
+    var list = S.people.filter(function(p){
+      if(p.arch) return false;
+      if(tokens(p.name).some(function(t){ return t.indexOf(q)===0; })) return true;
+      return q.length>=3 && norm(p.name).indexOf(q)>=0;
+    }).slice(0, 8);
+    if(!list.length){ hideGcSug(); return; }
+    w.innerHTML = '<div class="muted" style="font-size:12px;margin-bottom:6px">'+T.gSugHead+'</div><div class="sug">'+
+      list.map(function(p){ return '<button data-gsug="'+p.id+'">'+esc(dn(p.name))+'</button>'; }).join("")+'</div>';
+    w.classList.remove("hide");
+    [].forEach.call(w.querySelectorAll("[data-gsug]"), function(b){
+      b.onclick = function(){
+        var p = S.people.filter(function(x){return x.id===b.dataset.gsug;})[0];
+        gcPid = b.dataset.gsug; $("gcName").value = p ? dn(p.name) : ""; hideGcSug(); $("gcAmt").focus();
+      };
+    });
+  };
+  $("gcAdd").onclick = function(){
+    var g = goalById(curGoal); if(!g) return;
+    var name = ($("gcName").value||"").trim().replace(/\s+/g," ");
+    var amt = parseFloat($("gcAmt").value);
+    if(!name && !$("gcAmt").value){ return; }              /* dubultklikšķis pēc pievienošanas — nekas nav jāsaka */
+    if(!name){ info(T.eContrib); return; }
+    if(!(amt > 0)){ info(T.eGoalAmt); return; }
+    if(!(amt < MAX_AMT)){ info(T.eGoalAmt); return; }
+    var pid = (gcPid && S.people.some(function(p){ return p.id===gcPid; })) ? gcPid : null;
+    if(!pid){
+      var ex = S.people.filter(function(p){ return norm(dn(p.name))===norm(name) || norm(p.name)===norm(name); })[0];
+      if(ex) pid = ex.id;
+    }
+    addContrib(g, pid, name, amt);
+    gcPid = null; $("gcName").value=""; $("gcAmt").value=""; hideGcSug();
+    renderGoal(); renderGoals(); renderSummary(); toast(T.tContribAdded);
+  };
+  $("gcAmt").onkeydown = function(e){ if(e.key==="Enter"){ e.preventDefault(); $("gcAdd").click(); } };
+
+  /* ---- kopsavilkuma bloks ---- */
+  function renderSumGoals(){
+    var w = $("sumGoals"); if(!w) return;
+    if(!S.goals.length){ w.innerHTML = '<span class="muted">'+T.gNoGoals.split("<br>")[0]+'</span>'; return; }
+    var rows = S.goals.slice().sort(function(a,b){ return (a.status==="closed")-(b.status==="closed") || (b.created||0)-(a.created||0); })
+      .map(function(g){
+        var st = gStats(g), closed = g.status==="closed", spent = Number(g.spent)||0;
+        var right = closed
+          ? T.gCollected+' '+eur(st.collected)+' € · '+T.gSpent+' '+eur(spent)+' € · '+T.gInPot+' '+potHtml(st.collected-spent)
+          : '<b>'+eur(st.collected)+' €</b>'+(st.target>0 ? ' <span class="muted">'+T.gOf+eur(st.target)+' €</span>' : '');
+        return '<div class="row" style="justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid var(--line)">'+
+          '<span'+(closed?' class="muted"':'')+'>'+esc(g.title)+(closed?' <span class="pill p-off">'+T.gClosed+'</span>':'')+'</span>'+
+          '<span class="num" style="text-align:right;font-size:13px">'+right+'</span></div>';
+      }).join("");
+    w.innerHTML = rows + '<div class="muted" style="font-size:12px;margin-top:8px">'+T.gAllGoalsNote+'</div>';
+  }
+
   function renderSummary(){
     /* mēnešu izvēle */
     var sel = $("sumMonth"), months = allMonths();
@@ -1793,6 +2403,7 @@
       return n ? monthName(x)+": "+n+T.subsCount+"<b>"+eur(sum)+" €</b>" : "";
     }).filter(Boolean).join("<br>");
     $("sumSubs").innerHTML = subInfo || '<span class="muted">'+T.noSubsYet+'</span>';
+    renderSumGoals();
     $("sumNote").innerHTML = T.noteBal +
       (m ? '<br>'+T.noteBalTo : '') +
       (to>0 ? '<br>'+T.noteOwe+'<b style="color:var(--warn)">'+eur(to)+' €</b>' : '');
@@ -1834,8 +2445,9 @@
   var sumPicked = false;   /* vai lietotājs pats izvēlējies periodu */
   $("sumMonth").onchange = function(){ sumPicked = true; renderSummary(); };
   function render(){
-    renderSessions(); renderPeople(); renderSummary(); renderBackup(); renderSubs();
+    renderSessions(); renderPeople(); renderSummary(); renderBackup(); renderSubs(); renderGoals();
     if(cur) renderDetail();
+    if(curGoal) renderGoal();
     $("price").value = S.price;
   }
 
@@ -1951,14 +2563,27 @@
 
   $("editRoster").onclick = openRoster;
   $("rFilter").oninput = renderRoster;
-  $("rAll").onclick = function(){ draft = S.people.filter(function(p){return !p.guest && !p.arch;}).map(function(p){return p.id;}); renderRoster(); };
+  $("rAll").onclick = function(){
+    var team = S.people.filter(function(p){return !p.guest && !p.arch;}).map(function(p){return p.id;});
+    /* mērķa režīmā patur jau iekļautos viesus un arhivētos */
+    var keep = rosterMode==="goal" ? draft.filter(function(id){ var p=S.people.filter(function(x){return x.id===id;})[0]; return p && (p.guest || p.arch); }) : [];
+    draft = team.concat(keep); renderRoster();
+  };
   $("rNone").onclick = function(){ draft = []; renderRoster(); };
   $("rPrev").onclick = function(){
-    var prev = prevRoster();
+    var prev = rosterMode==="goal" ? lastSessRoster() : prevRoster();
     if(!prev){ info(T.eNoPrev); return; }
     draft = prev.slice(); renderRoster(); toast(T.tCopied);
   };
   $("rSave").onclick = function(){
+    if(rosterMode==="goal"){
+      var g = goalById(curGoal);
+      if(!g){ show("subs"); return; }
+      g.roster = draft.slice();
+      Object.keys(g.shares||{}).forEach(function(pid){ if(g.roster.indexOf(pid)<0) delete g.shares[pid]; });
+      save(); render(); show("goal"); toast(T.tRosterSaved+draft.length+T.tRosterSaved2);
+      return;
+    }
     var s = S.sessions.filter(function(x){return x.id===cur;})[0];
     s.roster = draft.slice();
     Object.keys(s.entries).forEach(function(pid){ if(draft.indexOf(pid)<0) delete s.entries[pid]; });
@@ -2147,12 +2772,18 @@
   function parseData(txt){ return JSON.parse(String(txt).replace(/^﻿/,"").trim()); }
   function applyData(d){
     if(!d || !d.people || !d.sessions) throw new Error("bad");
+    var prevS = S;
     S = d;
+    try{ normData(); }catch(e){ S = prevS; throw e; }
+    save(); cur=null; curGoal=null; open=[]; subOpen=[]; applyLang(); applyTheme(); applyLogo(); render(); show("sessions"); toast(T.tDataLoaded);
+  }
+  function normData(){
     /* vecāku dublējumu papildināšana, lai nekas neatduras tukšumā */
     S.price = Number(S.price)||0;
     S.people = S.people || [];
     S.sessions = S.sessions || [];
     S.subs = S.subs || {};
+    normGoals();
     S.sessions.forEach(function(s){ s.entries = s.entries || {}; });
     Object.keys(S.subs).forEach(function(m){
       S.subs[m] = S.subs[m] || {};
@@ -2166,7 +2797,6 @@
       S.sessions.forEach(function(s){ if(typeof s.price !== "number") s.price = S.price; });
       S.v = 3;
     }
-    save(); cur=null; open=[]; subOpen=[]; applyLang(); applyTheme(); applyLogo(); render(); show("sessions"); toast(T.tDataLoaded);
   }
   $("copyJson").onclick = function(){
     var txt = JSON.stringify(S);
@@ -2204,8 +2834,9 @@
   $("wipe").onclick = function(){
     ask(T.askWipe, function(ok){
       if(!ok) return;
-      S = {price:S.price, people:JSON.parse(JSON.stringify(DATA.people)), sessions:[], subs:{}, v:3};
-      cur=null; save(); render(); show("sessions"); toast(T.tAllDeleted);
+      S = {price:S.price, people:JSON.parse(JSON.stringify(DATA.people)), sessions:[], subs:{}, goals:[], v:3,
+           lang:S.lang, theme:S.theme, nameOrder:S.nameOrder, logo:S.logo};
+      cur=null; curGoal=null; save(); render(); show("sessions"); toast(T.tAllDeleted);
     }, T.bWipeAll);
   };
 
@@ -2315,7 +2946,8 @@
     var el = e.target;
     if(!el || el.tagName !== "INPUT") return;
     if(el.id === "dNew" || el.id === "rNew") return;      /* tiem ir sava darbība */
-    if(el.id === "mdInput"){ e.preventDefault(); $("mdYes").click(); return; }
+    if(el.id === "mdInput" || el.id === "mdAmt"){ e.preventDefault(); $("mdYes").click(); return; }
+    if(el.id === "gcName"){ e.preventDefault(); $("gcAmt").focus(); return; }
     e.preventDefault();
     el.blur();                                            /* apstiprina un aizver tastatūru */
   });
